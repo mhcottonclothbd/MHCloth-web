@@ -216,3 +216,4 @@ This project is licensed under the MIT License.
 
 This application is fully configured and optimized for deployment on Vercel. Simply connect your GitHub repository to Vercel, add your environment variables, and deploy!
 # physicalStore
+# physicalStore
