@@ -1,0 +1,332 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ShoppingCart, Eye, Tag, Percent } from 'lucide-react'
+import { Card, CardContent } from '@/components/Card'
+import Button from '@/components/Button'
+import { formatPrice } from '@/lib/utils'
+import { Product } from '@/types'
+import { useCart } from '@/lib/cart-context'
+
+interface SaleProduct extends Product {
+  original_price: number
+  discount_percentage: number
+}
+
+interface ProductGridProps {
+  searchParams: {
+    search?: string
+    sort?: string
+    filter?: string
+  }
+  category: string
+  title: string
+}
+
+// Mock data for sale products - will be replaced with Supabase data
+const mockSaleProducts: SaleProduct[] = [
+  {
+    id: 'sale1',
+    name: 'Premium Leather Wallet',
+    description: 'Handcrafted genuine leather with RFID protection',
+    price: 59.99,
+    original_price: 99.99,
+    discount_percentage: 40,
+    image_url: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 15,
+    featured: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'sale2',
+    name: 'Wireless Charging Pad',
+    description: 'Fast wireless charging for all compatible devices',
+    price: 29.99,
+    original_price: 49.99,
+    discount_percentage: 40,
+    image_url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 25,
+    featured: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'sale3',
+    name: 'Ceramic Coffee Set',
+    description: 'Elegant 4-piece ceramic coffee set with gold accents',
+    price: 79.99,
+    original_price: 129.99,
+    discount_percentage: 38,
+    image_url: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 8,
+    featured: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'sale4',
+    name: 'Smart Home Speaker',
+    description: 'Voice-controlled speaker with premium sound quality',
+    price: 149.99,
+    original_price: 249.99,
+    discount_percentage: 40,
+    image_url: 'https://images.unsplash.com/photo-1589492477829-5e65395b66cc?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 12,
+    featured: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'sale5',
+    name: 'Minimalist Desk Lamp',
+    description: 'LED desk lamp with adjustable brightness and color',
+    price: 39.99,
+    original_price: 79.99,
+    discount_percentage: 50,
+    image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 18,
+    featured: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'sale6',
+    name: 'Luxury Candle Collection',
+    description: 'Set of 3 premium scented candles in elegant packaging',
+    price: 44.99,
+    original_price: 69.99,
+    discount_percentage: 36,
+    image_url: 'https://images.unsplash.com/photo-1602874801006-e26d3d17d0a5?w=400&h=400&fit=crop',
+    category: 'on-sale',
+    stock: 22,
+    featured: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+]
+
+/**
+ * Product grid component specifically for sale products
+ * Shows discounted prices with original price strikethrough
+ */
+export default function ProductGrid({ searchParams, category, title }: ProductGridProps) {
+  const [products, setProducts] = useState<SaleProduct[]>([])
+  const [loading, setLoading] = useState(true)
+  const { addItem } = useCart()
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true)
+      
+      let filteredProducts = [...mockSaleProducts]
+      
+      // Search filter
+      if (searchParams.search) {
+        const searchTerm = searchParams.search.toLowerCase()
+        filteredProducts = filteredProducts.filter(
+          product => 
+            product.name.toLowerCase().includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm)
+        )
+      }
+      
+      // Stock filter
+      if (searchParams.filter === 'in-stock') {
+        filteredProducts = filteredProducts.filter(product => product.stock > 0)
+      } else if (searchParams.filter === 'featured') {
+        filteredProducts = filteredProducts.filter(product => product.featured)
+      }
+      
+      // Sort products by discount percentage (highest first)
+      filteredProducts.sort((a, b) => {
+        return b.discount_percentage - a.discount_percentage
+      })
+      
+      // Simulate loading delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      setProducts(filteredProducts)
+      setLoading(false)
+    }
+
+    fetchProducts()
+  }, [searchParams])
+
+  const handleAddToCart = (product: SaleProduct) => {
+    // Convert SaleProduct to Product for cart
+    const cartProduct: Product = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price, // Use sale price
+      image_url: product.image_url,
+      category: product.category,
+      stock: product.stock,
+      featured: product.featured,
+      created_at: product.created_at,
+      updated_at: product.updated_at
+    }
+    addItem({
+      product: cartProduct,
+      quantity: 1,
+      selectedSize: undefined,
+      selectedColor: undefined
+    })
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+          <div className="h-10 bg-gray-200 rounded w-40 animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Tag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No sale items found</h3>
+        <p className="text-gray-600">Check back soon for amazing deals!</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      {/* Section Header */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+          <Tag className="w-6 h-6 text-red-500" />
+          {title}
+        </h2>
+        <p className="text-gray-600">
+          Showing {products.length} sale item{products.length !== 1 ? 's' : ''}
+        </p>
+      </div>
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product, index) => (
+          <motion.div
+            key={product.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-red-100">
+              <div className="relative aspect-square overflow-hidden">
+                <Image
+                  src={product.image_url}
+                  alt={product.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                
+                {/* Discount Badge */}
+                <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                  <Percent className="w-3 h-3" />
+                  {product.discount_percentage}% OFF
+                </div>
+                
+                {/* Stock Badge */}
+                {product.stock === 0 && (
+                  <div className="absolute top-3 right-3 bg-gray-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    Out of Stock
+                  </div>
+                )}
+                
+                {/* Sale Flash */}
+                <motion.div
+                  className="absolute top-3 right-3 text-yellow-400 text-2xl"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  ⚡
+                </motion.div>
+                
+                {/* Hover Actions */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                  <Link href={`/shop/${product.id}`}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="bg-white/90 hover:bg-white text-gray-900"
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      View
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleAddToCart(product)}
+                    disabled={product.stock === 0}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+              
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-red-600 transition-colors">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                  {product.description}
+                </p>
+                
+                {/* Price Section */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-red-600">
+                      {formatPrice(product.price)}
+                    </span>
+                    <span className="text-sm text-gray-500 line-through">
+                      {formatPrice(product.original_price)}
+                    </span>
+                  </div>
+                  <div className="text-sm font-medium text-green-600">
+                    Save {formatPrice(product.original_price - product.price)}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>
+                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                  </span>
+                  <span className="text-red-500 font-medium">
+                    Limited time!
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
