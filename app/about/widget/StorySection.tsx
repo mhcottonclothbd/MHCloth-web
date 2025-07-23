@@ -15,21 +15,25 @@ export default function StorySection() {
 
   const timelineEvents = [
     {
+      id: 'formation',
       year: '2022',
       title: 'Company Formation',
       description: 'Physical Store Ltd was officially incorporated in England and Wales (Company Number: 14879273), with a vision to revolutionize retail.'
     },
     {
+      id: 'first-location',
       year: '2022',
       title: 'First Location',
       description: 'Opened our flagship store in London, creating an innovative retail experience that bridges physical and digital shopping.'
     },
     {
+      id: 'digital-platform',
       year: '2023',
       title: 'Digital Platform',
       description: 'Launched our comprehensive e-commerce platform, making our curated collection accessible across the UK and beyond.'
     },
     {
+      id: 'sustainable-growth',
       year: '2024',
       title: 'Sustainable Growth',
       description: 'Committed to sustainable practices, implementing eco-friendly packaging and carbon-neutral delivery options throughout the UK.'
@@ -59,7 +63,7 @@ export default function StorySection() {
             <div className="space-y-6">
               {timelineEvents.map((event, index) => (
                 <motion.div
-                  key={event.year}
+                  key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
