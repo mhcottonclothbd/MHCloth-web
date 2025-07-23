@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 import HeroSection from './widget/HeroSection'
 import CollectionGrid from './widget/CollectionGrid'
 import FeaturedCollection from './widget/FeaturedCollection'
-import InstagramFeed from './widget/InstagramFeed'
 import LoadingSkeleton from './widget/LoadingSkeleton'
 
 export const metadata: Metadata = {
@@ -37,9 +36,6 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
       <Suspense fallback={<LoadingSkeleton />}>
         <CollectionGrid searchParams={resolvedSearchParams} />
       </Suspense>
-      
-      {/* Instagram Feed */}
-      <InstagramFeed />
     </div>
   )
 }

@@ -226,7 +226,7 @@ export default function TermsPage() {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <ul className="space-y-2 text-gray-700">
                   <li><strong>Email:</strong> legal@physicalstore.co.uk</li>
-                  <li><strong>Phone:</strong> +44 (0) 20 1234 5678</li>
+                  <li><strong>Phone:</strong> +447575847048</li>
                   <li><strong>Address:</strong> [Registered office address]</li>
                 </ul>
               </div>

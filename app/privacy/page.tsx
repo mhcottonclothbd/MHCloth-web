@@ -92,7 +92,7 @@ export default function PrivacyPage() {
                   <li><strong>Company Number:</strong> 14879273</li>
                   <li><strong>Registered Office:</strong> [To be updated with registered address]</li>
                   <li><strong>Email:</strong> privacy@physicalstore.co.uk</li>
-                  <li><strong>Phone:</strong> +44 (0) 20 1234 5678</li>
+                  <li><strong>Phone:</strong> +447575847048</li>
                 </ul>
               </div>
             </CardContent>
@@ -372,7 +372,7 @@ export default function PrivacyPage() {
                 </p>
                 <ul className="space-y-1 text-green-800 text-sm">
                   <li>• Email: privacy@physicalstore.co.uk</li>
-                  <li>• Phone: +44 (0) 20 1234 5678</li>
+                  <li>• Phone: +447575847048</li>
                   <li>• Post: [Registered office address]</li>
                 </ul>
                 <p className="text-green-800 text-sm mt-2">
@@ -492,7 +492,7 @@ export default function PrivacyPage() {
                   <h3 className="font-semibold text-gray-900 mb-2">Data Protection Officer:</h3>
                   <ul className="space-y-1 text-gray-700 text-sm">
                     <li><strong>Email:</strong> privacy@physicalstore.co.uk</li>
-                    <li><strong>Phone:</strong> +44 (0) 20 1234 5678</li>
+                    <li><strong>Phone:</strong> +447575847048</li>
                     <li><strong>Response Time:</strong> Within 48 hours</li>
                   </ul>
                 </div>

@@ -19,20 +19,20 @@ export default function HeroSection() {
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Call Us',
-      info: '+1 (555) 123-4567',
-      subInfo: 'Mon-Fri 9AM-6PM'
+      info: '+447575847048',
+      subInfo: 'Mon-Fri 9AM-6PM GMT'
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
       title: 'Email Us',
-      info: 'hello@yourstore.com',
+      info: 'hello@physicalstore.co.uk',
       subInfo: 'We reply within 24hrs'
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Store',
-      info: '123 Design Street',
-      subInfo: 'New York, NY 10001'
+      info: 'Physical Store Ltd',
+      subInfo: 'London, United Kingdom'
     },
     {
       icon: <Clock className="w-6 h-6" />,

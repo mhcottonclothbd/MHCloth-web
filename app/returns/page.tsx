@@ -118,7 +118,7 @@ export default function ReturnsPage() {
                 </p>
                 <ul className="space-y-1 text-gray-700 text-sm">
                   <li>• Email us at returns@physicalstore.co.uk</li>
-                  <li>• Call us on +44 (0) 20 1234 5678</li>
+                  <li>• Call us on +447575847048</li>
                   <li>• Use our online returns form</li>
                   <li>• Send a letter to our registered address</li>
                 </ul>
@@ -314,7 +314,7 @@ export default function ReturnsPage() {
                   <h3 className="font-semibold text-gray-900 mb-2">Contact Details:</h3>
                   <ul className="space-y-2 text-gray-700 text-sm">
                     <li><strong>Email:</strong> returns@physicalstore.co.uk</li>
-                    <li><strong>Phone:</strong> +44 (0) 20 1234 5678</li>
+                    <li><strong>Phone:</strong> +447575847048</li>
                     <li><strong>Hours:</strong> Mon-Fri 9AM-6PM GMT</li>
                   </ul>
                 </div>

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
-import { Linkedin, Twitter, Mail } from 'lucide-react'
+// Social media imports removed
 import { Card, CardContent } from '@/components/Card'
 
 interface TeamMember {
@@ -12,11 +12,6 @@ interface TeamMember {
   role: string
   bio: string
   image: string
-  social: {
-    linkedin?: string
-    twitter?: string
-    email?: string
-  }
 }
 
 const teamMembers: TeamMember[] = [
@@ -24,65 +19,37 @@ const teamMembers: TeamMember[] = [
     name: 'Sarah Chen',
     role: 'Founder & CEO',
     bio: 'Passionate about connecting people with beautiful, functional design. 10+ years in retail and product curation.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      twitter: '#',
-      email: 'sarah@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80'
   },
   {
     name: 'Marcus Rodriguez',
     role: 'Head of Product',
     bio: 'Expert in product development and supplier relationships. Ensures every item meets our quality standards.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      email: 'marcus@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&q=80'
   },
   {
     name: 'Emily Watson',
     role: 'Creative Director',
     bio: 'Brings visual stories to life through design and photography. Creates the aesthetic that defines our brand.',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      twitter: '#',
-      email: 'emily@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&q=80'
   },
   {
     name: 'David Kim',
     role: 'Technology Lead',
     bio: 'Builds the digital experiences that make shopping seamless. Full-stack developer with a passion for UX.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      twitter: '#',
-      email: 'david@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80'
   },
   {
     name: 'Lisa Thompson',
     role: 'Customer Experience',
     bio: 'Ensures every customer interaction is exceptional. Leads our support team with empathy and expertise.',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      email: 'lisa@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80'
   },
   {
     name: 'Alex Johnson',
     role: 'Sustainability Officer',
     bio: 'Champions our environmental initiatives and partners with eco-conscious brands to build a sustainable future.',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&q=80',
-    social: {
-      linkedin: '#',
-      twitter: '#',
-      email: 'alex@physicalstore.com'
-    }
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&q=80'
   }
 ]
 
@@ -184,43 +151,7 @@ function TeamMemberCard({
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
-          {/* Social Links Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 transition-opacity duration-300"
-          >
-            {member.social.linkedin && (
-              <motion.a
-                href={member.social.linkedin}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors"
-              >
-                <Linkedin className="w-5 h-5" />
-              </motion.a>
-            )}
-            {member.social.twitter && (
-              <motion.a
-                href={member.social.twitter}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </motion.a>
-            )}
-            {member.social.email && (
-              <motion.a
-                href={`mailto:${member.social.email}`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors"
-              >
-                <Mail className="w-5 h-5" />
-              </motion.a>
-            )}
-          </motion.div>
+          {/* Social links overlay removed */}
         </div>
         
         <CardContent className="p-6">

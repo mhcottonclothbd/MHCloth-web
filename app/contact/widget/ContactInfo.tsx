@@ -10,11 +10,7 @@ import {
   Mail, 
   Clock, 
   MessageCircle, 
-  Instagram, 
-  Facebook, 
-  Twitter,
   ExternalLink,
-  Calendar,
   Users,
   Award
 } from 'lucide-react'
@@ -44,11 +40,11 @@ export default function ContactInfo() {
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Call Us',
-      primary: '+44 (0) 20 1234 5678',
+      primary: '+447575847048',
       secondary: 'Mon-Fri 9AM-6PM GMT',
       action: {
         label: 'Call Now',
-        href: 'tel:+442012345678',
+        href: 'tel:+447575847048',
         external: false
       }
     },
@@ -82,26 +78,7 @@ export default function ContactInfo() {
     { day: 'Sunday', hours: '11:00 AM - 4:00 PM' }
   ]
 
-  const socialLinks = [
-    {
-      name: 'Instagram',
-      icon: <Instagram className="w-5 h-5" />,
-      href: 'https://instagram.com/physicalstoreuk',
-      color: 'from-pink-500 to-purple-600'
-    },
-    {
-      name: 'Facebook',
-      icon: <Facebook className="w-5 h-5" />,
-      href: 'https://facebook.com/physicalstoreuk',
-      color: 'from-blue-600 to-blue-700'
-    },
-    {
-      name: 'Twitter',
-      icon: <Twitter className="w-5 h-5" />,
-      href: 'https://twitter.com/physicalstoreuk',
-      color: 'from-sky-400 to-sky-600'
-    }
-  ]
+  // Social links removed as requested
 
   const quickStats = [
     {
@@ -293,55 +270,7 @@ export default function ContactInfo() {
         </Card>
       </motion.div>
 
-      {/* Social Media */}
-      <motion.div variants={itemVariants}>
-        <Card className="shadow-lg">
-          <CardHeader>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Follow Us
-            </h3>
-            <p className="text-gray-600">
-              Stay connected for updates, inspiration, and exclusive offers
-            </p>
-          </CardHeader>
-          
-          <CardContent>
-            <div className="flex gap-4">
-              {socialLinks.map((social, index) => (
-                <motion.div
-                  key={social.name}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${social.color} text-white rounded-full hover:shadow-lg transition-all duration-300`}
-                  >
-                    {social.icon}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-            
-            <motion.div
-              variants={itemVariants}
-              className="mt-6 p-4 bg-gray-50 rounded-lg"
-            >
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>Pro Tip:</strong> Follow us on Instagram for daily design inspiration 
-                and behind-the-scenes content!
-              </p>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Calendar className="w-4 h-4" />
-                <span>We post new content every Tuesday and Friday</span>
-              </div>
-            </motion.div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      {/* Social Media section removed as requested */}
     </motion.div>
   )
 }
