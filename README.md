@@ -71,13 +71,22 @@ This application is optimized for Vercel deployment:
    - Click "New Project"
    - Import your GitHub repository: `https://github.com/devisTuhin/ecomui.git`
 
-2. **Configure Environment Variables**:
-   Add the same environment variables from your `.env.local` file to Vercel:
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-   - `CLERK_SECRET_KEY`
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
+2. **Configure Environment Variables** (REQUIRED):
+   In Vercel dashboard, go to your project → Settings → Environment Variables and add:
+   
+   **Required for Authentication:**
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` = `pk_test_your_key_here`
+   - `CLERK_SECRET_KEY` = `sk_test_your_secret_key_here`
+   
+   **Optional for Database:**
+   - `NEXT_PUBLIC_SUPABASE_URL` = `your_supabase_url`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `your_supabase_anon_key`
+   - `SUPABASE_SERVICE_ROLE_KEY` = `your_service_role_key`
+   
+   **Optional for Performance:**
+   - `NEXT_TELEMETRY_DISABLED` = `1`
+   
+   ⚠️ **Important**: Without Clerk keys, the build will fail with "Missing publishableKey" error.
 
 3. **Deploy**:
    - Click "Deploy"
@@ -135,6 +144,39 @@ This application is optimized for Vercel deployment:
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+
+## 🚨 Troubleshooting
+
+### Vercel Deployment Issues
+
+**Error: "Missing publishableKey"**
+```
+Error: @clerk/clerk-react: Missing publishableKey
+```
+**Solution**: Add Clerk environment variables in Vercel:
+1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+2. Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
+3. Redeploy the project
+
+**Error: "Prerender Error"**
+- Ensure all environment variables are properly set
+- Check that your Clerk keys are valid and active
+- Verify your Supabase configuration if using database features
+
+**Build Performance Issues**
+- Add `NEXT_TELEMETRY_DISABLED=1` to disable Next.js telemetry
+- Ensure your Vercel plan supports the build requirements
+
+### Local Development Issues
+
+**Environment Variables Not Loading**
+1. Copy `.env.example` to `.env.local`
+2. Fill in your actual API keys
+3. Restart your development server
+
+**TypeScript Errors**
+- Run `npm run build` to check for compilation errors
+- Ensure all dependencies are installed: `npm install`
 
 ## 🤝 Contributing
 
