@@ -1,44 +1,48 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Card, CardContent } from '@/components/Card'
-import Button from '@/components/Button'
-import { formatPrice } from '@/lib/utils'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import Button from "@/components/Button";
+import { Card, CardContent } from "@/components/Card";
+import { formatPrice } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-// Mock data for new arrivals - will be replaced with Supabase data
+// Updated with real product IDs from andsons-products.ts
 const newArrivals = [
   {
-    id: '5',
-    name: 'Designer Sunglasses',
-    price: 18900,
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=500&fit=crop&q=80',
-    isNew: true
+    id: "andsons-new-1",
+    name: "Limited Edition Denim Jacket",
+    price: 24999,
+    image:
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=500&fit=crop&q=80",
+    isNew: true,
   },
   {
-    id: '6',
-    name: 'Wireless Earbuds',
-    price: 12500,
-    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&h=500&fit=crop&q=80',
-    isNew: true
+    id: "andsons-new-2",
+    name: "Vintage Workwear Overalls",
+    price: 15999,
+    image:
+      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&h=500&fit=crop&q=80",
+    isNew: true,
   },
   {
-    id: '7',
-    name: 'Smart Fitness Tracker',
-    price: 24900,
-    image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500&h=500&fit=crop&q=80',
-    isNew: true
+    id: "andsons-new-3",
+    name: "Heritage Wool Sweater",
+    price: 12999,
+    image:
+      "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500&h=500&fit=crop&q=80",
+    isNew: true,
   },
   {
-    id: '8',
-    name: 'Eco-Friendly Water Bottle',
-    price: 3900,
-    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=500&fit=crop&q=80',
-    isNew: true
-  }
-]
+    id: "andsons-acc-2",
+    name: "Vintage Leather Wallet",
+    price: 3999,
+    image:
+      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=500&fit=crop&q=80",
+    isNew: true,
+  },
+];
 
 /**
  * New Arrivals section showcasing latest products
@@ -49,7 +53,7 @@ export default function NewArrivals() {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +68,8 @@ export default function NewArrivals() {
             <Sparkles className="w-6 h-6 text-blue-600 ml-2" />
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Fresh finds and latest additions to our collection. Be the first to discover what's new.
+            Fresh finds and latest additions to our collection. Be the first to
+            discover what's new.
           </p>
         </motion.div>
 
@@ -85,7 +90,7 @@ export default function NewArrivals() {
                     NEW
                   </span>
                 </div>
-                
+
                 <div className="relative overflow-hidden">
                   <Image
                     src={product.image}
@@ -96,18 +101,22 @@ export default function NewArrivals() {
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
-                
+
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
                     {product.name}
                   </h3>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-900">
                       {formatPrice(product.price)}
                     </span>
                     <Link href={`/shop/${product.id}`}>
-                      <Button size="sm" variant="outline" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
                         View
                       </Button>
                     </Link>
@@ -119,7 +128,7 @@ export default function NewArrivals() {
         </div>
 
         {/* View All Button */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -127,7 +136,10 @@ export default function NewArrivals() {
           viewport={{ once: true }}
         >
           <Link href="/shop?filter=new">
-            <Button size="lg" className="group bg-blue-600 hover:bg-blue-700 text-white">
+            <Button
+              size="lg"
+              className="group bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Shop New Arrivals
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -135,5 +147,5 @@ export default function NewArrivals() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

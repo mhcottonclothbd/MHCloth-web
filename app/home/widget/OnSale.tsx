@@ -1,52 +1,56 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Card, CardContent } from '@/components/Card'
-import Button from '@/components/Button'
-import { formatPrice } from '@/lib/utils'
-import { ArrowRight, Tag, Percent } from 'lucide-react'
+import Button from "@/components/Button";
+import { Card, CardContent } from "@/components/Card";
+import { formatPrice } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ArrowRight, Percent, Tag } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-// Mock data for on sale products - will be replaced with Supabase data
+// Updated with real product IDs from andsons-products.ts
 const onSaleProducts = [
   {
-    id: '9',
-    name: 'Vintage Denim Jacket',
-    originalPrice: 15900,
-    salePrice: 11900,
+    id: "andsons-sale-1",
+    name: "Vintage Denim Jacket",
+    originalPrice: 15999,
+    salePrice: 11999,
     discount: 25,
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&h=500&fit=crop&q=80',
-    onSale: true
+    image:
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&h=500&fit=crop&q=80",
+    onSale: true,
   },
   {
-    id: '10',
-    name: 'Ceramic Plant Pot',
-    originalPrice: 4500,
-    salePrice: 2700,
+    id: "andsons-sale-2",
+    name: "Workwear Chambray Shirt",
+    originalPrice: 8999,
+    salePrice: 5399,
     discount: 40,
-    image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&h=500&fit=crop&q=80',
-    onSale: true
+    image:
+      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&h=500&fit=crop&q=80",
+    onSale: true,
   },
   {
-    id: '11',
-    name: 'Bluetooth Speaker',
-    originalPrice: 8900,
-    salePrice: 6200,
+    id: "andsons-sale-3",
+    name: "Vintage Leather Belt",
+    originalPrice: 4599,
+    salePrice: 3219,
     discount: 30,
-    image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=500&fit=crop&q=80',
-    onSale: true
+    image:
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=500&fit=crop&q=80",
+    onSale: true,
   },
   {
-    id: '12',
-    name: 'Canvas Tote Bag',
+    id: "andsons-acc-3",
+    name: "Canvas Tote Bag",
     originalPrice: 3500,
     salePrice: 2100,
     discount: 40,
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop&q=80',
-    onSale: true
-  }
-]
+    image:
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop&q=80",
+    onSale: true,
+  },
+];
 
 /**
  * On Sale section showcasing discounted products
@@ -57,7 +61,7 @@ export default function OnSale() {
     <section className="py-20 bg-gradient-to-br from-red-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +76,8 @@ export default function OnSale() {
             <Percent className="w-6 h-6 text-red-600 ml-2" />
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Don't miss out on these amazing deals! Limited time offers on selected premium items.
+            Don't miss out on these amazing deals! Limited time offers on
+            selected premium items.
           </p>
         </motion.div>
 
@@ -93,7 +98,7 @@ export default function OnSale() {
                     -{product.discount}%
                   </span>
                 </div>
-                
+
                 <div className="relative overflow-hidden">
                   <Image
                     src={product.image}
@@ -104,12 +109,12 @@ export default function OnSale() {
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
-                
+
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors">
                     {product.name}
                   </h3>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
                       <span className="text-xl font-bold text-red-600">
@@ -120,7 +125,11 @@ export default function OnSale() {
                       </span>
                     </div>
                     <Link href={`/shop/${product.id}`}>
-                      <Button size="sm" variant="outline" className="opacity-0 group-hover:opacity-100 transition-opacity border-red-600 text-red-600 hover:bg-red-600 hover:text-white">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+                      >
                         View
                       </Button>
                     </Link>
@@ -132,7 +141,7 @@ export default function OnSale() {
         </div>
 
         {/* View All Button */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -140,7 +149,10 @@ export default function OnSale() {
           viewport={{ once: true }}
         >
           <Link href="/shop?filter=sale">
-            <Button size="lg" className="group bg-red-600 hover:bg-red-700 text-white">
+            <Button
+              size="lg"
+              className="group bg-red-600 hover:bg-red-700 text-white"
+            >
               Shop All Sale Items
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -148,5 +160,5 @@ export default function OnSale() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
