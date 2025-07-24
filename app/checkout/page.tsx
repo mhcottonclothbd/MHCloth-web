@@ -41,7 +41,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States'
+    country: 'United Kingdom'
   })
   
   // Payment information state
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
                         placeholder="Email"
                         value={guestInfo.email}
                         onChange={(e) => setGuestInfo(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                       />
                     </div>
                   </div>
@@ -176,11 +176,17 @@ export default function CheckoutPage() {
                 <h2 className="text-xl font-medium text-gray-900">Address</h2>
                 <div className="space-y-4">
                   <div>
-                    <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white">
-                      <option>Country/Region</option>
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>United Kingdom</option>
+                    <select 
+                      value={shippingInfo.country}
+                      onChange={(e) => setShippingInfo(prev => ({ ...prev, country: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900"
+                    >
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="United States">United States</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Australia">Australia</option>
+                      <option value="Germany">Germany</option>
+                      <option value="France">France</option>
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -190,7 +196,7 @@ export default function CheckoutPage() {
                       placeholder="First name"
                       value={guestInfo.firstName}
                       onChange={(e) => setGuestInfo(prev => ({ ...prev, firstName: e.target.value }))}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                     <input
                       type="text"
@@ -198,13 +204,13 @@ export default function CheckoutPage() {
                       placeholder="Last name"
                       value={guestInfo.lastName}
                       onChange={(e) => setGuestInfo(prev => ({ ...prev, lastName: e.target.value }))}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                   </div>
                   <input
                     type="text"
                     placeholder="Company (optional)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                   />
                   <input
                     type="text"
@@ -212,12 +218,12 @@ export default function CheckoutPage() {
                     placeholder="Address"
                     value={shippingInfo.address}
                     onChange={(e) => setShippingInfo(prev => ({ ...prev, address: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                   />
                   <input
                     type="text"
                     placeholder="Apartment, suite, etc. (optional)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                   />
                   <div className="grid grid-cols-3 gap-4">
                     <input
@@ -226,7 +232,7 @@ export default function CheckoutPage() {
                       placeholder="City"
                       value={shippingInfo.city}
                       onChange={(e) => setShippingInfo(prev => ({ ...prev, city: e.target.value }))}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                     <input
                       type="text"
@@ -234,14 +240,14 @@ export default function CheckoutPage() {
                       placeholder="State"
                       value={shippingInfo.state}
                       onChange={(e) => setShippingInfo(prev => ({ ...prev, state: e.target.value }))}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                     <input
                       type="text"
                       placeholder="Postal code (optional)"
                       value={shippingInfo.zipCode}
                       onChange={(e) => setShippingInfo(prev => ({ ...prev, zipCode: e.target.value }))}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                   </div>
                   <input
@@ -249,7 +255,7 @@ export default function CheckoutPage() {
                     placeholder="Phone"
                     value={guestInfo.phone}
                     onChange={(e) => setGuestInfo(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                   />
                 </div>
               </div>
@@ -292,7 +298,7 @@ export default function CheckoutPage() {
                       placeholder="Card number"
                       value={paymentInfo.cardNumber}
                       onChange={(e) => setPaymentInfo(prev => ({ ...prev, cardNumber: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                     <div className="grid grid-cols-2 gap-4">
                       <input
@@ -301,7 +307,7 @@ export default function CheckoutPage() {
                         placeholder="Expiration date (MM / YY)"
                         value={paymentInfo.expiryDate}
                         onChange={(e) => setPaymentInfo(prev => ({ ...prev, expiryDate: e.target.value }))}
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                       />
                       <input
                         type="text"
@@ -309,7 +315,7 @@ export default function CheckoutPage() {
                         placeholder="Security code"
                         value={paymentInfo.cvv}
                         onChange={(e) => setPaymentInfo(prev => ({ ...prev, cvv: e.target.value }))}
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                       />
                     </div>
                     <input
@@ -318,7 +324,7 @@ export default function CheckoutPage() {
                       placeholder="Name on card"
                       value={paymentInfo.nameOnCard}
                       onChange={(e) => setPaymentInfo(prev => ({ ...prev, nameOnCard: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                     />
                     
                     <div className="flex items-start space-x-3 pt-2">
@@ -353,7 +359,7 @@ export default function CheckoutPage() {
                   <input
                     type="tel"
                     placeholder="Mobile phone number"
-                    className="w-full mt-4 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white"
+                    className="w-full mt-4 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900 placeholder:text-gray-600"
                   />
                 </div>
               </div>
@@ -421,7 +427,7 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     placeholder="Discount code"
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-sm"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-sm text-gray-900 placeholder:text-gray-600"
                   />
                   <button
                     type="button"
@@ -459,7 +465,7 @@ export default function CheckoutPage() {
                 <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
                   <p className="text-sm text-green-800 font-medium flex items-center">
                     <Truck className="w-4 h-4 mr-2" />
-                    Free shipping on orders over $100!
+                    Free shipping on orders over £100!
                   </p>
                 </div>
               )}

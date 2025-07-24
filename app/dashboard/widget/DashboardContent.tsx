@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { User } from '@clerk/nextjs/server'
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { 
@@ -16,18 +15,39 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/Card'
 import Button from '@/components/Button'
+import type { Order, DashboardStats } from '@/lib/database'
+
+// Serialized user type for client components
+interface SerializedUser {
+  id: string
+  firstName: string | null
+  lastName: string | null
+  emailAddresses: {
+    emailAddress: string
+    id: string
+  }[]
+  imageUrl: string
+  createdAt: number
+  lastSignInAt: number | null
+}
+
+// Using Order and DashboardStats from database types
 
 interface DashboardContentProps {
-  user: User
+  user: SerializedUser
+  orders: Order[]
+  stats: DashboardStats
 }
 
 /**
  * Dashboard content component for authenticated users
  * Features account overview, quick actions, and recent activity
  */
-export default function DashboardContent({ user }: DashboardContentProps) {
+export default function DashboardContent({ user, orders, stats }: DashboardContentProps) {
   const firstName = user.firstName || 'User'
   const email = user.emailAddresses[0]?.emailAddress || ''
+  const hasOrders = orders.length > 0
+  const recentOrders = orders.slice(0, 3) // Show only 3 most recent orders
   
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -68,17 +88,23 @@ export default function DashboardContent({ user }: DashboardContentProps) {
         <QuickStatCard
           icon={<ShoppingBag className="w-6 h-6" />}
           title="Total Orders"
-          value="12"
-          subtitle="This year"
+          value={stats.totalOrders.toString()}
+          subtitle="All time"
           color="bg-blue-500"
         />
         
-
+        <QuickStatCard
+          icon={<CreditCard className="w-6 h-6" />}
+          title="Total Spent"
+          value={`£${stats.totalSpent.toFixed(2)}`}
+          subtitle="All time"
+          color="bg-purple-500"
+        />
         
         <QuickStatCard
           icon={<Star className="w-6 h-6" />}
           title="Loyalty Points"
-          value="2,450"
+          value={stats.loyaltyPoints.toString()}
           subtitle="Available to use"
           color="bg-yellow-500"
         />
@@ -86,7 +112,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
         <QuickStatCard
           icon={<Package className="w-6 h-6" />}
           title="Active Orders"
-          value="2"
+          value={stats.activeOrders.toString()}
           subtitle="In progress"
           color="bg-green-500"
         />
@@ -212,31 +238,39 @@ export default function DashboardContent({ user }: DashboardContentProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <RecentOrderItem
-                orderNumber="#ORD-2024-001"
-                date="Dec 28, 2024"
-                status="Delivered"
-                total="$129.99"
-                items={2}
-              />
-              
-              <RecentOrderItem
-                orderNumber="#ORD-2024-002"
-                date="Dec 25, 2024"
-                status="In Transit"
-                total="$89.50"
-                items={1}
-              />
-              
-              <RecentOrderItem
-                orderNumber="#ORD-2024-003"
-                date="Dec 20, 2024"
-                status="Processing"
-                total="$199.99"
-                items={3}
-              />
-            </div>
+            {hasOrders ? (
+              <div className="space-y-4">
+                {recentOrders.map((order) => (
+                  <RecentOrderItem
+                    key={order.id}
+                    orderNumber={order.orderNumber}
+                    date={new Date(order.created_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                    status={order.status === 'shipped' ? 'In Transit' : 
+                           order.status === 'delivered' ? 'Delivered' :
+                           order.status === 'processing' ? 'Processing' : 'Cancelled'}
+                    total={`£${order.total_amount.toFixed(2)}`}
+                    items={typeof order.items === 'number' ? order.items : order.items.length}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShoppingBag className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+                <p className="text-gray-500 mb-6">Start shopping to see your order history here.</p>
+                <Link href="/">
+                  <Button className="bg-black text-white hover:bg-gray-800">
+                    Start Shopping
+                  </Button>
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>

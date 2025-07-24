@@ -16,12 +16,13 @@ interface ProductGridProps {
     search?: string
     sort?: string
     filter?: string
+    category?: string
   }
   category: string
   title: string
 }
 
-// Mock data for kids products - will be replaced with Supabase data
+// Kids products - &Sons doesn't have kids line, keeping existing curated selection
 const mockKidsProducts: Product[] = [
   {
     id: 'kids1',
@@ -136,6 +137,32 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
       setLoading(true)
       
       let filteredProducts = [...mockKidsProducts]
+      
+      // Category filter - handle subcategory filtering
+      if (searchParams.category) {
+        const category = searchParams.category.toLowerCase()
+        filteredProducts = filteredProducts.filter(product => {
+          const productName = product.name.toLowerCase()
+          const productDesc = product.description.toLowerCase()
+          
+          switch (category) {
+            case 'clothing':
+              return productName.includes('shirt') || productName.includes('pants') || productName.includes('dress') || productName.includes('jacket') || productName.includes('sweater')
+            case 'toys':
+              return productName.includes('toy') || productName.includes('game') || productDesc.includes('play')
+            case 'books':
+              return productName.includes('book') || productDesc.includes('read')
+            case 'accessories':
+              return productName.includes('hat') || productName.includes('bag') || productName.includes('belt') || product.category === 'accessories'
+            case 'outdoor':
+              return productName.includes('outdoor') || productName.includes('sport') || productDesc.includes('outdoor')
+            case 'arts':
+              return productName.includes('art') || productName.includes('craft') || productDesc.includes('creative')
+            default:
+              return product.category === searchParams.category
+          }
+        })
+      }
       
       // Search filter
       if (searchParams.search) {

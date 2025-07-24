@@ -90,7 +90,7 @@ export default function PrivacyPage() {
                 <ul className="space-y-1 text-gray-700 text-sm">
                   <li><strong>Company:</strong> Physical Store Ltd</li>
                   <li><strong>Company Number:</strong> 14879273</li>
-                  <li><strong>Registered Office:</strong> [To be updated with registered address]</li>
+                  <li><strong>Registered Office:</strong> 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
                   <li><strong>Email:</strong> privacy@physicalstore.co.uk</li>
                   <li><strong>Phone:</strong> +447575847048</li>
                 </ul>
@@ -373,7 +373,7 @@ export default function PrivacyPage() {
                 <ul className="space-y-1 text-green-800 text-sm">
                   <li>• Email: privacy@physicalstore.co.uk</li>
                   <li>• Phone: +447575847048</li>
-                  <li>• Post: [Registered office address]</li>
+                  <li>• Post: 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
                 </ul>
                 <p className="text-green-800 text-sm mt-2">
                   We'll respond to your request within one month (or two months for complex requests).
@@ -502,8 +502,8 @@ export default function PrivacyPage() {
                   <address className="text-gray-700 text-sm not-italic">
                     Physical Store Ltd<br />
                     Data Protection Team<br />
-                    [Registered Office Address]<br />
-                    United Kingdom
+                    27 Old Gloucester Street<br />
+                    LONDON, WC1N 3AX United Kingdom
                   </address>
                 </div>
               </div>

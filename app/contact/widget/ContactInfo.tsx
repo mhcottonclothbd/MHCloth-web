@@ -29,11 +29,11 @@ export default function ContactInfo() {
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Our Store',
-      primary: 'Physical Store Ltd',
-      secondary: 'London, United Kingdom',
+      primary: '27 Old Gloucester Street',
+      secondary: 'LONDON, WC1N 3AX United Kingdom',
       action: {
         label: 'Get Directions',
-        href: 'https://maps.google.com/?q=London+United+Kingdom',
+        href: 'https://maps.google.com/?q=27+Old+Gloucester+Street+LONDON+WC1N+3AX+United+Kingdom',
         external: true
       }
     },

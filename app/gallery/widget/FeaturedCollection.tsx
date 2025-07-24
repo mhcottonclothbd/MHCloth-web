@@ -36,19 +36,19 @@ export default function FeaturedCollection() {
     {
       id: '1',
       name: 'Minimalist Desk Lamp',
-      price: '$89',
+      price: '£89',
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80'
     },
     {
       id: '2',
       name: 'Wooden Organizer',
-      price: '$45',
+      price: '£45',
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop&q=80'
     },
     {
       id: '3',
       name: 'Ceramic Vase',
-      price: '$32',
+      price: '£32',
       image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop&q=80'
     }
   ]

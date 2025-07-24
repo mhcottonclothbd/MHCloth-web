@@ -22,7 +22,7 @@ const categories: CategoryCard[] = [
   {
     title: "Women's",
     subtitle: "Elegance Redefined",
-    href: "/women",
+    href: "/womens",
     image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop",
     description: "Exquisite fashion and premium accessories"
   },

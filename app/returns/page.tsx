@@ -324,8 +324,8 @@ export default function ReturnsPage() {
                   <address className="text-gray-700 text-sm not-italic">
                     Physical Store Ltd<br />
                     Returns Department<br />
-                    [Registered Office Address]<br />
-                    United Kingdom
+                    27 Old Gloucester Street<br />
+                    LONDON, WC1N 3AX United Kingdom
                   </address>
                 </div>
               </div>

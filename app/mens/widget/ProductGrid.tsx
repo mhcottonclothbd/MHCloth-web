@@ -10,116 +10,21 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
+import { productsByCategory } from '@/data/andsons-products'
 
 interface ProductGridProps {
   searchParams: {
     search?: string
     sort?: string
     filter?: string
+    category?: string
   }
   category: string
   title: string
 }
 
-// Mock data for men's products - will be replaced with Supabase data
-const mockMensProducts: Product[] = [
-  {
-    id: 'mens1',
-    name: 'Classic Leather Briefcase',
-    description: 'Professional leather briefcase with laptop compartment',
-    price: 299.99,
-    image_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 12,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens2',
-    name: 'Premium Dress Shirt',
-    description: 'Egyptian cotton dress shirt with French cuffs',
-    price: 129.99,
-    image_url: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 18,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens3',
-    name: 'Titanium Sports Watch',
-    description: 'Precision timepiece with titanium case and sapphire crystal',
-    price: 449.99,
-    image_url: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 8,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens4',
-    name: 'Leather Dress Shoes',
-    description: 'Handcrafted Oxford shoes in genuine Italian leather',
-    price: 349.99,
-    image_url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 15,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens5',
-    name: 'Wool Blend Suit Jacket',
-    description: 'Tailored suit jacket in premium wool blend fabric',
-    price: 599.99,
-    image_url: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 6,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens6',
-    name: 'Carbon Fiber Wallet',
-    description: 'Slim wallet with RFID blocking and carbon fiber design',
-    price: 89.99,
-    image_url: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 25,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens7',
-    name: 'Grooming Kit Deluxe',
-    description: 'Complete grooming set with premium tools and case',
-    price: 199.99,
-    image_url: 'https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 10,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'mens8',
-    name: 'Cologne Collection',
-    description: 'Sophisticated fragrance with woody and citrus notes',
-    price: 149.99,
-    image_url: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop',
-    category: 'mens',
-    stock: 20,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+// Real product data from &Sons - authentic men's vintage-inspired clothing
+const mensProducts: Product[] = productsByCategory.mens
 
 /**
  * Product grid component specifically for men's products
@@ -135,7 +40,33 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
     const fetchProducts = async () => {
       setLoading(true)
       
-      let filteredProducts = [...mockMensProducts]
+      let filteredProducts = [...mensProducts]
+      
+      // Category filter - handle subcategory filtering
+      if (searchParams.category) {
+        const category = searchParams.category.toLowerCase()
+        filteredProducts = filteredProducts.filter(product => {
+          const productName = product.name.toLowerCase()
+          const productDesc = product.description.toLowerCase()
+          
+          switch (category) {
+            case 'jackets':
+              return productName.includes('jacket') || productName.includes('coat') || productDesc.includes('jacket') || productDesc.includes('outerwear')
+            case 'shirts':
+              return productName.includes('shirt') && !productName.includes('t-shirt')
+            case 'pants':
+              return productName.includes('pants') || productName.includes('chino') || productName.includes('trouser')
+            case 'denim':
+              return productName.includes('denim') || productName.includes('jean') || productName.includes('overall')
+            case 't-shirts':
+              return productName.includes('t-shirt') || productName.includes('tee') || productName.includes('henley')
+            case 'accessories':
+              return product.category === 'accessories'
+            default:
+              return product.category === searchParams.category
+          }
+        })
+      }
       
       // Search filter
       if (searchParams.search) {

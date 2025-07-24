@@ -13,10 +13,14 @@ interface ProductFiltersProps {
 }
 
 const categories = [
-  { id: 'all', name: 'All Products', count: 24 },
-  { id: 'clothing', name: 'Clothing', count: 8 },
-  { id: 'accessories', name: 'Accessories', count: 6 },
-  { id: 'home', name: 'Home & Living', count: 10 }
+  { id: 'all', name: 'All Products', count: 48 },
+  { id: 'clothing', name: 'Clothing', count: 32 },
+  { id: 'jackets', name: 'Jackets & Outerwear', count: 8 },
+  { id: 'shirts', name: 'Shirts', count: 6 },
+  { id: 'pants', name: 'Pants & Trousers', count: 6 },
+  { id: 'denim', name: 'Denim', count: 4 },
+  { id: 't-shirts', name: 'T-Shirts', count: 4 },
+  { id: 'accessories', name: 'Accessories', count: 4 }
 ]
 
 const filters = [
@@ -27,10 +31,10 @@ const filters = [
 
 const priceRanges = [
   { id: 'all', name: 'All Prices', min: 0, max: Infinity },
-  { id: 'under-50', name: 'Under $50', min: 0, max: 50 },
-  { id: '50-100', name: '$50 - $100', min: 50, max: 100 },
-  { id: '100-200', name: '$100 - $200', min: 100, max: 200 },
-  { id: 'over-200', name: 'Over $200', min: 200, max: Infinity }
+  { id: 'under-50', name: 'Under £50', min: 0, max: 50 },
+  { id: '50-100', name: '£50 - £100', min: 50, max: 100 },
+  { id: '100-200', name: '£100 - £200', min: 100, max: 200 },
+  { id: 'over-200', name: 'Over £200', min: 200, max: Infinity }
 ]
 
 /**

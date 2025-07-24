@@ -15,7 +15,10 @@ export const metadata: Metadata = {
  */
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#f8f6f3' }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: "#f8f6f3" }}
+    >
       <div className="w-full max-w-md">
         {/* Back to Home Link */}
         <div className="mb-8">

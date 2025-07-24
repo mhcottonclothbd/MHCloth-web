@@ -156,22 +156,29 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-full mt-2 w-80 bg-white/5 backdrop-blur-3xl rounded-2xl shadow-2xl border border-white/10 z-40 overflow-hidden"
+                        className="absolute left-0 sm:left-0 top-full mt-2 w-72 sm:w-80 md:w-96 lg:w-[420px] max-h-[70vh] sm:max-h-[80vh] rounded-2xl shadow-2xl border z-40 overflow-hidden flex flex-col transform -translate-x-4 sm:translate-x-0"
                         style={{
-                          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                          backdropFilter: 'blur(40px) saturate(180%)',
-                          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-                          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                          background: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 100%)',
+                          backdropFilter: 'blur(60px) saturate(200%) brightness(1.1)',
+                          WebkitBackdropFilter: 'blur(60px) saturate(200%) brightness(1.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(255, 255, 255, 0.1)'
                         }}
                       >
-                        <div className="p-6 relative">
-                          {/* Glass reflection effect */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
-                          <h3 className="text-white font-semibold text-lg mb-4 flex items-center">
+                        {/* Header Section - Fixed */}
+                        <div className="p-4 sm:p-6 relative border-b border-white/10">
+                          {/* Enhanced Glass reflection effect */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent opacity-70 pointer-events-none" />
+                          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                          <div className="absolute top-0 left-0 bottom-0 w-px bg-gradient-to-b from-white/20 via-transparent to-transparent" />
+                          <h3 className="text-white font-semibold text-lg flex items-center">
                             <Menu className="w-5 h-5 mr-2 text-blue-400" />
                             Shop by Category
                           </h3>
-                          
+                        </div>
+                        
+                        {/* Scrollable Categories Section */}
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30">
                           <div className="space-y-3">
                             {categories.map((category) => {
                               const Icon = category.icon;
@@ -188,31 +195,39 @@ export default function Navbar() {
                                     onClick={() => setIsDropdownOpen(false)}
                                     className={cn(
                                       "group flex items-start p-4 rounded-xl transition-all duration-300 border backdrop-blur-sm relative overflow-hidden",
-                                      "hover:bg-white/15 hover:border-white/30 hover:shadow-lg",
+                                      "hover:shadow-xl",
                                       isActive 
-                                        ? "bg-white/20 border-blue-400/50 text-blue-300 shadow-lg" 
-                                        : "border-white/10 text-white"
+                                        ? "text-blue-300 shadow-lg" 
+                                        : "text-white"
                                     )}
                                     style={{
                                       background: isActive 
-                                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.1) 100%)'
-                                        : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
-                                      backdropFilter: 'blur(20px)',
-                                      WebkitBackdropFilter: 'blur(20px)'
+                                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.15) 100%)'
+                                        : 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%)',
+                                      backdropFilter: 'blur(30px) saturate(150%)',
+                                      WebkitBackdropFilter: 'blur(30px) saturate(150%)',
+                                      border: isActive 
+                                        ? '1px solid rgba(59, 130, 246, 0.4)'
+                                        : '1px solid rgba(255, 255, 255, 0.2)',
+                                      boxShadow: isActive 
+                                        ? '0 8px 32px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                                        : '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
                                     }}
                                   >
                                     <div className={cn(
                                       "p-2 rounded-xl mr-4 transition-all duration-300 backdrop-blur-sm",
                                       isActive 
-                                        ? "bg-blue-500/30 text-blue-300 shadow-lg" 
-                                        : "bg-white/15 text-white group-hover:bg-white/25"
+                                        ? "text-blue-300 shadow-lg" 
+                                        : "text-white group-hover:shadow-md"
                                     )}
                                     style={{
                                       background: isActive 
-                                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.2) 100%)'
-                                        : 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%)',
-                                      backdropFilter: 'blur(10px)',
-                                      WebkitBackdropFilter: 'blur(10px)'
+                                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(147, 51, 234, 0.25) 100%)'
+                                        : 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.12) 100%)',
+                                      backdropFilter: 'blur(20px) saturate(150%)',
+                                      WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                                     }}>
                                       <Icon className="w-5 h-5" />
                                     </div>
@@ -234,15 +249,19 @@ export default function Navbar() {
                                             className={cn(
                                               "px-3 py-1.5 text-xs rounded-full transition-all duration-300 backdrop-blur-sm border",
                                               isActive 
-                                                ? "bg-blue-500/25 text-blue-200 border-blue-400/30 shadow-sm" 
-                                                : "bg-white/10 text-white/70 border-white/20 group-hover:bg-white/20 group-hover:border-white/30"
+                                                ? "text-blue-200 shadow-sm" 
+                                                : "text-white/80 group-hover:text-white"
                                             )}
                                             style={{
                                               background: isActive 
-                                                ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.15) 100%)'
-                                                : 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
-                                              backdropFilter: 'blur(8px)',
-                                              WebkitBackdropFilter: 'blur(8px)'
+                                                ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.2) 100%)'
+                                                : 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)',
+                                              backdropFilter: 'blur(15px) saturate(150%)',
+                                              WebkitBackdropFilter: 'blur(15px) saturate(150%)',
+                                              border: isActive 
+                                                ? '1px solid rgba(59, 130, 246, 0.4)'
+                                                : '1px solid rgba(255, 255, 255, 0.25)',
+                                              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                                             }}
                                           >
                                             {item}
@@ -255,35 +274,39 @@ export default function Navbar() {
                               );
                             })}
                           </div>
-                          
-                          {/* Quick Links */}
-                          <div className="mt-6 pt-4 border-t border-white/20 relative">
-                            <div className="flex justify-between gap-3">
-                              <Link
-                                href="/new-arrivals"
-                                onClick={() => setIsDropdownOpen(false)}
-                                className="flex-1 text-center px-4 py-2.5 text-sm text-blue-400 hover:text-blue-300 transition-all duration-300 font-medium rounded-xl border border-blue-400/20 hover:border-blue-400/40 backdrop-blur-sm hover:shadow-lg"
-                                style={{
-                                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.05) 100%)',
-                                  backdropFilter: 'blur(15px)',
-                                  WebkitBackdropFilter: 'blur(15px)'
-                                }}
-                              >
-                                New Arrivals →
-                              </Link>
-                              <Link
-                                href="/on-sale"
-                                onClick={() => setIsDropdownOpen(false)}
-                                className="flex-1 text-center px-4 py-2.5 text-sm text-green-400 hover:text-green-300 transition-all duration-300 font-medium rounded-xl border border-green-400/20 hover:border-green-400/40 backdrop-blur-sm hover:shadow-lg"
-                                style={{
-                                  background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)',
-                                  backdropFilter: 'blur(15px)',
-                                  WebkitBackdropFilter: 'blur(15px)'
-                                }}
-                              >
-                                Sale Items →
-                              </Link>
-                            </div>
+                        </div>
+                        
+                        {/* Quick Links - Fixed at bottom */}
+                        <div className="p-4 sm:p-6 pt-4 border-t border-white/20 relative bg-black/20">
+                          <div className="flex flex-col sm:flex-row justify-between gap-3">
+                            <Link
+                              href="/new-arrivals"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="flex-1 text-center px-3 sm:px-4 py-2.5 text-sm text-blue-400 hover:text-blue-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%)',
+                                backdropFilter: 'blur(25px) saturate(150%)',
+                                WebkitBackdropFilter: 'blur(25px) saturate(150%)',
+                                border: '1px solid rgba(59, 130, 246, 0.3)',
+                                boxShadow: '0 4px 16px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                              }}
+                            >
+                              New Arrivals →
+                            </Link>
+                            <Link
+                              href="/on-sale"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="flex-1 text-center px-3 sm:px-4 py-2.5 text-sm text-green-400 hover:text-green-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%)',
+                                backdropFilter: 'blur(25px) saturate(150%)',
+                                WebkitBackdropFilter: 'blur(25px) saturate(150%)',
+                                border: '1px solid rgba(34, 197, 94, 0.3)',
+                                boxShadow: '0 4px 16px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                              }}
+                            >
+                              Sale Items →
+                            </Link>
                           </div>
                         </div>
                       </motion.div>

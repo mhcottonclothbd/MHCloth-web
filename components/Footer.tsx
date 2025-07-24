@@ -52,7 +52,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
                 <MapPin className="h-4 w-4" />
-                <span>London, United Kingdom</span>
+                <span>27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</span>
               </div>
             </div>
           </div>

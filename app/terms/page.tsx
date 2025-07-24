@@ -66,7 +66,7 @@ export default function TermsPage() {
                 <ul className="space-y-1 text-gray-700">
                   <li><strong>Company Name:</strong> Physical Store Ltd</li>
                   <li><strong>Company Number:</strong> 14879273</li>
-                  <li><strong>Registered Office:</strong> [To be updated with registered address]</li>
+                  <li><strong>Registered Office:</strong> 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
                   <li><strong>VAT Number:</strong> [To be updated if VAT registered]</li>
                 </ul>
               </div>
@@ -227,7 +227,7 @@ export default function TermsPage() {
                 <ul className="space-y-2 text-gray-700">
                   <li><strong>Email:</strong> legal@physicalstore.co.uk</li>
                   <li><strong>Phone:</strong> +447575847048</li>
-                  <li><strong>Address:</strong> [Registered office address]</li>
+                  <li><strong>Address:</strong> 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
                 </ul>
               </div>
             </CardContent>

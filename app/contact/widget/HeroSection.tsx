@@ -1,56 +1,55 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import Image from 'next/image'
-import { MessageCircle, Phone, MapPin, Clock } from 'lucide-react'
-import { Card, CardContent } from '@/components/Card'
+import { Card, CardContent } from "@/components/Card";
+import { motion, useInView } from "framer-motion";
+import { Clock, MapPin, MessageCircle, Phone } from "lucide-react";
+import Image from "next/image";
+import { useRef } from "react";
 
 /**
  * Hero section for the Contact page
  * Features engaging visuals and quick contact information
  */
 export default function HeroSection() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   const quickContactInfo = [
     {
       icon: <Phone className="w-6 h-6" />,
-      title: 'Call Us',
-      info: '+447575847048',
-      subInfo: 'Mon-Fri 9AM-6PM GMT'
+      title: "Call Us",
+      info: "+447575847048",
+      subInfo: "Mon-Fri 9AM-6PM GMT",
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
-      title: 'Email Us',
-      info: 'hello@physicalstore.co.uk',
-      subInfo: 'We reply within 24hrs'
+      title: "Email Us",
+      info: "hello@physicalstore.co.uk",
+      subInfo: "We reply within 24hrs",
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: 'Visit Store',
-      info: 'Physical Store Ltd',
-      subInfo: 'London, United Kingdom'
+      title: "Visit Store",
+      info: "27 Old Gloucester Street",
+      subInfo: "LONDON, WC1N 3AX United Kingdom",
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: 'Store Hours',
-      info: 'Mon-Sat 10AM-8PM',
-      subInfo: 'Sunday 12PM-6PM'
-    }
-  ]
+      title: "Store Hours",
+      info: "Mon-Sat 10AM-8PM",
+      subInfo: "Sunday 12PM-6PM",
+    },
+  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
-      }
-    }
-  }
+        staggerChildren: 0.2,
+      },
+    },
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -58,13 +57,16 @@ export default function HeroSection() {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6
-      }
-    }
-  }
+        duration: 0.6,
+      },
+    },
+  };
 
   return (
-    <section ref={ref} className="relative min-h-[80vh] flex items-center overflow-hidden">
+    <section
+      ref={ref}
+      className="relative min-h-[80vh] flex items-center overflow-hidden"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -82,13 +84,17 @@ export default function HeroSection() {
         {/* Decorative circles */}
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
-          animate={isInView ? { opacity: 0.1, scale: 1 } : { opacity: 0, scale: 0 }}
+          animate={
+            isInView ? { opacity: 0.1, scale: 1 } : { opacity: 0, scale: 0 }
+          }
           transition={{ duration: 2, delay: 0.5 }}
           className="absolute top-20 right-20 w-64 h-64 bg-blue-500 rounded-full blur-3xl"
         />
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
-          animate={isInView ? { opacity: 0.1, scale: 1 } : { opacity: 0, scale: 0 }}
+          animate={
+            isInView ? { opacity: 0.1, scale: 1 } : { opacity: 0, scale: 0 }
+          }
           transition={{ duration: 2, delay: 0.8 }}
           className="absolute bottom-20 left-20 w-48 h-48 bg-purple-500 rounded-full blur-3xl"
         />
@@ -110,7 +116,7 @@ export default function HeroSection() {
               <MessageCircle className="w-4 h-4" />
               Get in Touch
             </motion.div>
-            
+
             <motion.h1
               variants={itemVariants}
               className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
@@ -121,27 +127,32 @@ export default function HeroSection() {
                 Conversation
               </span>
             </motion.h1>
-            
+
             <motion.p
               variants={itemVariants}
               className="text-xl text-gray-200 mb-8 leading-relaxed max-w-lg"
             >
-              We're here to help with questions, custom orders, or just to chat 
-              about design. Reach out and let's create something amazing together.
+              We're here to help with questions, custom orders, or just to chat
+              about design. Reach out and let's create something amazing
+              together.
             </motion.p>
-            
+
             <motion.div
               variants={itemVariants}
               className="flex flex-wrap gap-4"
             >
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 rounded-lg">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-sm font-medium">Usually responds in 1 hour</span>
+                <span className="text-sm font-medium">
+                  Usually responds in 1 hour
+                </span>
               </div>
-              
+
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 rounded-lg">
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                <span className="text-sm font-medium">Free consultation available</span>
+                <span className="text-sm font-medium">
+                  Free consultation available
+                </span>
               </div>
             </motion.div>
           </motion.div>
@@ -168,18 +179,16 @@ export default function HeroSection() {
                     >
                       {contact.icon}
                     </motion.div>
-                    
+
                     <h3 className="text-lg font-semibold text-white mb-2">
                       {contact.title}
                     </h3>
-                    
+
                     <p className="text-white/90 font-medium mb-1">
                       {contact.info}
                     </p>
-                    
-                    <p className="text-white/70 text-sm">
-                      {contact.subInfo}
-                    </p>
+
+                    <p className="text-white/70 text-sm">{contact.subInfo}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -211,5 +220,5 @@ export default function HeroSection() {
         </motion.div>
       </motion.div>
     </section>
-  )
+  );
 }

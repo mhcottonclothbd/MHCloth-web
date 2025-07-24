@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import CategoryHero from './widget/CategoryHero'
 import ProductGrid from './widget/ProductGrid'
 import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
+import CategoryNavigation from '@/components/CategoryNavigation'
+import { mensCategories } from '@/data/categories'
 
 export const metadata: Metadata = {
   title: "Men's Collection - Physical Store | Premium Men's Products",
@@ -33,6 +35,14 @@ export default async function MensPage({ searchParams }: MensPageProps) {
         subtitle="For the Modern Gentleman"
         description="Discover our carefully curated selection of premium men's products, from sophisticated clothing to essential accessories."
         backgroundImage="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=600&fit=crop"
+      />
+
+      {/* Category Navigation */}
+      <CategoryNavigation 
+        categories={mensCategories}
+        basePath="/mens"
+        title="Shop Men's Categories"
+        subtitle="Find exactly what you're looking for in our organized collections"
       />
 
       {/* Products Section */}

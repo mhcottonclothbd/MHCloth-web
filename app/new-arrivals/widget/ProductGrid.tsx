@@ -10,6 +10,7 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
+import { productsByCategory } from '@/data/andsons-products'
 
 interface ProductGridProps {
   searchParams: {
@@ -21,81 +22,8 @@ interface ProductGridProps {
   title: string
 }
 
-// Mock data for new arrivals - will be replaced with Supabase data
-const mockNewArrivals: Product[] = [
-  {
-    id: 'na1',
-    name: 'Luxury Silk Scarf',
-    description: 'Hand-printed silk scarf with exclusive pattern',
-    price: 89.99,
-    image_url: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 8,
-    featured: true,
-    created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'na2',
-    name: 'Smart Fitness Tracker',
-    description: 'Advanced health monitoring with sleek design',
-    price: 249.99,
-    image_url: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 12,
-    featured: true,
-    created_at: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'na3',
-    name: 'Artisan Ceramic Vase',
-    description: 'Handcrafted ceramic with modern geometric design',
-    price: 124.99,
-    image_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 6,
-    featured: false,
-    created_at: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'na4',
-    name: 'Premium Wireless Earbuds',
-    description: 'Crystal clear audio with noise cancellation',
-    price: 179.99,
-    image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 15,
-    featured: true,
-    created_at: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'na5',
-    name: 'Sustainable Bamboo Laptop Stand',
-    description: 'Eco-friendly workspace solution with adjustable height',
-    price: 69.99,
-    image_url: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 20,
-    featured: false,
-    created_at: new Date(Date.now() - 432000000).toISOString(), // 5 days ago
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'na6',
-    name: 'Designer Reading Glasses',
-    description: 'Blue light blocking with titanium frame',
-    price: 159.99,
-    image_url: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=400&h=400&fit=crop',
-    category: 'new-arrivals',
-    stock: 10,
-    featured: true,
-    created_at: new Date(Date.now() - 518400000).toISOString(), // 6 days ago
-    updated_at: new Date().toISOString()
-  }
-]
+// Real new arrival products from &Sons - latest vintage-inspired releases
+const newArrivalProducts: Product[] = productsByCategory['new-arrivals']
 
 /**
  * Product grid component specifically for new arrivals
@@ -110,7 +38,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
     const fetchProducts = async () => {
       setLoading(true)
       
-      let filteredProducts = [...mockNewArrivals]
+      let filteredProducts = [...newArrivalProducts]
       
       // Search filter
       if (searchParams.search) {

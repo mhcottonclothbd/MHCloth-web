@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import CategoryHero from './widget/CategoryHero'
 import ProductGrid from './widget/ProductGrid'
 import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
+import CategoryNavigation from '@/components/CategoryNavigation'
+import { kidsCategories } from '@/data/categories'
 
 export const metadata: Metadata = {
   title: "Kids Collection - Physical Store | Premium Children's Products",
@@ -33,6 +35,14 @@ export default async function KidsPage({ searchParams }: KidsPageProps) {
         subtitle="Fun & Learning Combined"
         description="Discover our wonderful selection of safe, educational, and fun products designed to inspire creativity and joy in children."
         backgroundImage="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=600&fit=crop"
+      />
+
+      {/* Category Navigation */}
+      <CategoryNavigation 
+        categories={kidsCategories}
+        basePath="/kids"
+        title="Shop Kids Categories"
+        subtitle="Fun and educational products organized by category for easy browsing"
       />
 
       {/* Products Section */}

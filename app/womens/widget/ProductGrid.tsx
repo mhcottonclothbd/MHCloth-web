@@ -10,116 +10,21 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
+import { productsByCategory } from '@/data/andsons-products'
 
 interface ProductGridProps {
   searchParams: {
     search?: string
     sort?: string
     filter?: string
+    category?: string
   }
   category: string
   title: string
 }
 
-// Mock data for women's products - will be replaced with Supabase data
-const mockWomensProducts: Product[] = [
-  {
-    id: 'womens1',
-    name: 'Silk Evening Dress',
-    description: 'Elegant silk dress perfect for special occasions',
-    price: 399.99,
-    image_url: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop',
-    category: 'women',
-    stock: 8,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens2',
-    name: 'Pearl Necklace Set',
-    description: 'Cultured pearl necklace with matching earrings',
-    price: 249.99,
-    image_url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop',
-    category: 'women',
-    stock: 12,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens3',
-    name: 'Designer Handbag',
-    description: 'Luxury leather handbag with gold hardware',
-    price: 599.99,
-    image_url: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop',
-    category: 'women',
-    stock: 6,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens4',
-    name: 'Cashmere Scarf',
-    description: 'Ultra-soft cashmere scarf in rose gold',
-    price: 179.99,
-    image_url: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop',
-    category: 'women',
-    stock: 15,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens5',
-    name: 'High Heel Pumps',
-    description: 'Classic pointed-toe pumps in patent leather',
-    price: 289.99,
-    image_url: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=400&fit=crop',
-    category: 'womens',
-    stock: 10,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens6',
-    name: 'Luxury Perfume',
-    description: 'Signature fragrance with floral and vanilla notes',
-    price: 129.99,
-    image_url: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop',
-    category: 'womens',
-    stock: 20,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens7',
-    name: 'Skincare Gift Set',
-    description: 'Premium skincare collection with natural ingredients',
-    price: 199.99,
-    image_url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop',
-    category: 'womens',
-    stock: 18,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'womens8',
-    name: 'Diamond Stud Earrings',
-    description: 'Classic diamond studs in 14k white gold setting',
-    price: 799.99,
-    image_url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop',
-    category: 'womens',
-    stock: 4,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+// Real product data from DAMSONS (&Sons women's line) - authentic vintage-inspired women's clothing
+const womensProducts: Product[] = productsByCategory.women
 
 /**
  * Product grid component specifically for women's products
@@ -135,7 +40,33 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
     const fetchProducts = async () => {
       setLoading(true)
       
-      let filteredProducts = [...mockWomensProducts]
+      let filteredProducts = [...womensProducts]
+      
+      // Category filter - handle subcategory filtering
+      if (searchParams.category) {
+        const category = searchParams.category.toLowerCase()
+        filteredProducts = filteredProducts.filter(product => {
+          const productName = product.name.toLowerCase()
+          const productDesc = product.description.toLowerCase()
+          
+          switch (category) {
+            case 'jackets':
+              return productName.includes('jacket') || productName.includes('coat') || productDesc.includes('jacket') || productDesc.includes('outerwear')
+            case 'shirts':
+              return productName.includes('shirt') || productName.includes('blouse') || productName.includes('top')
+            case 'pants':
+              return productName.includes('pants') || productName.includes('trouser') || productName.includes('chino')
+            case 'denim':
+              return productName.includes('denim') || productName.includes('jean')
+            case 't-shirts':
+              return productName.includes('t-shirt') || productName.includes('tee') || productName.includes('top')
+            case 'accessories':
+              return product.category === 'accessories'
+            default:
+              return product.category === searchParams.category
+          }
+        })
+      }
       
       // Search filter
       if (searchParams.search) {

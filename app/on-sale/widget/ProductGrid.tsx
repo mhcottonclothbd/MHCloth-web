@@ -10,6 +10,7 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
+import { productsByCategory } from '@/data/andsons-products'
 
 interface SaleProduct extends Product {
   original_price: number
@@ -26,93 +27,15 @@ interface ProductGridProps {
   title: string
 }
 
-// Mock data for sale products - will be replaced with Supabase data
-const mockSaleProducts: SaleProduct[] = [
-  {
-    id: 'sale1',
-    name: 'Premium Leather Wallet',
-    description: 'Handcrafted genuine leather with RFID protection',
-    price: 59.99,
-    original_price: 99.99,
-    discount_percentage: 40,
-    image_url: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 15,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'sale2',
-    name: 'Wireless Charging Pad',
-    description: 'Fast wireless charging for all compatible devices',
-    price: 29.99,
-    original_price: 49.99,
-    discount_percentage: 40,
-    image_url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 25,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'sale3',
-    name: 'Ceramic Coffee Set',
-    description: 'Elegant 4-piece ceramic coffee set with gold accents',
-    price: 79.99,
-    original_price: 129.99,
-    discount_percentage: 38,
-    image_url: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 8,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'sale4',
-    name: 'Smart Home Speaker',
-    description: 'Voice-controlled speaker with premium sound quality',
-    price: 149.99,
-    original_price: 249.99,
-    discount_percentage: 40,
-    image_url: 'https://images.unsplash.com/photo-1589492477829-5e65395b66cc?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 12,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'sale5',
-    name: 'Minimalist Desk Lamp',
-    description: 'LED desk lamp with adjustable brightness and color',
-    price: 39.99,
-    original_price: 79.99,
-    discount_percentage: 50,
-    image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 18,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 'sale6',
-    name: 'Luxury Candle Collection',
-    description: 'Set of 3 premium scented candles in elegant packaging',
-    price: 44.99,
-    original_price: 69.99,
-    discount_percentage: 36,
-    image_url: 'https://images.unsplash.com/photo-1602874801006-e26d3d17d0a5?w=400&h=400&fit=crop',
-    category: 'on-sale',
-    stock: 22,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+// Real sale products from &Sons - authentic vintage-inspired items on sale
+const saleProducts: Product[] = productsByCategory['on-sale']
+
+// Convert regular products to sale products with discount information
+const mockSaleProducts: SaleProduct[] = saleProducts.map(product => ({
+  ...product,
+  original_price: product.price * 1.6, // Calculate original price (assuming ~37% discount)
+  discount_percentage: Math.round(((product.price * 1.6 - product.price) / (product.price * 1.6)) * 100)
+}))
 
 /**
  * Product grid component specifically for sale products

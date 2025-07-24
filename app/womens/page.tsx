@@ -3,6 +3,8 @@ import { Suspense } from 'react'
 import CategoryHero from './widget/CategoryHero'
 import ProductGrid from './widget/ProductGrid'
 import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
+import { womensCategories } from '@/data/categories'
+import CategoryNavigation from '@/components/CategoryNavigation'
 
 export const metadata: Metadata = {
   title: "Women's Collection | Physical Store",
@@ -32,6 +34,14 @@ export default async function WomensPage({ searchParams }: WomensPageProps) {
         subtitle="Elegance Redefined"
         description="Discover our exquisite selection of premium women's products, from sophisticated fashion to essential accessories."
         backgroundImage="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=600&fit=crop"
+      />
+
+      {/* Category Navigation */}
+      <CategoryNavigation 
+        categories={womensCategories}
+        basePath="/womens"
+        title="Shop Women's Categories"
+        subtitle="Explore our elegant collections designed for the modern woman"
       />
 
       {/* Products Section */}

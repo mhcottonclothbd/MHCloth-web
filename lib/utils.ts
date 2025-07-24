@@ -16,9 +16,9 @@ export function cn(...inputs: ClassValue[]) {
  * @returns Formatted price string
  */
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-GB', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'GBP',
   }).format(price / 100)
 }
 

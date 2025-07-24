@@ -3,8 +3,7 @@ import Footer from "@/components/Footer";
 import { CartProvider } from "@/lib/cart-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Crimson_Pro } from "next/font/google";
-import { Michroma } from "next/font/google";
+import { Crimson_Pro, Geist, Geist_Mono, Michroma } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({

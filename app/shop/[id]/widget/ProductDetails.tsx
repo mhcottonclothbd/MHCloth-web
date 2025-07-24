@@ -288,7 +288,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">Free Shipping</p>
-                  <p className="text-xs text-gray-600">On orders over $50</p>
+                  <p className="text-xs text-gray-600">On orders over £50</p>
                 </div>
               </div>
               

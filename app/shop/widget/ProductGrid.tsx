@@ -10,6 +10,7 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
+import { allAndSonsProducts, productsByCategory } from '@/data/andsons-products'
 
 interface ProductGridProps {
   searchParams: {
@@ -20,81 +21,8 @@ interface ProductGridProps {
   }
 }
 
-// Mock data - will be replaced with Supabase data
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Premium Leather Jacket',
-    description: 'Handcrafted leather jacket with timeless design',
-    price: 299.99,
-    image_url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
-    category: 'clothing',
-    stock: 10,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Minimalist Watch',
-    description: 'Clean design meets precision engineering',
-    price: 199.99,
-    image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop',
-    category: 'accessories',
-    stock: 5,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '3',
-    name: 'Artisan Coffee Mug',
-    description: 'Handmade ceramic mug for the perfect brew',
-    price: 24.99,
-    image_url: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=400&fit=crop',
-    category: 'home',
-    stock: 15,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '4',
-    name: 'Designer Sunglasses',
-    description: 'UV protection with sophisticated style',
-    price: 149.99,
-    image_url: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
-    category: 'accessories',
-    stock: 0,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '5',
-    name: 'Organic Cotton T-Shirt',
-    description: 'Sustainable comfort for everyday wear',
-    price: 39.99,
-    image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
-    category: 'clothing',
-    stock: 8,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '6',
-    name: 'Wooden Desk Organizer',
-    description: 'Keep your workspace tidy with natural materials',
-    price: 79.99,
-    image_url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop',
-    category: 'home',
-    stock: 12,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+// Real product data from &Sons - authentic vintage-inspired clothing and accessories
+const shopProducts: Product[] = allAndSonsProducts
 
 /**
  * Product grid component with filtering, sorting, and animations
@@ -111,13 +39,25 @@ export default function ProductGrid({ searchParams }: ProductGridProps) {
       setLoading(true)
       
       // Filter products based on search params
-      let filteredProducts = [...mockProducts]
+      let filteredProducts = [...shopProducts]
       
       // Category filter
-      if (searchParams.category) {
-        filteredProducts = filteredProducts.filter(
-          product => product.category === searchParams.category
-        )
+      if (searchParams.category && searchParams.category !== 'all') {
+        if (searchParams.category === 'clothing') {
+          // Include both mens and womens clothing
+          filteredProducts = filteredProducts.filter(
+            product => product.category === 'mens' || product.category === 'women'
+          )
+        } else if (['jackets', 'shirts', 'pants', 'denim', 't-shirts', 'accessories'].includes(searchParams.category)) {
+          // Filter by specific product categories from &Sons
+          filteredProducts = filteredProducts.filter(
+            product => product.category === searchParams.category
+          )
+        } else {
+          filteredProducts = filteredProducts.filter(
+            product => product.category === searchParams.category
+          )
+        }
       }
       
       // Search filter

@@ -29,8 +29,8 @@ A modern, responsive e-commerce application built with Next.js 15, TypeScript, a
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/devisTuhin/ecomui.git
-cd ecomui
+git clone https://github.com/yourusername/physical-store.git
+cd physical-store
 ```
 
 2. Install dependencies:
@@ -67,7 +67,9 @@ This application is optimized for Vercel deployment:
 
 ### Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/devisTuhin/ecomui.git)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/physical-store.git)
+
+📖 **For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
 
 ### Manual Deployment
 
@@ -75,7 +77,7 @@ This application is optimized for Vercel deployment:
 
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "New Project"
-   - Import your GitHub repository: `https://github.com/devisTuhin/ecomui.git`
+   - Import your GitHub repository: `https://github.com/yourusername/physical-store.git`
 
 2. **Configure Environment Variables** (REQUIRED):
    In Vercel dashboard, go to your project → Settings → Environment Variables and add:

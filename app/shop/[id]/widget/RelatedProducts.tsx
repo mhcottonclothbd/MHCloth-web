@@ -8,6 +8,7 @@ import { Product } from '@/types'
 import { Card, CardContent } from '@/components/Card'
 import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
+import { useCart } from '@/lib/cart-context'
 
 interface RelatedProductsProps {
   products: Product[]
@@ -69,6 +70,22 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
  * Individual product card component for related products
  */
 function ProductCard({ product, index }: { product: Product; index: number }) {
+  const { addItem } = useCart()
+  
+  /**
+   * Handles adding product to cart
+   */
+  const handleAddToCart = () => {
+    if (product.stock > 0) {
+      addItem({
+        product: product,
+        quantity: 1,
+        selectedSize: undefined,
+        selectedColor: undefined
+      })
+    }
+  }
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -141,6 +158,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                 size="sm"
                 disabled={product.stock === 0}
                 className="min-w-[100px]"
+                onClick={handleAddToCart}
               >
                 <ShoppingCart className="w-4 h-4 mr-1" />
                 {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}

@@ -25,7 +25,7 @@ export default function FAQ() {
       questions: [
         {
           question: 'How long does shipping take?',
-          answer: 'We offer free standard shipping (5-7 business days) on orders over $75. Express shipping (2-3 business days) is available for $15, and overnight shipping for $25. International shipping times vary by location.'
+          answer: 'We offer free standard shipping (5-7 business days) on orders over £75. Express shipping (2-3 business days) is available for £15, and overnight shipping for £25. International shipping times vary by location.'
         },
         {
           question: 'Can I track my order?',
@@ -42,7 +42,7 @@ export default function FAQ() {
       questions: [
         {
           question: 'What is your return policy?',
-          answer: 'We offer a 30-day return policy for unused items in original packaging. Custom or personalized items cannot be returned unless defective. Return shipping is free for exchanges, or $10 for refunds.'
+          answer: 'We offer a 30-day return policy for unused items in original packaging. Custom or personalized items cannot be returned unless defective. Return shipping is free for exchanges, or £10 for refunds.'
         },
         {
           question: 'How do I start a return?',

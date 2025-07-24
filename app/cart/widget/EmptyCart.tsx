@@ -119,7 +119,7 @@ export default function EmptyCart() {
           {
             icon: '🚚',
             title: 'Free Shipping',
-            description: 'On orders over $100'
+            description: 'On orders over £100'
           },
           {
             icon: '🔒',
