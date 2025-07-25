@@ -6,7 +6,7 @@ import CategoryNavigation from './widget/CategoryNavigation'
 
 
 export const metadata: Metadata = {
-  title: 'Shop - Physical Store | Premium Products Collection',
+  title: 'Shop - MHCloth | Premium Products Collection',
   description: 'Browse our curated collection of premium products. Find unique, high-quality items that blend timeless style with modern functionality.',
   keywords: 'shop, premium products, quality goods, online store, curated collection',
 }

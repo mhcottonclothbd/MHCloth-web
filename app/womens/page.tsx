@@ -4,9 +4,9 @@ import ProductGridWithDropdown from './widget/ProductGridWithDropdown'
 import { womensCategories } from '@/data/categories'
 
 export const metadata: Metadata = {
-  title: "Women's Collection - Physical Store | Premium Women's Products",
-  description: "Explore our curated women's collection featuring premium clothing, accessories, and lifestyle products designed for the modern woman.",
-  keywords: "women's fashion, women's accessories, women's clothing, premium women's products, women's collection",
+  title: "Women's Collection - MHCloth | Premium Women's Products",
+  description: "Discover our elegant women's collection featuring premium clothing, accessories, and lifestyle products designed for the modern woman.",
+  keywords: "women's fashion, women's accessories, women's clothing, premium women's products, elegant collection",
 }
 
 interface WomensPageProps {

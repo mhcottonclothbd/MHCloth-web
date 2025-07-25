@@ -19,11 +19,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Help Center - Physical Store Ltd",
+  title: "Help Center - MHCloth",
   description:
-    "Find answers to common questions, get support, and learn how to make the most of your shopping experience with Physical Store Ltd.",
+    "Find answers to common questions, get support, and learn how to make the most of your shopping experience with MHCloth.",
   keywords:
-    "help, support, FAQ, customer service, shipping, returns, orders, Physical Store Ltd",
+    "help, support, FAQ, customer service, shipping, returns, orders, MHCloth",
 };
 
 /**
@@ -128,14 +128,14 @@ export default function HelpPage() {
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone Support",
-      info: "+447575847048",
-      availability: "Mon-Fri 9AM-6PM GMT",
+      info: "01648911447",
+      availability: "Mon-Fri 9AM-6PM BST",
       description: "Speak directly with our support team",
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email Support",
-      info: "hello@physicalstore.co.uk",
+      info: "hello@mhcloth.com",
       availability: "Response within 24 hours",
       description: "Send us a detailed message",
     },

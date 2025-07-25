@@ -31,10 +31,10 @@ const filters = [
 
 const priceRanges = [
   { id: 'all', name: 'All Prices', min: 0, max: Infinity },
-  { id: 'under-50', name: 'Under £50', min: 0, max: 50 },
-  { id: '50-100', name: '£50 - £100', min: 50, max: 100 },
-  { id: '100-200', name: '£100 - £200', min: 100, max: 200 },
-  { id: 'over-200', name: 'Over £200', min: 200, max: Infinity }
+  { id: 'under-2500', name: 'Under ৳2500', min: 0, max: 2500 },
+    { id: '2500-5000', name: '৳2500 - ৳5000', min: 2500, max: 5000 },
+    { id: '5000-10000', name: '৳5000 - ৳10000', min: 5000, max: 10000 },
+    { id: 'over-10000', name: 'Over ৳10000', min: 10000, max: Infinity }
 ]
 
 /**

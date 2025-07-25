@@ -7,7 +7,7 @@ import AboutPreview from './widget/AboutPreview'
 import Newsletter from './widget/Newsletter'
 
 export const metadata: Metadata = {
-  title: 'Home - Physical Store | Premium Quality Products',
+  title: 'Home - MHCloth | Premium Quality Products',
   description: 'Discover unique, high-quality products that blend timeless style with modern functionality. Shop our curated collection of premium items.',
   keywords: 'premium products, quality goods, modern design, timeless style',
 }

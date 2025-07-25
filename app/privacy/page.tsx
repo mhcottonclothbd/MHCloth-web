@@ -5,9 +5,9 @@ import Button from '@/components/Button'
 import { Card, CardContent, CardHeader } from '@/components/Card'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - Physical Store Ltd',
-  description: 'Our privacy policy explains how we collect, use, and protect your personal data in compliance with UK GDPR and Data Protection Act 2018.',
-  keywords: 'privacy policy, data protection, GDPR, personal data, Physical Store Ltd',
+  title: 'Privacy Policy - MHCloth',
+  description: 'Our privacy policy explains how we collect, use, and protect your personal information in compliance with Bangladesh data protection laws.',
+  keywords: 'privacy policy, data protection, personal data, MHCloth',
 }
 
 /**
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Physical Store Ltd ("we", "our", or "us") is committed to protecting and respecting your privacy. 
+                MHCloth ("we", "our", or "us") is committed to protecting and respecting your privacy. 
                 This policy explains how we collect, use, and safeguard your personal information when you visit our website 
                 or use our services.
               </p>
@@ -82,17 +82,16 @@ export default function PrivacyPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Physical Store Ltd is the data controller for the personal information we collect about you.
+                MHCloth is the data controller for the personal information we collect about you.
               </p>
               
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-gray-900 mb-2">Contact Details:</h3>
                 <ul className="space-y-1 text-gray-700 text-sm">
-                  <li><strong>Company:</strong> Physical Store Ltd</li>
-                  <li><strong>Company Number:</strong> 14879273</li>
-                  <li><strong>Registered Office:</strong> 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
-                  <li><strong>Email:</strong> privacy@physicalstore.co.uk</li>
-                  <li><strong>Phone:</strong> +447575847048</li>
+                  <li><strong>Company:</strong> MHCloth</li>
+                  <li><strong>Address:</strong> Uttara - Dhaka, Bangladesh</li>
+                  <li><strong>Email:</strong> privacy@mhcloth.com</li>
+                  <li><strong>Phone:</strong> 01648911447</li>
                 </ul>
               </div>
             </CardContent>
@@ -371,9 +370,9 @@ export default function PrivacyPage() {
                   To exercise any of these rights, please contact us at:
                 </p>
                 <ul className="space-y-1 text-green-800 text-sm">
-                  <li>• Email: privacy@physicalstore.co.uk</li>
-                  <li>• Phone: +447575847048</li>
-                  <li>• Post: 27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</li>
+                  <li>• Email: privacy@mhcloth.com</li>
+                  <li>• Phone: 01648911447</li>
+                  <li>• Post: Uttara - Dhaka, Bangladesh</li>
                 </ul>
                 <p className="text-green-800 text-sm mt-2">
                   We'll respond to your request within one month (or two months for complex requests).
@@ -491,8 +490,8 @@ export default function PrivacyPage() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-900 mb-2">Data Protection Officer:</h3>
                   <ul className="space-y-1 text-gray-700 text-sm">
-                    <li><strong>Email:</strong> privacy@physicalstore.co.uk</li>
-                    <li><strong>Phone:</strong> +447575847048</li>
+                    <li><strong>Email:</strong> privacy@mhcloth.com</li>
+                    <li><strong>Phone:</strong> 01648911447</li>
                     <li><strong>Response Time:</strong> Within 48 hours</li>
                   </ul>
                 </div>
@@ -500,10 +499,10 @@ export default function PrivacyPage() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-900 mb-2">Postal Address:</h3>
                   <address className="text-gray-700 text-sm not-italic">
-                    Physical Store Ltd<br />
+                    MHCloth<br />
                     Data Protection Team<br />
-                    27 Old Gloucester Street<br />
-                    LONDON, WC1N 3AX United Kingdom
+                    Uttara - Dhaka<br />
+                    Bangladesh
                   </address>
                 </div>
               </div>

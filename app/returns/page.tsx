@@ -5,9 +5,9 @@ import Button from '@/components/Button'
 import { Card, CardContent, CardHeader } from '@/components/Card'
 
 export const metadata: Metadata = {
-  title: 'Returns & Refunds Policy - Physical Store Ltd',
+  title: 'Returns & Refunds Policy - MHCloth',
   description: 'Our returns and refunds policy. Learn about your rights, how to return items, and our refund process in compliance with UK consumer law.',
-  keywords: 'returns, refunds, policy, consumer rights, UK law, Physical Store Ltd',
+  keywords: 'returns, refunds, policy, consumer rights, Bangladesh law, MHCloth',
 }
 
 /**
@@ -69,7 +69,7 @@ export default function ReturnsPage() {
               </div>
               
               <p className="text-gray-700 leading-relaxed">
-                At Physical Store Ltd, we want you to be completely satisfied with your purchase. 
+                At MHCloth, we want you to be completely satisfied with your purchase. 
                 If you're not happy with your order, we offer flexible returns and refunds in accordance with UK law.
               </p>
             </CardContent>
@@ -117,8 +117,8 @@ export default function ReturnsPage() {
                   You can cancel by clearly stating your decision to cancel. You can:
                 </p>
                 <ul className="space-y-1 text-gray-700 text-sm">
-                  <li>• Email us at returns@physicalstore.co.uk</li>
-                  <li>• Call us on +447575847048</li>
+                  <li>• Email us at returns@mhcloth.com</li>
+                  <li>• Call us on 01648911447</li>
                   <li>• Use our online returns form</li>
                   <li>• Send a letter to our registered address</li>
                 </ul>
@@ -313,19 +313,19 @@ export default function ReturnsPage() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-900 mb-2">Contact Details:</h3>
                   <ul className="space-y-2 text-gray-700 text-sm">
-                    <li><strong>Email:</strong> returns@physicalstore.co.uk</li>
-                    <li><strong>Phone:</strong> +447575847048</li>
-                    <li><strong>Hours:</strong> Mon-Fri 9AM-6PM GMT</li>
+                    <li><strong>Email:</strong> returns@mhcloth.com</li>
+                    <li><strong>Phone:</strong> 01648911447</li>
+                    <li><strong>Hours:</strong> Mon-Fri 9AM-6PM BST</li>
                   </ul>
                 </div>
                 
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-900 mb-2">Return Address:</h3>
                   <address className="text-gray-700 text-sm not-italic">
-                    Physical Store Ltd<br />
+                    MHCloth<br />
                     Returns Department<br />
-                    27 Old Gloucester Street<br />
-                    LONDON, WC1N 3AX United Kingdom
+                    Uttara - Dhaka<br />
+                    Bangladesh
                   </address>
                 </div>
               </div>

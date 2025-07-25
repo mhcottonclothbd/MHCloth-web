@@ -29,33 +29,33 @@ export default function ContactInfo() {
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Our Store',
-      primary: '27 Old Gloucester Street',
-      secondary: 'LONDON, WC1N 3AX United Kingdom',
+      primary: 'Uttara - Dhaka',
+      secondary: 'Bangladesh',
       action: {
         label: 'Get Directions',
-        href: 'https://maps.google.com/?q=27+Old+Gloucester+Street+LONDON+WC1N+3AX+United+Kingdom',
+        href: 'https://maps.google.com/?q=Uttara+Dhaka+Bangladesh',
         external: true
       }
     },
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Call Us',
-      primary: '+447575847048',
-      secondary: 'Mon-Fri 9AM-6PM GMT',
+      primary: '01648911447',
+      secondary: 'Mon-Fri 9AM-6PM BST',
       action: {
         label: 'Call Now',
-        href: 'tel:+447575847048',
+        href: 'tel:01648911447',
         external: false
       }
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email Us',
-      primary: 'hello@physicalstore.co.uk',
+      primary: 'hello@mhcloth.com',
       secondary: 'We reply within 24 hours',
       action: {
         label: 'Send Email',
-        href: 'mailto:hello@physicalstore.co.uk',
+        href: 'mailto:hello@mhcloth.com',
         external: false
       }
     },

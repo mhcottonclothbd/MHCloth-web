@@ -2,9 +2,8 @@ import { Metadata } from "next";
 import AdminDashboard from "./components/AdminDashboard";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Physical Store",
-  description:
-    "Comprehensive admin dashboard for managing your e-commerce store",
+  title: "Admin Dashboard | MHCloth",
+  description: "Admin panel for managing products, orders, and users",
 };
 
 /**

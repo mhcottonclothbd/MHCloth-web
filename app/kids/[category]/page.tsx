@@ -22,14 +22,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   
   if (!categoryData) {
     return {
-      title: 'Category Not Found - Physical Store',
-      description: 'The requested category could not be found.'
+      title: 'Category Not Found - MHCloth',
+      description: 'The category you are looking for does not exist.'
     }
   }
   
   return {
-    title: `Kids ${categoryData.name} - Physical Store`,
-    description: `Shop our collection of kids ${categoryData.name.toLowerCase()}. ${categoryData.description}`,
+    title: `Kids ${categoryData.name} - MHCloth`,
+    description: `Explore our ${categoryData.name.toLowerCase()} collection for kids`,
     keywords: `kids ${categoryData.name.toLowerCase()}, ${categoryData.name}, children's products, kids items`,
     openGraph: {
       title: `Kids ${categoryData.name}`,

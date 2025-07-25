@@ -35,24 +35,24 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <ShoppingBag className="h-8 w-8 text-white" />
-              <span className="text-xl font-bold">Physical Store</span>
+              <span className="text-xl font-bold">MHCloth</span>
             </Link>
             <p className="text-gray-400 mb-6 max-w-md">
-              Physical Store Ltd - Your trusted UK retailer for quality products. 
-              Company Number: 14879273. Registered in England and Wales.
+              MHCloth - Your trusted Bangladesh retailer for quality products. 
+              Providing premium clothing and accessories across Bangladesh.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-gray-400">
                 <Mail className="h-4 w-4" />
-                <span>hello@physicalstore.co.uk</span>
+                <span>hello@mhcloth.com</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
                 <Phone className="h-4 w-4" />
-                <span>+447575847048</span>
+                <span>01648911447</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
                 <MapPin className="h-4 w-4" />
-                <span>27 Old Gloucester Street, LONDON, WC1N 3AX United Kingdom</span>
+                <span>Uttara - Dhaka / Bangladesh</span>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} Physical Store Ltd. All rights reserved. Company Number: 14879273
+            © {new Date().getFullYear()} MHCloth. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">

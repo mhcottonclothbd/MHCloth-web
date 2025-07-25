@@ -13,6 +13,11 @@ import EmptyCart from './widget/EmptyCart'
  * Shopping Cart page component with modern design
  * Displays cart items with quantity controls and checkout functionality
  * Matches the checkout page aesthetic with clean animations
+ * 
+ * @metadata
+ * title: 'Shopping Cart - MHCloth | Review Your Items'
+ * description: 'Review and manage items in your shopping cart. Update quantities, remove items, and proceed to checkout with MHCloth.'
+ * keywords: ['shopping cart', 'cart', 'checkout', 'MHCloth', 'review items', 'update cart']
  */
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalPrice, getItemCount, clearCart } = useCart()
@@ -61,7 +66,7 @@ export default function CartPage() {
 
   // Calculate subtotal, shipping, and tax
   const subtotal = getTotalPrice()
-  const shipping = subtotal > 100 ? 0 : 10
+  const shipping = subtotal > 5000 ? 0 : 500
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
 

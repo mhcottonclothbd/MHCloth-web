@@ -22,7 +22,7 @@ const envSchema = z.object({
 
   // App Configuration
   NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
-  NEXT_PUBLIC_APP_NAME: z.string().default('Physical Store'),
+  NEXT_PUBLIC_APP_NAME: z.string().default('MHCloth'),
   NEXT_PUBLIC_APP_DESCRIPTION: z.string().default('Modern e-commerce platform'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 

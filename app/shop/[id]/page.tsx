@@ -24,13 +24,13 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Product Not Found - Physical Store",
-      description: "The requested product could not be found.",
-    };
+      title: "Product Not Found - MHCloth",
+      description: "The product you're looking for could not be found.",
+    }
   }
 
   return {
-    title: `${product.name} - Physical Store`,
+    title: `${product.name} - MHCloth`,
     description: product.description,
     keywords: `${product.name}, ${product.category}, premium products, online store`,
     openGraph: {

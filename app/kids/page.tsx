@@ -4,9 +4,9 @@ import ProductGridWithDropdown from './widget/ProductGridWithDropdown'
 import { kidsCategories } from '@/data/categories'
 
 export const metadata: Metadata = {
-  title: "Kids Collection - Physical Store | Premium Children's Products",
-  description: "Explore our curated kids collection featuring premium clothing, toys, and accessories designed for children of all ages.",
-  keywords: "kids fashion, children's clothing, kids accessories, children's toys, kids collection",
+  title: "Kids Collection - MHCloth | Premium Children's Products",
+  description: "Explore our delightful kids collection featuring premium clothing, toys, and accessories designed for children of all ages.",
+  keywords: "kids fashion, children's clothing, kids accessories, premium kids products, children's collection",
 }
 
 interface KidsPageProps {

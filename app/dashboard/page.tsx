@@ -5,7 +5,7 @@ import DashboardContent from './widget/DashboardContent'
 import { getUserOrders, calculateDashboardStats } from '@/lib/database'
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Physical Store',
+  title: 'Dashboard | MHCloth',
   description: 'Manage your account, orders, and preferences',
 }
 

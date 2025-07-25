@@ -134,15 +134,15 @@ export default function LocationMap() {
                         transition={{ duration: 0.6, delay: 0.6 }}
                       >
                         <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          Physical Store Ltd
+                          MHCloth
                         </h3>
                         <p className="text-gray-600 mb-4">
-                          27 Old Gloucester Street<br />
-                          LONDON, WC1N 3AX United Kingdom
+                          Uttara - Dhaka<br />
+                          Bangladesh
                         </p>
                         
                         <Link 
-                          href="https://maps.google.com/?q=27+Old+Gloucester+Street+LONDON+WC1N+3AX+United+Kingdom"
+                          href="https://maps.google.com/?q=Uttara+Dhaka+Bangladesh"
                           target="_blank"
                           rel="noopener noreferrer"
                         >

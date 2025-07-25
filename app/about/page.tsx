@@ -6,9 +6,9 @@ import TeamSection from './widget/TeamSection'
 import StatsSection from './widget/StatsSection'
 
 export const metadata: Metadata = {
-  title: 'About Us - Physical Store | Our Story & Values',
-  description: 'Learn about our journey, values, and the passionate team behind Physical Store. Discover what drives us to curate exceptional products for our customers.',
-  keywords: 'about us, company story, team, values, mission, physical store',
+  title: 'About Us - MHCloth | Our Story & Values',
+  description: 'Learn about our journey, values, and the passionate team behind MHCloth. Discover what drives us to curate exceptional products for our customers.',
+  keywords: 'about us, company story, team, values, mission, mhcloth',
 }
 
 /**

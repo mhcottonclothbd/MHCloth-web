@@ -15,10 +15,10 @@ export function cn(...inputs: ClassValue[]) {
  * @param price - Price in cents
  * @returns Formatted price string
  */
-export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('en-GB', {
+export const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('en-BD', {
     style: 'currency',
-    currency: 'GBP',
+    currency: 'BDT',
   }).format(price / 100)
 }
 

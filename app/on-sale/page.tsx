@@ -5,9 +5,9 @@ import ProductGrid from './widget/ProductGrid'
 import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
 
 export const metadata: Metadata = {
-  title: 'On Sale - Physical Store | Premium Products at Great Prices',
-  description: 'Discover amazing deals on our premium products. Limited time offers on high-quality items with significant savings.',
-  keywords: 'sale, discount, deals, premium products, limited offers, savings',
+  title: 'On Sale - MHCloth | Premium Products at Great Prices',
+  description: 'Discover amazing deals on our premium product collection. Shop high-quality items at discounted prices for a limited time.',
+  keywords: 'sale, discounts, deals, premium products, special offers, clearance',
 }
 
 interface OnSalePageProps {

@@ -18,25 +18,25 @@ export default function StorySection() {
       id: 'formation',
       year: '2022',
       title: 'Company Formation',
-      description: 'Physical Store Ltd was officially incorporated in England and Wales (Company Number: 14879273), with a vision to revolutionize retail.'
+      description: 'MHCloth was founded in Bangladesh with a vision to revolutionize fashion retail in the region.'
     },
     {
       id: 'first-location',
       year: '2022',
       title: 'First Location',
-      description: 'Opened our flagship store in London, creating an innovative retail experience that bridges physical and digital shopping.'
+      description: 'Opened our flagship store in Uttara, Dhaka, creating an innovative retail experience that bridges physical and digital shopping.'
     },
     {
       id: 'digital-platform',
       year: '2023',
       title: 'Digital Platform',
-      description: 'Launched our comprehensive e-commerce platform, making our curated collection accessible across the UK and beyond.'
+      description: 'Launched our comprehensive e-commerce platform, making our curated collection accessible across Bangladesh and beyond.'
     },
     {
       id: 'sustainable-growth',
       year: '2024',
       title: 'Sustainable Growth',
-      description: 'Committed to sustainable practices, implementing eco-friendly packaging and carbon-neutral delivery options throughout the UK.'
+      description: 'Committed to sustainable practices, implementing eco-friendly packaging and carbon-neutral delivery options throughout Bangladesh.'
     }
   ]
 
@@ -54,10 +54,10 @@ export default function StorySection() {
               Our Story
             </h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Physical Store Ltd represents the evolution of retail in the digital age. Founded in 2022, 
+              MHCloth represents the evolution of fashion retail in the digital age. Founded in 2022, 
               we've built a company that combines the best of physical and online shopping experiences. 
-              As a UK-registered company, we're committed to serving our customers with integrity, 
-              quality products, and exceptional service that reflects British values of fairness and excellence.
+              As a Bangladesh-based company, we're committed to serving our customers with integrity, 
+              quality products, and exceptional service that reflects our values of fairness and excellence.
             </p>
             
             <div className="space-y-6">

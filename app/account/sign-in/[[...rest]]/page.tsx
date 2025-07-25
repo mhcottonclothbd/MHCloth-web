@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Sign In | Physical Store",
+  title: "Sign In | MHCloth",
   description:
     "Sign in to your account to access exclusive features and manage your orders",
 };

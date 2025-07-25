@@ -41,7 +41,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United Kingdom'
+    country: 'Bangladesh'
   })
   
   // Payment information state
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
   }
   
   const subtotal = getTotalPrice()
-  const shipping = subtotal > 100 ? 0 : 9.99
+  const shipping = subtotal > 5000 ? 0 : 500
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
   
@@ -181,12 +181,12 @@ export default function CheckoutPage() {
                       onChange={(e) => setShippingInfo(prev => ({ ...prev, country: e.target.value }))}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors bg-white text-gray-900"
                     >
+                      <option value="Bangladesh">Bangladesh</option>
+                      <option value="India">India</option>
+                      <option value="Pakistan">Pakistan</option>
+                      <option value="Nepal">Nepal</option>
+                      <option value="Sri Lanka">Sri Lanka</option>
                       <option value="United Kingdom">United Kingdom</option>
-                      <option value="United States">United States</option>
-                      <option value="Canada">Canada</option>
-                      <option value="Australia">Australia</option>
-                      <option value="Germany">Germany</option>
-                      <option value="France">France</option>
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -465,7 +465,7 @@ export default function CheckoutPage() {
                 <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
                   <p className="text-sm text-green-800 font-medium flex items-center">
                     <Truck className="w-4 h-4 mr-2" />
-                    Free shipping on orders over £100!
+                    Free shipping on orders over ৳5000!
                   </p>
                 </div>
               )}

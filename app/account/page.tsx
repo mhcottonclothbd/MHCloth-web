@@ -3,7 +3,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Account | Physical Store',
+  title: 'Account | MHCloth',
   description: 'Manage your account settings and preferences',
 }
 

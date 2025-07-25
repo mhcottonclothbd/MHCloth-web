@@ -7,7 +7,7 @@ import { mensCategories } from '@/data/categories'
 import { mensProducts } from '@/data/mens-products'
 
 export const metadata: Metadata = {
-  title: "Men's Collection - Physical Store | Premium Men's Products",
+  title: "Men's Collection - MHCloth | Premium Men's Products",
   description: "Explore our curated men's collection featuring premium clothing, accessories, and lifestyle products designed for the modern gentleman.",
   keywords: "men's fashion, men's accessories, men's clothing, premium men's products, gentleman's collection",
 }

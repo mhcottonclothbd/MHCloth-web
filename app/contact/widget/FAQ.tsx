@@ -25,7 +25,7 @@ export default function FAQ() {
       questions: [
         {
           question: 'How long does shipping take?',
-          answer: 'We offer free standard shipping (5-7 business days) on orders over £75. Express shipping (2-3 business days) is available for £15, and overnight shipping for £25. International shipping times vary by location.'
+          answer: 'We offer free standard shipping (5-7 business days) on orders over ৳3750. Express shipping (2-3 business days) is available for ৳750, and overnight shipping for ৳1250. International shipping times vary by location.'
         },
         {
           question: 'Can I track my order?',
@@ -42,7 +42,7 @@ export default function FAQ() {
       questions: [
         {
           question: 'What is your return policy?',
-          answer: 'We offer a 30-day return policy for unused items in original packaging. Custom or personalized items cannot be returned unless defective. Return shipping is free for exchanges, or £10 for refunds.'
+          answer: 'We offer a 30-day return policy for unused items in original packaging. Custom or personalized items cannot be returned unless defective. Return shipping is free for exchanges, or ৳500 for refunds.'
         },
         {
           question: 'How do I start a return?',
@@ -75,8 +75,8 @@ export default function FAQ() {
       category: 'Store & Services',
       questions: [
         {
-          question: 'Can I visit your physical store?',
-          answer: 'Absolutely! Our showroom is located at 123 Design Street in New York. We\'re open Monday-Saturday 10AM-8PM and Sunday 12PM-6PM. No appointment needed, but we recommend booking a consultation for personalized service.'
+          question: 'Can I visit your store?',
+          answer: 'Absolutely! Our showroom is located in Uttara, Dhaka, Bangladesh. We\'re open Monday-Saturday 10AM-8PM and Sunday 12PM-6PM. No appointment needed, but we recommend booking a consultation for personalized service.'
         },
         {
           question: 'Do you offer design consultations?',

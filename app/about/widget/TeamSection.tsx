@@ -75,7 +75,7 @@ export default function TeamSection() {
             Meet Our Team
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            The passionate individuals behind Physical Store. Each bringing unique expertise 
+            The passionate individuals behind MHCloth. Each bringing unique expertise 
             and shared commitment to exceptional customer experiences.
           </p>
         </motion.div>

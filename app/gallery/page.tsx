@@ -6,9 +6,9 @@ import FeaturedCollection from './widget/FeaturedCollection'
 import LoadingSkeleton from './widget/LoadingSkeleton'
 
 export const metadata: Metadata = {
-  title: 'Gallery - Physical Store | Product Collections & Inspiration',
-  description: 'Explore our curated collections and discover inspiration through beautiful product photography and lifestyle imagery.',
-  keywords: 'gallery, collections, product photography, lifestyle, inspiration, curated products',
+  title: 'Gallery - MHCloth | Product Collections & Inspiration',
+  description: 'Explore our visual gallery showcasing our premium product collections, styling inspiration, and brand aesthetic.',
+  keywords: 'gallery, product showcase, collections, inspiration, premium products',
 }
 
 interface GalleryPageProps {

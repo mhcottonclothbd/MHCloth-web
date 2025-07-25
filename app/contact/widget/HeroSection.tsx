@@ -18,20 +18,20 @@ export default function HeroSection() {
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Call Us",
-      info: "+447575847048",
-      subInfo: "Mon-Fri 9AM-6PM GMT",
+      info: "01648911447",
+      subInfo: "Mon-Fri 9AM-6PM BST",
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
       title: "Email Us",
-      info: "hello@physicalstore.co.uk",
+      info: "hello@mhcloth.com",
       subInfo: "We reply within 24hrs",
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: "Visit Store",
-      info: "27 Old Gloucester Street",
-      subInfo: "LONDON, WC1N 3AX United Kingdom",
+      info: "Uttara - Dhaka",
+      subInfo: "Bangladesh",
     },
     {
       icon: <Clock className="w-6 h-6" />,

@@ -11,14 +11,11 @@ import LoadingSkeleton from './widget/LoadingSkeleton'
  * Contact page metadata for SEO optimization
  */
 export const metadata: Metadata = {
-  title: 'Contact Us | Get in Touch',
-  description: 'Contact our team for questions, support, or custom orders. Visit our store, call us, or send a message through our contact form.',
-  keywords: ['contact', 'support', 'customer service', 'store location', 'help'],
-  openGraph: {
-    title: 'Contact Us | Get in Touch',
-    description: 'Contact our team for questions, support, or custom orders. Visit our store, call us, or send a message.',
-    type: 'website',
-  },
+  title: "Contact Us - MHCloth | Get in Touch",
+  description:
+    "Contact MHCloth for any inquiries, support, or feedback. Visit our store, call us, or send us an email. We're here to help!",
+  keywords:
+    "contact, MHCloth, customer service, support, store location, phone, email",
 }
 
 /**

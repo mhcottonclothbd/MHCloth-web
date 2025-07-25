@@ -111,7 +111,7 @@ export default function Navbar() {
                   isScrolled ? "text-lg lg:text-xl" : "text-xl lg:text-2xl"
                 )}
               >
-                PhysicalStore
+                MHCloth
               </motion.span>
             </Link>
 
@@ -450,7 +450,7 @@ export default function Navbar() {
                       "font-bold text-lg text-white"
                     )}
                   >
-                    PhysicalStore
+                    MHCloth
                   </span>
                   <button
                     onClick={() => setIsOpen(false)}
