@@ -13,135 +13,184 @@ export interface CategoryItem {
 
 export const mensCategories: CategoryItem[] = [
   {
-    id: 'jackets',
-    name: 'Jackets & Outerwear',
-    description: 'Premium jackets and coats for every season',
-    icon: '🧥',
+    id: 't-shirts',
+    name: 'T-Shirts',
+    description: 'Casual and comfortable tees',
+    icon: '/assets/men-catagerory--icon/t-shirts.png',
+    count: 12
+  },
+  {
+    id: 'polo-shirts',
+    name: 'Polo Shirts',
+    description: 'Classic polo shirts for smart casual look',
+    icon: '/assets/men-catagerory--icon/polo.jpg',
     count: 8
   },
   {
     id: 'shirts',
-    name: 'Shirts',
+    name: 'Shirts (Formal, Casual)',
     description: 'Classic and contemporary shirt styles',
-    icon: '👔',
-    count: 6
+    icon: '/assets/men-catagerory--icon/shirts-formal-casual.jpg',
+    count: 15
   },
   {
-    id: 'pants',
-    name: 'Pants & Trousers',
-    description: 'Comfortable and stylish bottoms',
-    icon: '👖',
-    count: 6
+    id: 'hoodies',
+    name: 'Hoodies & Sweatshirts',
+    description: 'Comfortable hoodies and sweatshirts',
+    icon: '/assets/men-catagerory--icon/hoodies-sweatshirts.png',
+    count: 10
   },
   {
-    id: 'denim',
-    name: 'Denim',
-    description: 'Premium denim jeans and jackets',
-    icon: '👕',
-    count: 4
+    id: 'jackets',
+    name: 'Jackets & Coats',
+    description: 'Premium jackets and coats for every season',
+    icon: '/assets/men-catagerory--icon/jackets-coats.jpg',
+    count: 14
   },
   {
-    id: 't-shirts',
-    name: 'T-Shirts',
-    description: 'Casual and comfortable tees',
-    icon: '👕',
-    count: 4
+    id: 'sweaters',
+    name: 'Sweaters & Cardigans',
+    description: 'Warm and stylish knitwear',
+    icon: '/assets/men-catagerory--icon/sweaters-cardigans.jpg',
+    count: 9
   },
   {
-    id: 'accessories',
-    name: 'Accessories',
-    description: 'Complete your look with our accessories',
-    icon: '🎒',
-    count: 4
+    id: 'jeans',
+    name: 'Jeans',
+    description: 'Premium denim jeans collection',
+    icon: '/assets/men-catagerory--icon/jeans.jpg',
+    count: 18
+  },
+  {
+    id: 'trousers',
+    name: 'Trousers',
+    description: 'Formal and casual trousers',
+    icon: '/assets/men-catagerory--icon/trousers.jpg',
+    count: 16
+  },
+  {
+    id: 'shorts',
+    name: 'Shorts',
+    description: 'Comfortable shorts for casual wear',
+    icon: '/assets/men-catagerory--icon/shorts.png',
+    count: 11
+  },
+  {
+    id: 'cargo-pants',
+    name: 'Cargo Pants',
+    description: 'Functional and stylish cargo pants',
+    icon: '/assets/men-catagerory--icon/cargo-pants.jpg',
+    count: 7
+  },
+  {
+    id: 'undergarments',
+    name: 'Undergarments',
+    description: 'Essential undergarments and basics',
+    icon: '/assets/men-catagerory--icon/undergarments.png',
+    count: 20
   }
 ]
 
 export const womensCategories: CategoryItem[] = [
   {
-    id: 'jackets',
-    name: 'Jackets & Outerwear',
-    description: 'Elegant outerwear for sophisticated style',
-    icon: '🧥',
+    id: 'hoodies',
+    name: 'Hoodies & Sweatshirts',
+    description: 'Comfortable and stylish hoodies for casual wear',
+    icon: '/assets/women/Hoodies & Sweatshirts.jpg',
+    count: 8
+  },
+  {
+    id: 'sweaters',
+    name: 'Sweaters & Cardigans',
+    description: 'Elegant knitwear for sophisticated style',
+    icon: '/assets/women/Sweaters & Cardigans.png',
     count: 6
   },
   {
-    id: 'shirts',
-    name: 'Shirts & Blouses',
+    id: 'tops',
+    name: 'Tops & Blouses',
     description: 'Feminine tops and elegant blouses',
-    icon: '👚',
-    count: 5
+    icon: '/assets/women/Tops.jpg',
+    count: 12
   },
   {
-    id: 'pants',
-    name: 'Pants & Trousers',
-    description: 'Chic bottoms for every occasion',
-    icon: '👖',
-    count: 4
+    id: 'tunics',
+    name: 'Tunics & Kurtis',
+    description: 'Traditional and contemporary tunics',
+    icon: '/assets/women/Tunics & Kurtis.jpg',
+    count: 9
   },
   {
-    id: 'denim',
-    name: 'Denim',
-    description: 'Premium women\'s denim collection',
-    icon: '👖',
-    count: 3
+    id: 'shorts',
+    name: 'Shorts',
+    description: 'Comfortable shorts for casual and active wear',
+    icon: '/assets/women/Shorts.jpg',
+    count: 7
   },
   {
-    id: 't-shirts',
-    name: 'T-Shirts & Tops',
-    description: 'Casual and comfortable everyday wear',
-    icon: '👕',
-    count: 4
+    id: 'bras',
+    name: 'Bras & Lingerie',
+    description: 'Essential undergarments and intimate wear',
+    icon: '/assets/women/Bras.png',
+    count: 15
   },
   {
-    id: 'accessories',
-    name: 'Accessories',
-    description: 'Beautiful accessories to complement your style',
-    icon: '👜',
-    count: 3
+    id: 'panties',
+    name: 'Panties & Underwear',
+    description: 'Comfortable and stylish underwear collection',
+    icon: '/assets/women/Panties.jpg',
+    count: 18
   }
 ]
 
 export const kidsCategories: CategoryItem[] = [
   {
-    id: 'clothing',
-    name: 'Clothing',
-    description: 'Comfortable and fun clothing for kids',
-    icon: '👕',
+    id: 't-shirts',
+    name: 'Kids T-Shirts',
+    description: 'Fun and comfortable t-shirts for kids',
+    icon: '/assets/men-catagerory--icon/t-shirts.png',
+    count: 15
+  },
+  {
+    id: 'hoodies',
+    name: 'Kids Hoodies & Sweatshirts',
+    description: 'Cozy hoodies and sweatshirts for little ones',
+    icon: '/assets/men-catagerory--icon/hoodies-sweatshirts.png',
+    count: 12
+  },
+  {
+    id: 'jeans',
+    name: 'Kids Jeans',
+    description: 'Durable and stylish jeans for active kids',
+    icon: '/assets/men-catagerory--icon/jeans.jpg',
+    count: 10
+  },
+  {
+    id: 'shorts',
+    name: 'Kids Shorts',
+    description: 'Comfortable shorts for play and casual wear',
+    icon: '/assets/men-catagerory--icon/shorts.png',
     count: 8
   },
   {
-    id: 'toys',
-    name: 'Toys & Games',
-    description: 'Educational and entertaining toys',
-    icon: '🧸',
-    count: 6
+    id: 'dresses',
+    name: 'Kids Dresses',
+    description: 'Beautiful dresses for special occasions',
+    icon: '/assets/men-catagerory--icon/polo.jpg',
+    count: 9
   },
   {
-    id: 'books',
-    name: 'Books',
-    description: 'Inspiring stories and learning materials',
-    icon: '📚',
-    count: 4
+    id: 'jackets',
+    name: 'Kids Jackets & Coats',
+    description: 'Warm and stylish outerwear for kids',
+    icon: '/assets/men-catagerory--icon/jackets-coats.jpg',
+    count: 7
   },
   {
     id: 'accessories',
-    name: 'Accessories',
-    description: 'Fun accessories for little ones',
-    icon: '🎒',
-    count: 3
-  },
-  {
-    id: 'outdoor',
-    name: 'Outdoor & Sports',
-    description: 'Active play and outdoor adventure gear',
-    icon: '⚽',
-    count: 4
-  },
-  {
-    id: 'arts-crafts',
-    name: 'Arts & Crafts',
-    description: 'Creative supplies for artistic expression',
-    icon: '🎨',
-    count: 3
+    name: 'Kids Accessories',
+    description: 'Fashion accessories for stylish kids',
+    icon: '/assets/men-catagerory--icon/sweaters-cardigans.jpg',
+    count: 6
   }
 ]

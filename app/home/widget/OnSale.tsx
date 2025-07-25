@@ -91,51 +91,55 @@ export default function OnSale() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden relative">
-                {/* Sale Badge */}
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-                    -{product.discount}%
-                  </span>
-                </div>
+              <Link href={`/shop/${product.id}`} className="block">
+                <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden relative cursor-pointer">
+                  {/* Sale Badge */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                      -{product.discount}%
+                    </span>
+                  </div>
 
-                <div className="relative overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={500}
-                    height={400}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                </div>
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={500}
+                      height={400}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  </div>
 
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors">
-                    {product.name}
-                  </h3>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors">
+                      {product.name}
+                    </h3>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-xl font-bold text-red-600">
-                        {formatPrice(product.salePrice)}
-                      </span>
-                      <span className="text-sm text-gray-500 line-through">
-                        {formatPrice(product.originalPrice)}
-                      </span>
-                    </div>
-                    <Link href={`/shop/${product.id}`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-xl font-bold text-red-600">
+                          {formatPrice(product.salePrice)}
+                        </span>
+                        <span className="text-sm text-gray-500 line-through">
+                          {formatPrice(product.originalPrice)}
+                        </span>
+                      </div>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = `/shop/${product.id}`;
+                        }}
                       >
                         View
                       </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           ))}
         </div>

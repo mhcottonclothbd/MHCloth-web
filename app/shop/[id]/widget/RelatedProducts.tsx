@@ -75,7 +75,10 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   /**
    * Handles adding product to cart
    */
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
     if (product.stock > 0) {
       addItem({
         product: product,
@@ -93,80 +96,78 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
     >
-      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-        {/* Product Image */}
-        <div className="relative aspect-square overflow-hidden">
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          
-          {/* Overlay Actions */}
-          <motion.div
-            className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-          >
-            <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Link href={`/shop/${product.id}`}>
+      <Link href={`/shop/${product.id}`}>
+        <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer">
+          {/* Product Image */}
+          <div className="relative aspect-square overflow-hidden">
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            
+            {/* Overlay Actions */}
+            <motion.div
+              className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+            >
+              <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <button
                   className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200"
                   aria-label="View product"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
-              </Link>
-            </div>
-          </motion.div>
-          
-          {/* Stock Status */}
-          {product.stock === 0 && (
-            <div className="absolute top-4 left-4 bg-red-500 text-white px-2 py-1 text-xs rounded">
-              Out of Stock
-            </div>
-          )}
-          
-          {/* Featured Badge */}
-          {product.featured && (
-            <div className="absolute top-4 left-4 bg-blue-500 text-white px-2 py-1 text-xs rounded">
-              Featured
-            </div>
-          )}
-        </div>
-        
-        <CardContent className="p-4">
-          {/* Product Info */}
-          <div className="space-y-2">
-            <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
-              <Link href={`/shop/${product.id}`}>
-                {product.name}
-              </Link>
-            </h3>
+              </div>
+            </motion.div>
             
-            <p className="text-sm text-gray-600 line-clamp-2">
-              {product.description}
-            </p>
+            {/* Stock Status */}
+            {product.stock === 0 && (
+              <div className="absolute top-4 left-4 bg-red-500 text-white px-2 py-1 text-xs rounded">
+                Out of Stock
+              </div>
+            )}
             
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-lg font-bold text-gray-900">
-                {formatPrice(product.price)}
-              </span>
-              
-              <Button
-                size="sm"
-                disabled={product.stock === 0}
-                className="min-w-[100px]"
-                onClick={handleAddToCart}
-              >
-                <ShoppingCart className="w-4 h-4 mr-1" />
-                {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
-              </Button>
-            </div>
+            {/* Featured Badge */}
+            {product.featured && (
+              <div className="absolute top-4 left-4 bg-blue-500 text-white px-2 py-1 text-xs rounded">
+                Featured
+              </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
+          
+          <CardContent className="p-4">
+            {/* Product Info */}
+            <div className="space-y-2">
+              <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
+                {product.name}
+              </h3>
+              
+              <p className="text-sm text-gray-600 line-clamp-2">
+                {product.description}
+              </p>
+              
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-lg font-bold text-gray-900">
+                  {formatPrice(product.price)}
+                </span>
+                
+                <Button
+                  size="sm"
+                  disabled={product.stock === 0}
+                  className="min-w-[100px]"
+                  onClick={handleAddToCart}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-1" />
+                  {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     </motion.div>
   )
 }

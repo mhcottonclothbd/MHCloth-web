@@ -75,39 +75,44 @@ export default function FeaturedProducts() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <div className="relative overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={500}
-                    height={400}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                </div>
+              <Link href={`/shop/${product.id}`} className="block">
+                <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer">
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={500}
+                      height={400}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  </div>
 
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
-                    {product.name}
-                  </h3>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
+                      {product.name}
+                    </h3>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-gray-900">
-                      {formatPrice(product.price)}
-                    </span>
-                    <Link href={`/shop/${product.id}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-gray-900">
+                        {formatPrice(product.price)}
+                      </span>
+                      {/* Show button on desktop hover, always visible on mobile */}
                       <Button
                         size="sm"
                         variant="outline"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = `/shop/${product.id}`;
+                        }}
                       >
                         View
                       </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           ))}
         </div>

@@ -1,10 +1,10 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import CategoryHero from './widget/CategoryHero'
-import ProductGrid from './widget/ProductGrid'
+import ShopByCategory from '@/components/ShopByCategory'
 import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
-import CategoryNavigation from '@/components/CategoryNavigation'
 import { mensCategories } from '@/data/categories'
+import { mensProducts } from '@/data/mens-products'
 
 export const metadata: Metadata = {
   title: "Men's Collection - Physical Store | Premium Men's Products",
@@ -17,15 +17,30 @@ interface MensPageProps {
     search?: string
     sort?: string
     filter?: string
+    category?: string
   }>
 }
 
 /**
  * Men's category page showcasing masculine products
- * Features hero section and filtered product grid for men's items
+ * Features hero section, category dropdown, and filtered product grid for men's items
  */
 export default async function MensPage({ searchParams }: MensPageProps) {
   const resolvedSearchParams = await searchParams
+  
+  // Transform mensProducts to match the expected Product interface
+  const transformedProducts = mensProducts.map(product => {
+    const productAny = product as any
+    return {
+      ...product,
+      id: product.id.toString(),
+      description: product.name, // Use name as description
+      image_url: productAny.image || productAny.image_url || '',
+      stock: productAny.stock || (productAny.inStock ? 10 : 0),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  })
   
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8f6f3' }}>
@@ -37,20 +52,14 @@ export default async function MensPage({ searchParams }: MensPageProps) {
         backgroundImage="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=600&fit=crop"
       />
 
-      {/* Category Navigation */}
-      <CategoryNavigation 
-        categories={mensCategories}
-        basePath="/mens"
-        title="Shop Men's Categories"
-        subtitle="Find exactly what you're looking for in our organized collections"
-      />
-
-      {/* Products Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Products Section with Category Dropdown */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6 md:py-8">
         <Suspense fallback={<LoadingSkeleton />}>
-          <ProductGrid 
+          <ShopByCategory 
             searchParams={resolvedSearchParams}
-            category="mens"
+            categories={mensCategories}
+            products={transformedProducts}
+            categoryType="mens"
             title="Men's Products"
           />
         </Suspense>

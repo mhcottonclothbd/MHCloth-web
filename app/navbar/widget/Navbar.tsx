@@ -14,6 +14,7 @@ import SearchBar from "./SearchBar";
 
 const navigation = [
   { name: "Home", href: "/home" },
+  { name: "Store", href: "/shop" },
   { name: "Gallery", href: "/gallery" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
@@ -278,11 +279,25 @@ export default function Navbar() {
                         
                         {/* Quick Links - Fixed at bottom */}
                         <div className="p-4 sm:p-6 pt-4 border-t border-white/20 relative bg-black/20">
-                          <div className="flex flex-col sm:flex-row justify-between gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <Link
+                              href="/shop"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="text-center px-3 sm:px-4 py-2.5 text-sm text-purple-400 hover:text-purple-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%)',
+                                backdropFilter: 'blur(25px) saturate(150%)',
+                                WebkitBackdropFilter: 'blur(25px) saturate(150%)',
+                                border: '1px solid rgba(147, 51, 234, 0.3)',
+                                boxShadow: '0 4px 16px rgba(147, 51, 234, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                              }}
+                            >
+                              🛍️ Shop All →
+                            </Link>
                             <Link
                               href="/new-arrivals"
                               onClick={() => setIsDropdownOpen(false)}
-                              className="flex-1 text-center px-3 sm:px-4 py-2.5 text-sm text-blue-400 hover:text-blue-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
+                              className="text-center px-3 sm:px-4 py-2.5 text-sm text-blue-400 hover:text-blue-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
                               style={{
                                 background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%)',
                                 backdropFilter: 'blur(25px) saturate(150%)',
@@ -291,12 +306,12 @@ export default function Navbar() {
                                 boxShadow: '0 4px 16px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                               }}
                             >
-                              New Arrivals →
+                              ✨ New Arrivals →
                             </Link>
                             <Link
                               href="/on-sale"
                               onClick={() => setIsDropdownOpen(false)}
-                              className="flex-1 text-center px-3 sm:px-4 py-2.5 text-sm text-green-400 hover:text-green-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
+                              className="text-center px-3 sm:px-4 py-2.5 text-sm text-green-400 hover:text-green-300 transition-all duration-300 font-medium rounded-xl border backdrop-blur-sm hover:shadow-lg"
                               style={{
                                 background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%)',
                                 backdropFilter: 'blur(25px) saturate(150%)',
@@ -305,7 +320,7 @@ export default function Navbar() {
                                 boxShadow: '0 4px 16px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                               }}
                             >
-                              Sale Items →
+                              🔥 Sale Items →
                             </Link>
                           </div>
                         </div>
