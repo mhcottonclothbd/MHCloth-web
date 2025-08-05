@@ -79,7 +79,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
     e.preventDefault()
     e.stopPropagation()
     
-    if (product.stock > 0) {
+    if (product.stock && product.stock > 0) {
       addItem({
         product: product,
         quantity: 1,
@@ -101,7 +101,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           {/* Product Image */}
           <div className="relative aspect-square overflow-hidden">
             <Image
-              src={product.image_url}
+              src={product.image_url || '/placeholder-image.jpg'}
               alt={product.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -124,7 +124,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             </motion.div>
             
             {/* Stock Status */}
-            {product.stock === 0 && (
+            {(!product.stock || product.stock === 0) && (
               <div className="absolute top-4 left-4 bg-red-500 text-white px-2 py-1 text-xs rounded">
                 Out of Stock
               </div>
@@ -156,12 +156,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                 
                 <Button
                   size="sm"
-                  disabled={product.stock === 0}
+                  disabled={!product.stock || product.stock === 0}
                   className="min-w-[100px]"
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="w-4 h-4 mr-1" />
-                  {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
+                  {product.stock && product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
                 </Button>
               </div>
             </div>

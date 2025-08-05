@@ -22,7 +22,7 @@ export default function ShopHero() {
     {
       icon: Truck,
       title: 'Fast Shipping',
-      description: 'Free delivery on orders $50+'
+      description: 'Free delivery on orders ৳5000+'
     },
     {
       icon: Shield,

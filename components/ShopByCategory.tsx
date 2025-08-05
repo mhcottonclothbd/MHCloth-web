@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CategoryItem } from '@/data/categories'
-import { cn } from '@/lib/utils'
+import { cn, formatPrice } from '@/lib/utils'
 import { useCart } from '@/lib/cart-context'
 
 // Import Product type from types
@@ -84,7 +84,7 @@ export default function ShopByCategory({
     
     // Find the product by ID
     const product = products.find(p => p.id === productId)
-    if (product && product.stock > 0) {
+    if (product && product.stock && product.stock > 0) {
       addItem({
           product: {
             id: product.id,
@@ -375,7 +375,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
 
   // Use image_url from Product type, fallback to image if available
   const productImage = product.image_url || (product as any).image || '/placeholder-image.jpg'
-  const isInStock = product.stock > 0
+  const isInStock = product.stock && product.stock > 0
   const productRating = (product as any).rating || 4.5
   const productReviews = (product as any).reviews || 0
 
@@ -445,11 +445,11 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
           {/* Price */}
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-gray-900">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.originalPrice.toFixed(2)}
+                {formatPrice(product.originalPrice)}
               </span>
             )}
           </div>

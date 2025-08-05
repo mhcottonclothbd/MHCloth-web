@@ -1,22 +1,16 @@
 import { redirect } from 'next/navigation'
-import { currentUser } from '@clerk/nextjs/server'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Account | MHCloth',
-  description: 'Manage your account settings and preferences',
+  title: 'Guest Shopping | MHCloth',
+  description: 'Shop as a guest - no account required for easy shopping experience',
 }
 
 /**
- * Account page that redirects to sign-in if not authenticated
- * or to dashboard if authenticated
+ * Account page that redirects to guest shopping information
+ * Since we removed authentication, all users are guests
  */
 export default async function AccountPage() {
-  const user = await currentUser()
-  
-  if (user) {
-    redirect('/dashboard')
-  } else {
-    redirect('/account/sign-in')
-  }
+  // Redirect to guest shopping info page
+  redirect('/account/sign-in')
 }

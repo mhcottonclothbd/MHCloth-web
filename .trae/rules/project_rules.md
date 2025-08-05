@@ -7,7 +7,7 @@
 - `app/` must contain individual folders for each route (e.g. `home`, `about`, `shop`, etc.)
 - Each route folder should include a `page.tsx` and `widget/` folder to store extracted subcomponents
 - Create a `components/` folder at the root for fully reusable components (e.g., Button, Navbar, Footer, Card)
-- Create a `lib/` folder for Supabase & Clerk client, utils, constants
+- Create a `lib/` folder for utilities, constants, and service clients
 - Use `styles/` for global styles and custom Tailwind extensions
 - Use `types/` folder for TypeScript types if needed
 
@@ -46,7 +46,7 @@
 
 🛠 Backend:
 
-- Supabase for fetching and storing product and contact data
+- Mock data system for development (ready for backend integration)
 - Admin dashboard access to update products (optional)
 
 Responsive, scalable, production-ready layout, with no duplicate code.

@@ -40,7 +40,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   const colors = ['Black', 'White', 'Gray', 'Navy']
   
   const incrementQuantity = () => {
-    if (quantity < product.stock) {
+    if (product.stock && quantity < product.stock) {
       setQuantity(prev => prev + 1)
     }
   }
@@ -130,13 +130,13 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           <div className="flex items-center space-x-2">
             <div className={cn(
               "w-2 h-2 rounded-full",
-              product.stock > 0 ? "bg-green-500" : "bg-red-500"
+              product.stock && product.stock > 0 ? "bg-green-500" : "bg-red-500"
             )} />
             <span className={cn(
               "text-sm font-medium",
-              product.stock > 0 ? "text-green-700" : "text-red-700"
+              product.stock && product.stock > 0 ? "text-green-700" : "text-red-700"
             )}>
-              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+              {product.stock && product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
             </span>
           </div>
         </motion.div>
@@ -231,7 +231,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 </span>
                 <button
                   onClick={incrementQuantity}
-                  disabled={quantity >= product.stock}
+                  disabled={product.stock ? quantity >= product.stock : true}
                   className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   aria-label="Increase quantity"
                 >
@@ -239,7 +239,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 </button>
               </div>
               <span className="text-sm text-gray-600">
-                {product.stock} available
+                {product.stock || 0} available
               </span>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           <div className="flex">
             <Button
               onClick={handleAddToCart}
-              disabled={product.stock === 0 || isAddedToCart}
+              disabled={!product.stock || product.stock === 0 || isAddedToCart}
               className={cn(
                 "flex-1 text-white transition-all duration-200",
                 isAddedToCart 
@@ -265,7 +265,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               ) : (
                 <>
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                  {product.stock && product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
                 </>
               )}
             </Button>

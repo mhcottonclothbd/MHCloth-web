@@ -1,8 +1,5 @@
 import { Metadata } from 'next'
-import { Suspense } from 'react'
-import CategoryHero from './widget/CategoryHero'
-import ProductGrid from './widget/ProductGrid'
-import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
+import { Package } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'New Arrivals - MHCloth | Latest Premium Products',
@@ -19,31 +16,40 @@ interface NewArrivalsPageProps {
 }
 
 /**
- * New Arrivals page showcasing the latest products
- * Features hero section and filtered product grid
+ * New Arrivals page - Currently showing empty state
+ * All new arrival products have been removed from the website
  */
 export default async function NewArrivalsPage({ searchParams }: NewArrivalsPageProps) {
-  const resolvedSearchParams = await searchParams
-  
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f8f6f3' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Hero Section */}
-      <CategoryHero 
-        title="New Arrivals"
-        subtitle="Discover Our Latest Collection"
-        description="Be the first to explore our newest premium products, carefully selected for their exceptional quality and innovative design."
-        backgroundImage="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop"
-      />
+      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            New Arrivals
+          </h1>
+          <p className="text-xl text-green-100">
+            Discover Our Latest Collection
+          </p>
+        </div>
+      </div>
 
-      {/* Products Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Suspense fallback={<LoadingSkeleton />}>
-          <ProductGrid 
-            searchParams={resolvedSearchParams}
-            category="new-arrivals"
-            title="Latest Products"
-          />
-        </Suspense>
+      {/* Empty State */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center">
+          <Package className="w-24 h-24 text-gray-400 mx-auto mb-8" />
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            New Arrivals Coming Soon
+          </h2>
+          <p className="text-gray-600 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+            We're constantly sourcing the latest and greatest products for our customers. Our team is working around the clock to bring you fresh, innovative items that combine cutting-edge design with exceptional quality.
+          </p>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-md mx-auto">
+            <p className="text-green-800 font-medium">
+              🌟 Be the first to know when new products arrive!
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )

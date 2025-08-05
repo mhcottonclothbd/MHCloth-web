@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
-import CategoryHero from './widget/CategoryHero'
-import ProductGridWithDropdown from './widget/ProductGridWithDropdown'
 import { womensCategories } from '@/data/categories'
+import ProductGridWithDropdown from './widget/ProductGridWithDropdown'
 
 export const metadata: Metadata = {
   title: "Women's Collection - MHCloth | Premium Women's Products",
@@ -19,23 +18,26 @@ interface WomensPageProps {
 }
 
 /**
- * Women's category page with elegant design and premium products
- * Features sophisticated hero section and categorized product display
+ * Women's category page with product grid and category filtering
  */
 export default async function WomensPage({ searchParams }: WomensPageProps) {
   const resolvedSearchParams = await searchParams
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Hero Section */}
-      <CategoryHero
-        title="Women's Collection"
-        subtitle="Elegant & Sophisticated"
-        description="Discover our curated selection of premium women's fashion, designed for the modern, confident woman."
-        backgroundImage="/images/womens-hero.jpg"
-      />
-      
-      {/* Products Section */}
+      <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Women's Collection
+          </h1>
+          <p className="text-xl text-pink-100">
+            Elegance Redefined
+          </p>
+        </div>
+      </div>
+
+      {/* Product Grid with Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <ProductGridWithDropdown
           searchParams={resolvedSearchParams}

@@ -1,249 +1,294 @@
 # Deployment Guide
 
-This guide will help you deploy your Physical Store e-commerce application to GitHub and Vercel.
+This guide provides comprehensive instructions for deploying the MHCloth e-commerce application to Vercel and managing the GitHub repository.
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Node.js 18+ installed
 - Git installed
 - GitHub account
-- Vercel account
-- Supabase account
-- Clerk account
+- Vercel account (free tier available)
+- Basic knowledge of command line
 
-## 🚀 Quick Deployment Steps
+## 🔧 Environment Setup
 
-### 1. Prepare Your Repository
+### 1. Environment Variables
 
-```bash
-# Initialize git repository (if not already done)
-git init
+Create a `.env.local` file in your project root:
 
-# Add all files
-git add .
+```env
+# Clerk Authentication (Optional - for user authentication)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
+CLERK_SECRET_KEY=sk_test_your_secret_key_here
 
-# Commit your changes
-git commit -m "Initial commit: Physical Store e-commerce app"
+# Next.js Configuration
+NEXT_TELEMETRY_DISABLED=1
 
-# Add your GitHub repository as origin
-git remote add origin https://github.com/yourusername/physical-store.git
-
-# Push to GitHub
-git push -u origin main
+# Application URL (for production)
+NEXT_PUBLIC_APP_URL=https://your-app-name.vercel.app
 ```
 
-### 2. Set Up Environment Variables
+### 2. Required Environment Variables for Production
 
-1. Copy `.env.example` to `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Optional | Clerk authentication public key |
+| `CLERK_SECRET_KEY` | Optional | Clerk authentication secret key |
+| `NEXT_TELEMETRY_DISABLED` | Recommended | Disables Next.js telemetry |
+| `NEXT_PUBLIC_APP_URL` | Recommended | Your application URL |
 
-2. Fill in your actual values in `.env.local`:
+## 🚀 Vercel Deployment
 
-#### Required Environment Variables:
+### Method 1: One-Click Deploy (Recommended)
 
-**Clerk Authentication:**
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Get from [Clerk Dashboard](https://dashboard.clerk.com)
-- `CLERK_SECRET_KEY`: Get from [Clerk Dashboard](https://dashboard.clerk.com)
+1. Click the deploy button:
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/devisTuhin/mhcloth.git)
 
-**Supabase Database:**
-- `NEXT_PUBLIC_SUPABASE_URL`: Get from [Supabase Dashboard](https://supabase.com/dashboard)
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Get from [Supabase Dashboard](https://supabase.com/dashboard)
-- `SUPABASE_SERVICE_ROLE_KEY`: Get from [Supabase Dashboard](https://supabase.com/dashboard)
+2. Connect your GitHub account if not already connected
 
-**App Configuration:**
-- `NEXT_PUBLIC_APP_URL`: Your production URL (e.g., `https://your-app.vercel.app`)
+3. Configure your project:
+   - **Project Name**: Choose a unique name
+   - **Framework Preset**: Next.js (auto-detected)
+   - **Root Directory**: `./` (default)
 
-### 3. Deploy to Vercel
+4. Add environment variables in the deployment interface
 
-#### Option A: Deploy via Vercel CLI
+5. Click "Deploy"
 
-1. Install Vercel CLI:
-   ```bash
-   npm i -g vercel
-   ```
+### Method 2: Manual Deployment
 
-2. Login to Vercel:
-   ```bash
-   vercel login
-   ```
+#### Step 1: Prepare Your Repository
 
-3. Deploy:
-   ```bash
-   vercel
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/devisTuhin/mhcloth.git
+cd mhcloth
 
-#### Option B: Deploy via Vercel Dashboard
+# Install dependencies
+npm install
+
+# Test the build locally
+npm run build
+npm run start
+```
+
+#### Step 2: Connect to Vercel
 
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Click "New Project"
-3. Import your GitHub repository
-4. Configure your project:
+3. Import from GitHub: `https://github.com/devisTuhin/mhcloth.git`
+4. Configure project settings:
    - **Framework Preset**: Next.js
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `.next`
-   - **Install Command**: `npm install`
+   - **Root Directory**: `./`
+   - **Build Command**: `npm run build` (default)
+   - **Output Directory**: `.next` (default)
+   - **Install Command**: `npm install` (default)
 
-### 4. Configure Environment Variables in Vercel
+#### Step 3: Configure Environment Variables
 
-1. In your Vercel project dashboard, go to **Settings** → **Environment Variables**
-2. Add all the environment variables from your `.env.local` file
-3. Make sure to set the correct values for production
+In Vercel Dashboard → Project → Settings → Environment Variables:
 
-#### Important Production Environment Variables:
+**Production Environment:**
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_your_production_key
+CLERK_SECRET_KEY=sk_live_your_production_secret
+NEXT_TELEMETRY_DISABLED=1
+NEXT_PUBLIC_APP_URL=https://your-app-name.vercel.app
+```
+
+**Preview Environment:**
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_test_key
+CLERK_SECRET_KEY=sk_test_your_test_secret
+NEXT_TELEMETRY_DISABLED=1
+NEXT_PUBLIC_APP_URL=https://your-app-name-preview.vercel.app
+```
+
+#### Step 4: Deploy
+
+1. Click "Deploy"
+2. Wait for the build to complete
+3. Your app will be available at `https://your-project-name.vercel.app`
+
+## 🔄 GitHub Actions CI/CD
+
+The repository includes a comprehensive GitHub Actions workflow (`.github/workflows/deploy.yml`) that:
+
+- **Lints and type-checks** code on every push/PR
+- **Builds and tests** the application
+- **Deploys preview** versions for pull requests
+- **Deploys to production** when merging to main/master
+
+### Required GitHub Secrets
+
+Add these secrets in GitHub Repository → Settings → Secrets and Variables → Actions:
+
+| Secret | Description | How to Get |
+|--------|-------------|------------|
+| `VERCEL_TOKEN` | Vercel API token | Vercel Dashboard → Settings → Tokens |
+| `VERCEL_ORG_ID` | Vercel organization ID | Run `vercel link` locally |
+| `VERCEL_PROJECT_ID` | Vercel project ID | Run `vercel link` locally |
+
+### Getting Vercel IDs
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Login to Vercel
+vercel login
+
+# Link your project
+vercel link
+
+# This will create .vercel/project.json with your IDs
+cat .vercel/project.json
+```
+
+## 🛠️ Custom Domain Setup
+
+### 1. Add Custom Domain in Vercel
+
+1. Go to Vercel Dashboard → Your Project → Settings → Domains
+2. Add your custom domain (e.g., `yourdomain.com`)
+3. Configure DNS records as instructed by Vercel
+
+### 2. Update Environment Variables
 
 ```env
-# Update these for production
-NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
-NODE_ENV=production
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=https://your-app.vercel.app/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=https://your-app.vercel.app/dashboard
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
-### 5. Set Up Supabase Database
+### 3. SSL Certificate
 
-1. Create tables in your Supabase database:
+Vercel automatically provides SSL certificates for all domains.
 
-```sql
--- Products table
-CREATE TABLE products (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  description TEXT,
-  price DECIMAL(10,2) NOT NULL,
-  image_url VARCHAR,
-  category_id UUID,
-  stock_quantity INTEGER DEFAULT 0,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+## 🔍 Monitoring and Analytics
 
--- Categories table
-CREATE TABLE categories (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  slug VARCHAR UNIQUE NOT NULL,
-  description TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+### Vercel Analytics
 
--- Orders table
-CREATE TABLE orders (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id VARCHAR NOT NULL,
-  total_amount DECIMAL(10,2) NOT NULL,
-  status VARCHAR DEFAULT 'pending',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+1. Enable in Vercel Dashboard → Project → Analytics
+2. Add to your app:
 
--- Order items table
-CREATE TABLE order_items (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  order_id UUID REFERENCES orders(id),
-  product_id UUID REFERENCES products(id),
-  quantity INTEGER NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+```bash
+npm install @vercel/analytics
 ```
 
-2. Set up Row Level Security (RLS) policies as needed
+```tsx
+// app/layout.tsx
+import { Analytics } from '@vercel/analytics/react'
 
-### 6. Configure Clerk for Production
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  )
+}
+```
 
-1. In your Clerk dashboard, add your production domain
-2. Update redirect URLs to use your production domain
-3. Configure social login providers if needed
+### Performance Monitoring
 
-### 7. Test Your Deployment
+1. Enable Web Vitals in Vercel Dashboard
+2. Monitor Core Web Vitals and performance metrics
 
-1. Visit your deployed application
-2. Test key functionality:
-   - User authentication (sign up/sign in)
-   - Product browsing
-   - Cart functionality
-   - Order placement
-   - Admin dashboard (if implemented)
+## 🚨 Troubleshooting
 
-## 🔧 Troubleshooting
+### Common Deployment Issues
 
-### Common Issues:
+#### Build Failures
 
-1. **Environment Variables Not Working**
-   - Ensure all required environment variables are set in Vercel
-   - Check that variable names match exactly (case-sensitive)
-   - Redeploy after adding new environment variables
+**Error: "Module not found"**
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
 
-2. **Database Connection Issues**
-   - Verify Supabase URL and keys are correct
-   - Check that your Supabase project is active
-   - Ensure database tables are created
+**Error: "Type errors"**
+```bash
+# Check TypeScript errors
+npx tsc --noEmit
+```
 
-3. **Authentication Issues**
-   - Verify Clerk keys are correct
-   - Check that redirect URLs are properly configured
-   - Ensure your domain is added in Clerk dashboard
+#### Runtime Errors
 
-4. **Build Failures**
-   - Check build logs in Vercel dashboard
-   - Ensure all dependencies are listed in package.json
-   - Fix any TypeScript errors
+**Error: "Missing environment variables"**
+- Verify all required environment variables are set in Vercel
+- Check variable names match exactly (case-sensitive)
+- Ensure `NEXT_PUBLIC_` prefix for client-side variables
 
-### Performance Optimization:
+**Error: "Authentication not working"**
+- Verify Clerk keys are correct
+- Check domain configuration in Clerk dashboard
+- Ensure environment variables are set for the correct environment
 
-1. **Enable Vercel Analytics** (optional):
-   ```bash
-   npm install @vercel/analytics
-   ```
+### Performance Issues
 
-2. **Enable Vercel Speed Insights** (optional):
-   ```bash
-   npm install @vercel/speed-insights
-   ```
+**Slow Build Times**
+- Enable Vercel's build cache
+- Optimize dependencies
+- Use `npm ci` instead of `npm install`
 
-3. **Configure caching** in `next.config.ts` if needed
+**Large Bundle Size**
+- Analyze bundle with `npm run build`
+- Implement code splitting
+- Remove unused dependencies
 
-## 📊 Monitoring
+## 📊 Deployment Checklist
 
-After deployment, monitor your application:
+### Pre-Deployment
 
-1. **Vercel Dashboard**: Check deployment status, build logs, and analytics
-2. **Supabase Dashboard**: Monitor database usage and performance
-3. **Clerk Dashboard**: Track user authentication metrics
+- [ ] All environment variables configured
+- [ ] Build passes locally (`npm run build`)
+- [ ] TypeScript compilation successful
+- [ ] ESLint passes (`npm run lint`)
+- [ ] All tests pass (if applicable)
+- [ ] Images optimized and properly sized
+- [ ] SEO meta tags configured
+
+### Post-Deployment
+
+- [ ] Application loads correctly
+- [ ] All pages accessible
+- [ ] Authentication working (if enabled)
+- [ ] Forms submitting properly
+- [ ] Images loading correctly
+- [ ] Mobile responsiveness verified
+- [ ] Performance metrics acceptable
+- [ ] Error monitoring configured
 
 ## 🔄 Continuous Deployment
 
-Vercel automatically deploys when you push to your main branch. To set up proper CI/CD:
+The GitHub Actions workflow automatically:
 
-1. Create feature branches for development
-2. Use pull requests for code review
-3. Deploy preview branches for testing
-4. Merge to main for production deployment
+1. **On Pull Request**: Creates preview deployment
+2. **On Merge to Main**: Deploys to production
+3. **On Push**: Runs tests and linting
 
-## 📝 Post-Deployment Checklist
+### Manual Deployment
 
-- [ ] Application loads correctly
-- [ ] User authentication works
-- [ ] Database connections are working
-- [ ] Environment variables are set
-- [ ] SSL certificate is active
-- [ ] Custom domain configured (if applicable)
-- [ ] Analytics tracking is working (if enabled)
-- [ ] Error monitoring is set up
-- [ ] Backup strategy is in place
+```bash
+# Deploy to preview
+vercel
 
-## 🆘 Support
+# Deploy to production
+vercel --prod
+```
+
+## 📞 Support
 
 If you encounter issues:
 
-1. Check Vercel deployment logs
-2. Review Supabase logs
-3. Check Clerk dashboard for auth issues
-4. Consult the documentation for each service
+1. Check [Vercel Documentation](https://vercel.com/docs)
+2. Review [Next.js Deployment Guide](https://nextjs.org/docs/deployment)
+3. Check GitHub Actions logs for CI/CD issues
+4. Contact support through respective platforms
 
 ---
 
-**Congratulations! Your Physical Store e-commerce application is now live! 🎉**
+**Your MHCloth application is now ready for production deployment!** 🚀

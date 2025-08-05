@@ -6,7 +6,40 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { ErrorLogger, getUserFriendlyMessage, AppError, ErrorType } from '@/lib/error-handler'
+// Note: Backend error handling removed - using simple frontend-only implementation
+
+// Simple error types for frontend-only functionality
+enum ErrorType {
+  NETWORK = 'NETWORK',
+  VALIDATION = 'VALIDATION',
+  UNKNOWN = 'UNKNOWN'
+}
+
+class AppError extends Error {
+  constructor(message: string, public type: ErrorType = ErrorType.UNKNOWN) {
+    super(message)
+    this.name = 'AppError'
+  }
+}
+
+// Simple error logger for frontend
+const ErrorLogger = {
+  logError: (error: Error, context?: any) => {
+    console.error('Error logged:', error, context)
+  },
+  error: (message: string, error?: Error, context?: any, type?: ErrorType, userId?: string) => {
+    console.error('Error:', message, error, context, type, userId)
+    return Math.random().toString(36).substr(2, 9) // Simple error ID
+  }
+}
+
+// Simple user-friendly message function
+const getUserFriendlyMessage = (error: Error): string => {
+  if (error.message.includes('network') || error.message.includes('fetch')) {
+    return 'Network connection issue. Please check your internet connection.'
+  }
+  return 'Something went wrong. Please try again.'
+}
 // import { Button } from '@/components/ui/button' // TODO: Create or import proper Button component
 
 // Temporary Button component for now

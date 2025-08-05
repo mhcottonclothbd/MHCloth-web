@@ -1,123 +1,170 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ShoppingCart, Eye, Heart, Sparkles } from 'lucide-react'
-import { Card, CardContent } from '@/components/Card'
-import Button from '@/components/Button'
-import { formatPrice } from '@/lib/utils'
-import { Product } from '@/types'
-import { useCart } from '@/lib/cart-context'
-import { productsByCategory } from '@/data/andsons-products'
+import Button from "@/components/Button";
+import { Card, CardContent } from "@/components/Card";
+import { useCart } from "@/lib/cart-context";
+import { formatPrice } from "@/lib/utils";
+import { Product } from "@/types";
+import { motion } from "framer-motion";
+import { Eye, Heart, ShoppingCart, Sparkles } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface ProductGridProps {
   searchParams: {
-    search?: string
-    sort?: string
-    filter?: string
-    category?: string
-  }
-  category: string
-  title: string
+    search?: string;
+    sort?: string;
+    filter?: string;
+    category?: string;
+  };
+  category: string;
+  title: string;
 }
-
-// Real product data from DAMSONS (&Sons women's line) - authentic vintage-inspired women's clothing
-const womensProducts: Product[] = productsByCategory.women
 
 /**
  * Product grid component specifically for women's products
  * Features elegant styling and feminine product categories
  */
-export default function ProductGrid({ searchParams, category, title }: ProductGridProps) {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [sortBy, setSortBy] = useState(searchParams.sort || 'featured')
-  const { addItem } = useCart()
+export default function ProductGrid({
+  searchParams,
+  category,
+  title,
+}: ProductGridProps) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState(searchParams.sort || "featured");
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true)
-      
-      let filteredProducts = [...womensProducts]
-      
-      // Category filter - handle subcategory filtering
-      if (searchParams.category) {
-        const category = searchParams.category.toLowerCase()
-        filteredProducts = filteredProducts.filter(product => {
-          const productName = product.name.toLowerCase()
-          const productDesc = product.description.toLowerCase()
-          
-          switch (category) {
-            case 'jackets':
-              return productName.includes('jacket') || productName.includes('coat') || productDesc.includes('jacket') || productDesc.includes('outerwear')
-            case 'shirts':
-              return productName.includes('shirt') || productName.includes('blouse') || productName.includes('top')
-            case 'pants':
-              return productName.includes('pants') || productName.includes('trouser') || productName.includes('chino')
-            case 'denim':
-              return productName.includes('denim') || productName.includes('jean')
-            case 't-shirts':
-              return productName.includes('t-shirt') || productName.includes('tee') || productName.includes('top')
-            case 'accessories':
-              return product.category === 'accessories'
-            default:
-              return product.category === searchParams.category
-          }
-        })
-      }
-      
-      // Search filter
-      if (searchParams.search) {
-        const searchTerm = searchParams.search.toLowerCase()
-        filteredProducts = filteredProducts.filter(
-          product => 
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm)
-        )
-      }
-      
-      // Stock filter
-      if (searchParams.filter === 'in-stock') {
-        filteredProducts = filteredProducts.filter(product => product.stock > 0)
-      } else if (searchParams.filter === 'featured') {
-        filteredProducts = filteredProducts.filter(product => product.featured)
-      }
-      
-      // Sort products
-      filteredProducts.sort((a, b) => {
-        switch (sortBy) {
-          case 'price-low':
-            return a.price - b.price
-          case 'price-high':
-            return b.price - a.price
-          case 'name':
-            return a.name.localeCompare(b.name)
-          case 'featured':
-          default:
-            return b.featured === a.featured ? 0 : b.featured ? 1 : -1
-        }
-      })
-      
-      // Simulate loading delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      setProducts(filteredProducts)
-      setLoading(false)
-    }
+      setLoading(true);
 
-    fetchProducts()
-  }, [searchParams, sortBy])
+      try {
+        // Fetch products from API
+        const params = new URLSearchParams({
+          category: "womens",
+          ...(searchParams.search && { search: searchParams.search }),
+          ...(searchParams.filter === "featured" && { featured: "true" }),
+          ...(searchParams.filter === "in-stock" && { inStock: "true" }),
+        });
+
+        const response = await fetch(`/api/products?${params}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        let filteredProducts = await response.json();
+
+        // Category filter - handle subcategory filtering
+        if (searchParams.category) {
+          const category = searchParams.category.toLowerCase();
+          filteredProducts = filteredProducts.filter((product: Product) => {
+            const productName = product.name.toLowerCase();
+            const productDesc = product.description.toLowerCase();
+
+            switch (category) {
+              case "jackets":
+                return (
+                  productName.includes("jacket") ||
+                  productName.includes("coat") ||
+                  productDesc.includes("jacket") ||
+                  productDesc.includes("outerwear")
+                );
+              case "shirts":
+                return (
+                  productName.includes("shirt") ||
+                  productName.includes("blouse") ||
+                  productName.includes("top")
+                );
+              case "pants":
+                return (
+                  productName.includes("pants") ||
+                  productName.includes("trouser") ||
+                  productName.includes("chino")
+                );
+              case "denim":
+                return (
+                  productName.includes("denim") || productName.includes("jean")
+                );
+              case "t-shirts":
+                return (
+                  productName.includes("t-shirt") ||
+                  productName.includes("tee") ||
+                  productName.includes("top")
+                );
+              case "accessories":
+                return product.category === "accessories";
+              default:
+                return product.category === searchParams.category;
+            }
+          });
+        }
+
+        // Search filter
+        if (searchParams.search) {
+          const searchTerm = searchParams.search.toLowerCase();
+          filteredProducts = filteredProducts.filter(
+            (product: Product) =>
+              product.name.toLowerCase().includes(searchTerm) ||
+              product.description.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        // Stock filter
+        if (searchParams.filter === "in-stock") {
+          filteredProducts = filteredProducts.filter(
+            (product: Product) =>
+              product.stock_quantity && product.stock_quantity > 0
+          );
+        } else if (searchParams.filter === "featured") {
+          filteredProducts = filteredProducts.filter(
+            (product: Product) => product.is_featured || product.featured
+          );
+        }
+
+        // Sort products
+        filteredProducts.sort((a: Product, b: Product) => {
+          switch (sortBy) {
+            case "price-low":
+              return a.price - b.price;
+            case "price-high":
+              return b.price - a.price;
+            case "name":
+              return a.name.localeCompare(b.name);
+            case "featured":
+            default:
+              return (b.is_featured || b.featured) ===
+                (a.is_featured || a.featured)
+                ? 0
+                : b.is_featured || b.featured
+                ? 1
+                : -1;
+          }
+        });
+
+        // Simulate loading delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        setProducts(filteredProducts);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchParams, sortBy]);
 
   const handleAddToCart = (product: Product) => {
     addItem({
       product,
       quantity: 1,
       selectedSize: undefined,
-      selectedColor: undefined
-    })
-  }
+      selectedColor: undefined,
+    });
+  };
 
   if (loading) {
     return (
@@ -136,17 +183,21 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
         <Heart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No women's products found</h3>
-        <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No women's products found
+        </h3>
+        <p className="text-gray-600">
+          Try adjusting your search or filter criteria.
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -159,10 +210,11 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
             {title}
           </h2>
           <p className="text-gray-600">
-            Showing {products.length} product{products.length !== 1 ? 's' : ''} for women
+            Showing {products.length} product{products.length !== 1 ? "s" : ""}{" "}
+            for women
           </p>
         </div>
-        
+
         {/* Sort Controls */}
         <select
           value={sortBy}
@@ -188,39 +240,39 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
             <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-pink-100 hover:border-pink-200">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image_url}
+                  src={product.image_url || "/placeholder-image.jpg"}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                
+
                 {/* Featured Badge */}
-                {product.featured && (
+                {(product.is_featured || product.featured) && (
                   <div className="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
                     Featured
                   </div>
                 )}
-                
+
                 {/* Stock Badge */}
-                {product.stock === 0 && (
+                {product.stock_quantity === 0 && (
                   <div className="absolute top-3 right-3 bg-gray-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                     Out of Stock
                   </div>
                 )}
-                
+
                 {/* Floating Hearts */}
                 <motion.div
                   className="absolute top-3 right-3 text-pink-400/60"
-                  animate={{ 
+                  animate={{
                     scale: [1, 1.2, 1],
-                    rotate: [0, 10, -10, 0]
+                    rotate: [0, 10, -10, 0],
                   }}
                   transition={{ duration: 3, repeat: Infinity }}
                 >
                   <Heart className="w-4 h-4" />
                 </motion.div>
-                
+
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pink-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
                   <Link href={`/shop/${product.id}`}>
@@ -237,7 +289,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                     variant="primary"
                     size="sm"
                     onClick={() => handleAddToCart(product)}
-                    disabled={product.stock === 0}
+                    disabled={product.stock_quantity === 0}
                     className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white"
                   >
                     <ShoppingCart className="w-4 h-4 mr-1" />
@@ -245,7 +297,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                   </Button>
                 </div>
               </div>
-              
+
               <CardContent className="p-4">
                 <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-pink-600 transition-colors">
                   {product.name}
@@ -258,7 +310,9 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                     {formatPrice(product.price)}
                   </span>
                   <span className="text-sm text-gray-500">
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                    {product.stock_quantity && product.stock_quantity > 0
+                      ? `${product.stock_quantity} in stock`
+                      : "Out of stock"}
                   </span>
                 </div>
               </CardContent>
@@ -267,5 +321,5 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
         ))}
       </div>
     </div>
-  )
+  );
 }

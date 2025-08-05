@@ -1,4 +1,4 @@
-# Physical Store E-commerce App
+# MHCloth E-commerce App
 
 A modern, responsive e-commerce application built with Next.js 15, TypeScript, and Tailwind CSS. This application features a complete online store with product galleries, shopping cart, user authentication, and more.
 
@@ -8,8 +8,9 @@ A modern, responsive e-commerce application built with Next.js 15, TypeScript, a
 - **Responsive Design**: Mobile-first approach with beautiful UI components
 - **Product Management**: Complete product catalog with categories and search
 - **Shopping Cart**: Full cart functionality with persistent state
-- **User Authentication**: Integrated with Clerk for secure user management
-- **Database Integration**: Supabase for backend data management
+- **Mock Data Integration**: Local data management system
+- **User Authentication**: Ready for integration with auth providers
+- **Real-time Data**: Live product and order management
 - **Performance Optimized**: Built with performance best practices
 - **SEO Friendly**: Optimized for search engines with proper meta tags
 
@@ -18,8 +19,9 @@ A modern, responsive e-commerce application built with Next.js 15, TypeScript, a
 - **Framework**: Next.js 15
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Authentication**: Clerk
-- **Database**: Supabase
+- **Data**: Mock data with local storage
+- **Authentication**: Ready for integration
+- **Storage**: Local file management
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
 - **Deployment**: Vercel
@@ -29,8 +31,8 @@ A modern, responsive e-commerce application built with Next.js 15, TypeScript, a
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/physical-store.git
-cd physical-store
+git clone https://github.com/devisTuhin/mhcloth.git
+cd mhcloth
 ```
 
 2. Install dependencies:
@@ -43,14 +45,12 @@ npm install
    Create a `.env.local` file in the root directory and add your environment variables:
 
 ```env
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+# Clerk Authentication (if using authentication)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key-here
+CLERK_SECRET_KEY=your-clerk-secret-key-here
 
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+# Next.js
+NEXT_TELEMETRY_DISABLED=1
 ```
 
 4. Run the development server:
@@ -61,13 +61,26 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## 🗄️ Database Setup
+
+1. **Set up your backend** (optional):
+   - Configure your preferred database solution
+   - Set up authentication provider
+   - Configure file storage if needed
+
+2. **Seed the database**:
+   ```bash
+   node scripts/seed-database.js
+   ```
+   This will populate your database with sample categories and products.
+
 ## 🚀 Deploy on Vercel
 
 This application is optimized for Vercel deployment:
 
 ### Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/physical-store.git)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/devisTuhin/mhcloth.git)
 
 📖 **For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
 
@@ -77,27 +90,20 @@ This application is optimized for Vercel deployment:
 
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "New Project"
-   - Import your GitHub repository: `https://github.com/yourusername/physical-store.git`
+   - Import your GitHub repository: `https://github.com/devisTuhin/mhcloth.git`
 
 2. **Configure Environment Variables** (REQUIRED):
    In Vercel dashboard, go to your project → Settings → Environment Variables and add:
 
-   **Required for Authentication:**
+   **Required for Database and Authentication:**
 
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` = `pk_test_your_key_here`
-   - `CLERK_SECRET_KEY` = `sk_test_your_secret_key_here`
-
-   **Optional for Database:**
-
-   - `NEXT_PUBLIC_SUPABASE_URL` = `your_supabase_url`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `your_supabase_anon_key`
-   - `SUPABASE_SERVICE_ROLE_KEY` = `your_service_role_key`
+   - Add your environment variables as needed
 
    **Optional for Performance:**
 
    - `NEXT_TELEMETRY_DISABLED` = `1`
 
-   ⚠️ **Important**: Without Clerk keys, the build will fail with "Missing publishableKey" error.
+   ⚠️ **Note**: The application currently uses mock data. Configure a real backend for production use.
 
 3. **Deploy**:
    - Click "Deploy"
@@ -179,8 +185,8 @@ Error: @clerk/clerk-react: Missing publishableKey
 **Error: "Pre-rendering Error"**
 
 - Ensure all environment variables are properly set
-- Check that your Clerk keys are valid and active
-- Verify your Supabase configuration if using database features
+- Check your environment variables if using external services
+- Verify your configuration files
 
 **Build Performance Issues**
 
@@ -217,6 +223,6 @@ This project is licensed under the MIT License.
 **Ready for Vercel Deployment!** 🚀
 
 This application is fully configured and optimized for deployment on Vercel. Simply connect your GitHub repository to Vercel, add your environment variables, and deploy!
-# physicalStore
-# physicalStore
-# physicalStore
+# MHCloth
+# MHCloth
+# MHCloth

@@ -64,7 +64,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
       
       // Stock filter
       if (searchParams.filter === 'in-stock') {
-        filteredProducts = filteredProducts.filter(product => product.stock > 0)
+        filteredProducts = filteredProducts.filter(product => product.stock && product.stock > 0)
       } else if (searchParams.filter === 'featured') {
         filteredProducts = filteredProducts.filter(product => product.featured)
       }
@@ -161,7 +161,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
             <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-red-100">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image_url}
+                  src={product.image_url || '/placeholder-image.jpg'}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -239,7 +239,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                 
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                    {product.stock && product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                   </span>
                   <span className="text-red-500 font-medium">
                     Limited time!

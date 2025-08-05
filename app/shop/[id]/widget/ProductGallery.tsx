@@ -21,11 +21,12 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
   const [isZoomed, setIsZoomed] = useState(false)
   
   // Mock multiple images - in real app, product would have multiple images
+  const baseImage = product.image_url || '/placeholder-image.jpg'
   const images = [
-    product.image_url,
-    product.image_url.replace('w=800&h=800', 'w=800&h=800&sat=-100'), // B&W version
-    product.image_url.replace('w=800&h=800', 'w=800&h=800&sepia=100'), // Sepia version
-    product.image_url.replace('w=800&h=800', 'w=800&h=800&hue=180'), // Hue shifted
+    baseImage,
+    baseImage.includes('w=800&h=800') ? baseImage.replace('w=800&h=800', 'w=800&h=800&sat=-100') : baseImage, // B&W version
+    baseImage.includes('w=800&h=800') ? baseImage.replace('w=800&h=800', 'w=800&h=800&sepia=100') : baseImage, // Sepia version
+    baseImage.includes('w=800&h=800') ? baseImage.replace('w=800&h=800', 'w=800&h=800&hue=180') : baseImage, // Hue shifted
   ]
   
   const nextImage = () => {

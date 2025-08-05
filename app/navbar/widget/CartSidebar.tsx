@@ -166,7 +166,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                         )
                                       }
                                       disabled={
-                                        item.quantity >= item.product.stock
+                                        item.product.stock ? item.quantity >= item.product.stock : false
                                       }
                                       className="p-1 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                       aria-label="Increase quantity"

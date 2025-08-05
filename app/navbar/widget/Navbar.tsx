@@ -3,19 +3,17 @@
 import { cn } from "@/lib/utils";
 import { useBackgroundDetection, getTextColorClasses, getIconColorClasses, getBorderColorClasses } from "@/lib/useBackgroundDetection";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, ChevronDown, User, ShoppingBag, Sparkles } from "lucide-react";
+import { Menu, X, ChevronDown, User, ShoppingBag, Sparkles, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartIcon from "./CartIcon";
 import CartSidebar from "./CartSidebar";
-import ProfileIcon from "./ProfileIcon";
 import SearchBar from "./SearchBar";
 
 const navigation = [
   { name: "Home", href: "/home" },
   { name: "Store", href: "/shop" },
-  { name: "Gallery", href: "/gallery" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
@@ -91,28 +89,43 @@ export default function Navbar() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-xl border-b shadow-lg",
-          "bg-black/80 border-black/30",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b shadow-2xl",
           isScrolled ? "h-16" : "h-20 lg:h-24"
         )}
+        style={{
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 100%)',
+          backdropFilter: 'blur(40px) saturate(180%) brightness(1.1)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%) brightness(1.1)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={cn(
             "flex items-center justify-between transition-all duration-500",
             isScrolled ? "h-16" : "h-20 lg:h-24"
           )}>
-            {/* Brand Name Only */}
+            {/* Enhanced Brand Name */}
             <Link href="/home" className="group">
-              <motion.span
+              <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
-                className={cn(
-                  "font-bold transition-all duration-300 text-white",
-                  isScrolled ? "text-lg lg:text-xl" : "text-xl lg:text-2xl"
-                )}
+                className="relative"
               >
-                MHCloth
-              </motion.span>
+                <motion.span
+                  className={cn(
+                    "font-bold transition-all duration-300 text-white relative z-10",
+                    isScrolled ? "text-lg lg:text-xl" : "text-xl lg:text-2xl"
+                  )}
+                >
+                  MHCloth
+                </motion.span>
+                {/* Subtle glow effect on hover */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"
+                  style={{ transform: 'scale(1.2)' }}
+                />
+              </motion.div>
             </Link>
 
             {/* Desktop Navigation with Dropdown */}
@@ -124,10 +137,26 @@ export default function Navbar() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className={cn(
-                    "flex items-center px-4 py-2 font-medium transition-all duration-300 rounded-lg backdrop-blur-sm relative overflow-hidden",
-                    "text-white hover:bg-white/10",
-                    isDropdownOpen && "text-blue-300 bg-white/20"
+                    "flex items-center px-4 py-2 font-medium transition-all duration-300 rounded-xl backdrop-blur-sm relative overflow-hidden border",
+                    "text-white hover:shadow-lg",
+                    isDropdownOpen && "text-blue-300 shadow-lg"
                   )}
+                  style={{
+                    background: isDropdownOpen 
+                      ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%)'
+                      : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
+                    backdropFilter: 'blur(20px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                    border: isDropdownOpen 
+                      ? '1px solid rgba(59, 130, 246, 0.3)'
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: isDropdownOpen 
+                      ? '0 4px 16px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                      : '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: '-0.01em'
+                  }}
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
@@ -330,7 +359,7 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
 
-              {/* Regular Navigation Items */}
+              {/* Enhanced Navigation Items */}
               {navigation.map((item) => {
                 const isActive =
                   pathname === item.href ||
@@ -345,19 +374,37 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "px-4 py-2 font-medium transition-all duration-300 rounded-lg backdrop-blur-sm relative overflow-hidden",
-                        "text-white hover:bg-white/10",
-                        isActive && "text-blue-300 bg-white/20"
+                        "px-4 py-2 font-medium transition-all duration-300 rounded-xl backdrop-blur-sm relative overflow-hidden border",
+                        "text-white hover:shadow-lg",
+                        isActive 
+                          ? "text-blue-300 shadow-lg" 
+                          : "border-transparent hover:border-white/20"
                       )}
+                      style={{
+                        background: isActive 
+                          ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%)'
+                          : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
+                        backdropFilter: 'blur(20px) saturate(150%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                        border: isActive 
+                          ? '1px solid rgba(59, 130, 246, 0.3)'
+                          : '1px solid rgba(255, 255, 255, 0.1)',
+                        boxShadow: isActive 
+                          ? '0 4px 16px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                          : '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontWeight: 500,
+                        letterSpacing: '-0.01em'
+                      }}
                     >
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
+                        className="absolute inset-0 bg-gradient-to-r from-blue-500/15 to-purple-500/15 opacity-0 hover:opacity-100 transition-opacity duration-300"
                       />
                       <span className="relative z-10">{item.name}</span>
                       {isActive && (
                         <motion.div
                           layoutId="activeDesktopTab"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400 rounded-t"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-t"
                           transition={{ duration: 0.3 }}
                         />
                       )}
@@ -367,20 +414,44 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center space-x-2">
+            {/* Desktop Actions - Only Search and Cart in Dropdown */}
+            <div className="hidden lg:flex items-center space-x-3">
               <SearchBar isLightBackground={false} />
-
-              <CartIcon
-                showSidebar={true}
-                onOpenSidebar={() => setIsCartOpen(true)}
-                isLightBackground={false}
-              />
-
-              <ProfileIcon isLightBackground={false} />
+              
+              {/* Enhanced Cart Access with Indicator */}
+              <div className="relative">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsCartOpen(true)}
+                  className={cn(
+                    "flex items-center px-4 py-2 font-medium transition-all duration-300 rounded-xl backdrop-blur-sm relative overflow-hidden border",
+                    "text-white hover:shadow-lg"
+                  )}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
+                    backdropFilter: 'blur(20px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                  }}
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
+                  />
+                  <ShoppingBag className="w-4 h-4 mr-2 relative z-10" />
+                  <span className="relative z-10 text-sm font-medium">Cart</span>
+                  {/* Subtle cart indicator */}
+                  <motion.div
+                    className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full opacity-60"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </motion.button>
+              </div>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Cart Icon Remains for Mobile */}
             <div className="lg:hidden flex items-center space-x-2">
               <CartIcon
                 showSidebar={true}
@@ -428,39 +499,46 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Mobile Menu */}
+            {/* Enhanced Mobile Menu */}
             <motion.div
               initial={{ opacity: 0, x: "100%" }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-white/5 backdrop-blur-3xl border-l border-white/10 shadow-2xl z-50 lg:hidden overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-80 shadow-2xl z-50 lg:hidden overflow-y-auto"
               style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
-                backdropFilter: 'blur(40px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                background: 'linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.92) 100%)',
+                backdropFilter: 'blur(60px) saturate(200%) brightness(1.1)',
+                WebkitBackdropFilter: 'blur(60px) saturate(200%) brightness(1.1)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
               }}
             >
               <div className="p-6">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between mb-8">
+                {/* Enhanced Mobile Header */}
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
                   <span 
-                    className={cn(
-                      "font-bold text-lg text-white"
-                    )}
+                    className="font-bold text-lg text-white"
                   >
                     MHCloth
                   </span>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      "p-2 rounded-lg transition-all duration-200",
+                      "p-2 rounded-xl transition-all duration-300 backdrop-blur-sm border",
                       "text-white hover:bg-white/10"
                     )}
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
                   >
-                    <X className="w-6 h-6" />
-                  </button>
+                    <X className="w-5 h-5" />
+                  </motion.button>
                 </div>
 
                 {/* Mobile Search */}
@@ -468,9 +546,14 @@ export default function Navbar() {
                   <SearchBar variant="mobile" isLightBackground={false} />
                 </div>
 
-                {/* Mobile Categories */}
+                {/* Enhanced Mobile Categories */}
                 <div className="mb-6">
-                  <h3 className="text-white font-semibold text-sm mb-3 px-4 text-white/70 uppercase tracking-wider">
+                  <h3 className="text-white font-semibold text-sm mb-4 px-1 text-white/70 uppercase tracking-wider"
+                      style={{
+                        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontWeight: 600,
+                        letterSpacing: '0.05em'
+                      }}>
                     Categories
                   </h3>
                   <div className="space-y-2">
@@ -508,9 +591,14 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* Mobile Navigation Links */}
+                {/* Enhanced Mobile Navigation Links */}
                 <div className="space-y-2 mb-8">
-                  <h3 className="text-white font-semibold text-sm mb-3 px-4 text-white/70 uppercase tracking-wider">
+                  <h3 className="text-white font-semibold text-sm mb-4 px-1 text-white/70 uppercase tracking-wider"
+                      style={{
+                        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                        fontWeight: 600,
+                        letterSpacing: '0.05em'
+                      }}>
                     Pages
                   </h3>
                   {navigation.map((item) => {
@@ -543,11 +631,28 @@ export default function Navbar() {
                   })}
                 </div>
 
-                {/* Mobile Actions */}
+                {/* Mobile Actions - Account Access via Contact */}
                 <div className="space-y-6">
-                  {/* Mobile Profile */}
                   <div className="border-t border-white/20 pt-6">
-                    <ProfileIcon variant="mobile" isLightBackground={false} />
+                    <Link
+                      href="/contact"
+                      className={cn(
+                        "flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 backdrop-blur-sm border",
+                        "text-white hover:bg-white/15 hover:border-white/30 hover:shadow-lg border-white/10"
+                      )}
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)'
+                      }}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User className="w-5 h-5 mr-3" />
+                      <div>
+                        <div>Account & Support</div>
+                        <div className="text-xs text-white/60">Contact us for assistance</div>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>

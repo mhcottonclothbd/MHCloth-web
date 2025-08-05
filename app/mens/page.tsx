@@ -1,10 +1,6 @@
 import { Metadata } from 'next'
-import { Suspense } from 'react'
-import CategoryHero from './widget/CategoryHero'
-import ShopByCategory from '@/components/ShopByCategory'
-import LoadingSkeleton from '../shop/widget/LoadingSkeleton'
 import { mensCategories } from '@/data/categories'
-import { mensProducts } from '@/data/mens-products'
+import ProductGridWithDropdown from './widget/ProductGridWithDropdown'
 
 export const metadata: Metadata = {
   title: "Men's Collection - MHCloth | Premium Men's Products",
@@ -22,47 +18,33 @@ interface MensPageProps {
 }
 
 /**
- * Men's category page showcasing masculine products
- * Features hero section, category dropdown, and filtered product grid for men's items
+ * Men's category page with product grid and category filtering
  */
 export default async function MensPage({ searchParams }: MensPageProps) {
   const resolvedSearchParams = await searchParams
   
-  // Transform mensProducts to match the expected Product interface
-  const transformedProducts = mensProducts.map(product => {
-    const productAny = product as any
-    return {
-      ...product,
-      id: product.id.toString(),
-      description: product.name, // Use name as description
-      image_url: productAny.image || productAny.image_url || '',
-      stock: productAny.stock || (productAny.inStock ? 10 : 0),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  })
-  
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f8f6f3' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Hero Section */}
-      <CategoryHero 
-        title="Men's Collection"
-        subtitle="For the Modern Gentleman"
-        description="Discover our carefully curated selection of premium men's products, from sophisticated clothing to essential accessories."
-        backgroundImage="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=600&fit=crop"
-      />
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Men's Collection
+          </h1>
+          <p className="text-xl text-blue-100">
+            For the Modern Gentleman
+          </p>
+        </div>
+      </div>
 
-      {/* Products Section with Category Dropdown */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6 md:py-8">
-        <Suspense fallback={<LoadingSkeleton />}>
-          <ShopByCategory 
-            searchParams={resolvedSearchParams}
-            categories={mensCategories}
-            products={transformedProducts}
-            categoryType="mens"
-            title="Men's Products"
-          />
-        </Suspense>
+      {/* Product Grid with Categories */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <ProductGridWithDropdown
+          searchParams={resolvedSearchParams}
+          categories={mensCategories}
+          category="mens"
+          title="Men's Collection"
+        />
       </div>
     </div>
   )
