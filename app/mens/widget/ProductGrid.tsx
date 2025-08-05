@@ -3,6 +3,7 @@
 import Button from "@/components/Button";
 import { Card, CardContent } from "@/components/Card";
 import { useCart } from "@/lib/cart-context";
+import { handleApiError, isApiError, productApi } from "@/lib/services/api";
 import { formatPrice } from "@/lib/utils";
 import { Product } from "@/types";
 import { motion } from "framer-motion";

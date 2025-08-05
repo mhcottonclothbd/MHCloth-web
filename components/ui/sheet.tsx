@@ -61,7 +61,7 @@ function SheetContent({
       React.isValidElement(child) &&
       (child.type === SheetTitle ||
         (child.type === SheetHeader &&
-          React.Children.toArray(child.props.children).some(
+          React.Children.toArray((child.props as any).children).some(
             (headerChild) =>
               React.isValidElement(headerChild) && headerChild.type === SheetTitle
           )))

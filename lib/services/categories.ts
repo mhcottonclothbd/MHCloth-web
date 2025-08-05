@@ -3,7 +3,7 @@
  * Handles category data fetching and transformation
  */
 
-// Removed API dependency - using mock data instead
+import { categoryApi, isApiError, handleApiError } from './api'
 
 export interface CategoryItem {
   id: string;

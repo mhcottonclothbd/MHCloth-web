@@ -10,7 +10,7 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
-import { productsByCategory } from '@/data/andsons-products'
+import { handleApiError, isApiError, productApi } from '@/lib/services/api'
 
 interface ProductGridProps {
   searchParams: {
@@ -21,9 +21,6 @@ interface ProductGridProps {
   category: string
   title: string
 }
-
-// Real new arrival products from &Sons - latest vintage-inspired releases
-const newArrivalProducts: Product[] = productsByCategory['new-arrivals']
 
 /**
  * Product grid component specifically for new arrivals
@@ -38,35 +35,54 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
     const fetchProducts = async () => {
       setLoading(true)
       
-      let filteredProducts = [...newArrivalProducts]
-      
-      // Search filter
-      if (searchParams.search) {
-        const searchTerm = searchParams.search.toLowerCase()
-        filteredProducts = filteredProducts.filter(
-          product => 
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm)
-        )
+      try {
+        // Fetch all products from API
+        const response = await productApi.getProducts()
+        
+        if (isApiError(response)) {
+          throw new Error(response.error)
+        }
+        
+        let filteredProducts = [...response.data]
+        
+        // Filter for new arrivals (products created in last 30 days or marked as new)
+        const thirtyDaysAgo = new Date()
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+        
+        filteredProducts = filteredProducts.filter(product => {
+          const createdDate = new Date(product.created_at)
+          return createdDate >= thirtyDaysAgo || product.featured
+        })
+        
+        // Search filter
+        if (searchParams.search) {
+          const searchTerm = searchParams.search.toLowerCase()
+          filteredProducts = filteredProducts.filter(
+            product => 
+              product.name.toLowerCase().includes(searchTerm) ||
+              product.description.toLowerCase().includes(searchTerm)
+          )
+        }
+        
+        // Stock filter
+        if (searchParams.filter === 'in-stock') {
+          filteredProducts = filteredProducts.filter(product => product.stock && product.stock > 0)
+        } else if (searchParams.filter === 'featured') {
+          filteredProducts = filteredProducts.filter(product => product.featured)
+        }
+        
+        // Sort products by newest (default for new arrivals)
+        filteredProducts.sort((a, b) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        })
+        
+        setProducts(filteredProducts)
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setProducts([])
+      } finally {
+        setLoading(false)
       }
-      
-      // Stock filter
-      if (searchParams.filter === 'in-stock') {
-        filteredProducts = filteredProducts.filter(product => product.stock && product.stock > 0)
-      } else if (searchParams.filter === 'featured') {
-        filteredProducts = filteredProducts.filter(product => product.featured)
-      }
-      
-      // Sort products by newest (default for new arrivals)
-      filteredProducts.sort((a, b) => {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      })
-      
-      // Simulate loading delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      setProducts(filteredProducts)
-      setLoading(false)
     }
 
     fetchProducts()

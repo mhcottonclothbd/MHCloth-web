@@ -189,10 +189,9 @@ const VariantManager: React.FC<VariantManagerProps> = ({
             <div className="space-y-2">
               <Label className="text-sm">Color</Label>
               <ColorPicker
-                color={newVariant.color || "#000000"}
-                onChange={(color) => setNewVariant(prev => ({ ...prev, color }))}
-                swatches={["#000000", "#ffffff", "#f87171", "#fbbf24", "#34d399", "#60a5fa"]}
-                className="max-w-xs"
+                selectedColors={newVariant.color ? [newVariant.color] : []}
+                onColorsChange={(colors) => setNewVariant(prev => ({ ...prev, color: colors[0] || "" }))}
+                maxColors={1}
               />
             </div>
 

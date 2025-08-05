@@ -63,7 +63,7 @@ function DialogContent({
       React.isValidElement(child) &&
       (child.type === DialogTitle ||
         (child.type === DialogHeader &&
-          React.Children.toArray(child.props.children).some(
+          React.Children.toArray((child.props as any).children).some(
             (headerChild) =>
               React.isValidElement(headerChild) && headerChild.type === DialogTitle
           )))

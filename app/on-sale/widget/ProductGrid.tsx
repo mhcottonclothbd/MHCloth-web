@@ -10,7 +10,7 @@ import Button from '@/components/Button'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/types'
 import { useCart } from '@/lib/cart-context'
-import { productsByCategory } from '@/data/andsons-products'
+import { handleApiError, isApiError, productApi } from '@/lib/services/api'
 
 interface SaleProduct extends Product {
   original_price: number
@@ -27,15 +27,7 @@ interface ProductGridProps {
   title: string
 }
 
-// Real sale products from &Sons - authentic vintage-inspired items on sale
-const saleProducts: Product[] = productsByCategory['on-sale']
 
-// Convert regular products to sale products with discount information
-const mockSaleProducts: SaleProduct[] = saleProducts.map(product => ({
-  ...product,
-  original_price: product.price * 1.6, // Calculate original price (assuming ~37% discount)
-  discount_percentage: Math.round(((product.price * 1.6 - product.price) / (product.price * 1.6)) * 100)
-}))
 
 /**
  * Product grid component specifically for sale products
@@ -50,35 +42,50 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
     const fetchProducts = async () => {
       setLoading(true)
       
-      let filteredProducts = [...mockSaleProducts]
-      
-      // Search filter
-      if (searchParams.search) {
-        const searchTerm = searchParams.search.toLowerCase()
-        filteredProducts = filteredProducts.filter(
-          product => 
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm)
-        )
+      try {
+        // Fetch all products from API
+        const response = await productApi.getProducts({ onSale: true })
+        
+        if (isApiError(response)) {
+          throw new Error(response.error)
+        }
+        
+        // Convert regular products to sale products with discount information
+        let saleProducts: SaleProduct[] = response.data.map(product => ({
+          ...product,
+          original_price: product.price * 1.6, // Calculate original price (assuming ~37% discount)
+          discount_percentage: Math.round(((product.price * 1.6 - product.price) / (product.price * 1.6)) * 100)
+        }))
+        
+        // Search filter
+        if (searchParams.search) {
+          const searchTerm = searchParams.search.toLowerCase()
+          saleProducts = saleProducts.filter(
+            product => 
+              product.name.toLowerCase().includes(searchTerm) ||
+              product.description.toLowerCase().includes(searchTerm)
+          )
+        }
+        
+        // Stock filter
+        if (searchParams.filter === 'in-stock') {
+          saleProducts = saleProducts.filter(product => product.stock && product.stock > 0)
+        } else if (searchParams.filter === 'featured') {
+          saleProducts = saleProducts.filter(product => product.featured)
+        }
+        
+        // Sort products by discount percentage (highest first)
+        saleProducts.sort((a, b) => {
+          return b.discount_percentage - a.discount_percentage
+        })
+        
+        setProducts(saleProducts)
+      } catch (error) {
+        console.error('Error fetching sale products:', error)
+        setProducts([])
+      } finally {
+        setLoading(false)
       }
-      
-      // Stock filter
-      if (searchParams.filter === 'in-stock') {
-        filteredProducts = filteredProducts.filter(product => product.stock && product.stock > 0)
-      } else if (searchParams.filter === 'featured') {
-        filteredProducts = filteredProducts.filter(product => product.featured)
-      }
-      
-      // Sort products by discount percentage (highest first)
-      filteredProducts.sort((a, b) => {
-        return b.discount_percentage - a.discount_percentage
-      })
-      
-      // Simulate loading delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      setProducts(filteredProducts)
-      setLoading(false)
     }
 
     fetchProducts()

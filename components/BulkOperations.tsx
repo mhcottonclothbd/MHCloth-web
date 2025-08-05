@@ -126,7 +126,7 @@ const parseCSV = (csvContent: string): Partial<Product>[] => {
           break;
         case 'is_featured':
         case 'is_on_sale':
-          product[header as keyof Product] = value.toLowerCase() === 'true' as any;
+          (product as any)[header] = value.toLowerCase() === 'true';
           break;
         case 'sizes':
         case 'colors':

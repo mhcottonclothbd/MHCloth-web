@@ -105,23 +105,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log the error with context
-    const appError = new AppError(
+    ErrorLogger.error(
       error.message,
-      ErrorType.CLIENT,
-      500,
-      true,
+      error,
       {
-        componentStack: errorInfo.componentStack,
-        errorBoundary: true,
-        errorId: this.state.errorId
-      }
+        errorInfo,
+        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
+        url: typeof window !== 'undefined' ? window.location.href : 'unknown'
+      },
+      ErrorType.UNKNOWN
     )
-
-    ErrorLogger.error(appError, {
-      errorInfo,
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
-      url: typeof window !== 'undefined' ? window.location.href : 'unknown'
-    })
 
     // Call custom error handler if provided
     if (this.props.onError) {
@@ -260,13 +253,15 @@ export function useErrorHandler() {
   const handleError = React.useCallback((error: Error, context?: Record<string, any>) => {
     const appError = error instanceof AppError ? error : new AppError(
       error.message,
-      ErrorType.CLIENT,
-      500,
-      true,
-      context
+      ErrorType.UNKNOWN
     )
     
-    ErrorLogger.error(appError, context)
+    ErrorLogger.error(
+      appError.message,
+      appError,
+      context,
+      appError.type
+    )
     
     // You can also trigger a toast notification here
     // toast.error(getUserFriendlyMessage(appError))
@@ -302,7 +297,12 @@ export function useAsyncError() {
       const error = err instanceof Error ? err : new Error('Unknown error')
       setError(error)
       
-      ErrorLogger.error(error)
+      ErrorLogger.error(
+        error.message,
+        error,
+        undefined,
+        ErrorType.UNKNOWN
+      )
       
       if (onError) {
         onError(error)
