@@ -6,16 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a number as a price string
- * @param price - The price to format
- * @param currency - The currency symbol (default: BDT)
- * @returns Formatted price string
+ * Format a number as BDT currency in English numerals with the ৳ symbol.
+ * This app uses only BDT everywhere.
  */
-export function formatPrice(price: number, currency = 'BDT'): string {
-  return new Intl.NumberFormat('bn-BD', {
-    style: 'currency',
-    currency: currency,
-  }).format(price);
+export function formatPrice(price: number): string {
+  const numeric = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number.isFinite(price) ? price : 0);
+  return `৳${numeric}`;
 }
 
 /**

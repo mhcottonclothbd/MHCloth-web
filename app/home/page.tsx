@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import HeroSection from './widget/HeroSection'
 import FeaturedProducts from './widget/FeaturedProducts'
-import NewArrivals from './widget/NewArrivals'
 import OnSale from './widget/OnSale'
+import NewArrivals from './widget/NewArrivals'
 import AboutPreview from './widget/AboutPreview'
 import Newsletter from './widget/Newsletter'
 

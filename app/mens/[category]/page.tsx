@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ProductGrid from '../widget/ProductGrid'
 import CategoryHero from '../widget/CategoryHero'
-import { mensCategories } from '../../../data/categories'
+import { categoryApi } from '@/lib/services/api'
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>
@@ -16,9 +16,13 @@ interface CategoryPageProps {
 /**
  * Generates metadata for men's category pages
  */
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params
-  const categoryData = mensCategories.find(cat => cat.id === category)
+  const res = await categoryApi.getCategories({ gender: 'mens' })
+  const list = Array.isArray((res as any).data) ? (res as any).data : []
+  const categoryData = list.find((cat: any) => (cat.slug || cat.id) === category)
   
   if (!categoryData) {
     return {
@@ -33,7 +37,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     keywords: `men's ${categoryData.name.toLowerCase()}, ${categoryData.name}, men's fashion, premium clothing`,
     openGraph: {
       title: `Men's ${categoryData.name}`,
-      description: categoryData.description,
+      description: categoryData.description || `${categoryData.name} collection`,
       type: 'website'
     }
   }
@@ -46,7 +50,9 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function MensCategoryPage({ params, searchParams }: CategoryPageProps) {
   const { category } = await params
   const resolvedSearchParams = await searchParams
-  const categoryData = mensCategories.find(cat => cat.id === category)
+  const res = await categoryApi.getCategories({ gender: 'mens' })
+  const list = Array.isArray((res as any).data) ? (res as any).data : []
+  const categoryData = list.find((cat: any) => (cat.slug || cat.id) === category)
   
   if (!categoryData) {
     notFound()
@@ -63,7 +69,7 @@ export default async function MensCategoryPage({ params, searchParams }: Categor
       {/* Category Hero */}
       <CategoryHero 
         title={`Men's ${categoryData.name}`}
-        subtitle={categoryData.description}
+        subtitle={categoryData.description || `${categoryData.name} collection`}
         description={`Explore our premium collection of ${categoryData.name.toLowerCase()} designed for the modern gentleman.`}
         backgroundImage="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop"
       />
@@ -78,13 +84,4 @@ export default async function MensCategoryPage({ params, searchParams }: Categor
       </div>
     </div>
   )
-}
-
-/**
- * Generate static params for static generation
- */
-export async function generateStaticParams() {
-  return mensCategories.map((category) => ({
-    category: category.id,
-  }))
 }

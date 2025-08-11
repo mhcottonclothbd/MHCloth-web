@@ -51,19 +51,21 @@ interface UploadState {
 }
 
 /**
- * Validates if a URL is a valid image URL
+ * Validates if a URL is a valid image URL.
+ * Restricted to formats supported by the server API: JPG, JPEG, PNG, WEBP.
  */
 const isValidImageUrl = (url: string): boolean => {
   try {
-    new URL(url);
-    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+    return /\.(jpg|jpeg|png|webp)$/i.test(parsed.pathname);
   } catch {
     return false;
   }
 };
 
 /**
- * Compresses an image file
+ * Compresses an image file and returns a JPEG file with proper .jpg extension.
  */
 const compressImage = (file: File, quality: number = 0.8): Promise<File> => {
   return new Promise((resolve) => {
@@ -96,7 +98,10 @@ const compressImage = (file: File, quality: number = 0.8): Promise<File> => {
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            const compressedFile = new File([blob], file.name, {
+            const originalName = file.name || 'image';
+            const baseName = originalName.replace(/\.[^.]+$/, '');
+            const newName = `${baseName}.jpg`;
+            const compressedFile = new File([blob], newName, {
               type: 'image/jpeg',
               lastModified: Date.now(),
             });
@@ -124,6 +129,7 @@ export function EnhancedImageUpload({
   maxImages = 8,
   disabled = false,
 }: EnhancedImageUploadProps) {
+  const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
   const [uploadState, setUploadState] = useState<UploadState>({
     uploading: false,
     progress: 0,
@@ -161,15 +167,17 @@ export function EnhancedImageUpload({
         for (let i = 0; i < fileArray.length; i++) {
           const file = fileArray[i];
 
-          if (!file.type.startsWith("image/")) {
-            throw new Error(`Invalid file type. Only images are allowed`);
+          // Enforce server-side constraints client-side for a smoother UX
+          if (!allowedMimeTypes.has(file.type)) {
+            throw new Error(`Unsupported format. Allowed: JPG, PNG, WEBP`);
           }
 
-          if (file.size > 10 * 1024 * 1024) {
-            throw new Error(`File too large. Max size is 10MB`);
+          // File size limit aligned with API (<= 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            throw new Error(`File too large. Max size is 5MB`);
           }
 
-          // Compress image if it's larger than 2MB
+          // Compress image if it's larger than 2MB (output JPEG)
           let processedFile = file;
           if (file.size > 2 * 1024 * 1024) {
             processedFile = await compressImage(file);
@@ -411,11 +419,9 @@ export function EnhancedImageUpload({
                       </button>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      JPG, PNG, WebP, GIF, SVG up to 10MB each (max {maxImages} images)
+                  JPG, PNG, WebP up to 5MB each (max {maxImages} images)
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Images larger than 2MB will be automatically optimized
-                    </p>
+              <p className="text-xs text-muted-foreground">Images larger than 2MB will be automatically optimized</p>
                   </div>
                 </div>
               )}
@@ -452,7 +458,7 @@ export function EnhancedImageUpload({
               <p className="text-sm text-red-600">{urlError}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              Supported formats: JPG, PNG, WebP, GIF, SVG
+              Supported formats: JPG, PNG, WebP
             </p>
           </div>
         </TabsContent>

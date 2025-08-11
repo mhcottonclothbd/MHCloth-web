@@ -1,55 +1,54 @@
 "use client";
 
+import { SectionErrorBoundary } from "@/components/ErrorBoundary";
+import { ProductGrid } from "@/components/ProductGrid";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Package, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
-// No new arrivals - all products have been removed
-const newArrivals = [];
-
-/**
- * New Arrivals section - Currently showing empty state
- * All products have been removed from the website
- */
 export default function NewArrivals() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-6 h-6 text-blue-600 mr-2" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              New Arrivals
-            </h2>
-            <Sparkles className="w-6 h-6 text-blue-600 ml-2" />
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="w-6 h-6 text-emerald-600" />
+            <h2 className="text-3xl font-bold">New Arrivals</h2>
+            <Sparkles className="w-6 h-6 text-emerald-600" />
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our new arrivals section is currently being updated.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Fresh drops you’ll love. Updated frequently.
           </p>
         </motion.div>
 
-        {/* Empty State */}
-        <motion.div
-          className="text-center py-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+        <SectionErrorBoundary
+          title="New Arrivals Unavailable"
+          description="We couldn't load the latest products right now. Please try again shortly."
         >
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-6" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-3">
-            No New Arrivals
-          </h3>
-          <p className="text-gray-600 max-w-md mx-auto">
-            We're currently updating our inventory. Stay tuned for exciting new products coming soon!
-          </p>
-        </motion.div>
+          <ProductGrid
+            filters={{ status: "active", sort_by: "newest" }}
+            showWishlist
+            showAddToCart
+            autoLoad
+            className="mb-8"
+          />
+        </SectionErrorBoundary>
+
+        <div className="text-center">
+          <Link href="/new-arrivals">
+            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700">
+              View all New Arrivals
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );

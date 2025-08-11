@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ProductGrid from '../widget/ProductGrid'
 import CategoryHero from '../widget/CategoryHero'
-import { kidsCategories } from '../../../data/categories'
+import { categoryApi } from '@/lib/services/api'
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>
@@ -16,9 +16,13 @@ interface CategoryPageProps {
 /**
  * Generates metadata for kids category pages
  */
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params
-  const categoryData = kidsCategories.find(cat => cat.id === category)
+  const res = await categoryApi.getCategories({ gender: 'kids' })
+  const list = Array.isArray((res as any).data) ? (res as any).data : []
+  const categoryData = list.find((cat: any) => (cat.slug || cat.id) === category)
   
   if (!categoryData) {
     return {
@@ -33,7 +37,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     keywords: `kids ${categoryData.name.toLowerCase()}, ${categoryData.name}, children's products, kids items`,
     openGraph: {
       title: `Kids ${categoryData.name}`,
-      description: categoryData.description,
+      description: categoryData.description || `${categoryData.name} collection`,
       type: 'website'
     }
   }
@@ -46,7 +50,9 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function KidsCategoryPage({ params, searchParams }: CategoryPageProps) {
   const { category } = await params
   const resolvedSearchParams = await searchParams
-  const categoryData = kidsCategories.find(cat => cat.id === category)
+  const res = await categoryApi.getCategories({ gender: 'kids' })
+  const list = Array.isArray((res as any).data) ? (res as any).data : []
+  const categoryData = list.find((cat: any) => (cat.slug || cat.id) === category)
   
   if (!categoryData) {
     notFound()
@@ -63,8 +69,8 @@ export default async function KidsCategoryPage({ params, searchParams }: Categor
       {/* Category Hero */}
       <CategoryHero 
         title={`Kids ${categoryData.name}`}
-        subtitle={categoryData.description}
-        description={categoryData.description}
+        subtitle={categoryData.description || `${categoryData.name} collection`}
+        description={categoryData.description || `${categoryData.name} collection`}
         backgroundImage="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&h=400&fit=crop"
       />
       
@@ -78,13 +84,4 @@ export default async function KidsCategoryPage({ params, searchParams }: Categor
       </div>
     </div>
   )
-}
-
-/**
- * Generate static params for static generation
- */
-export async function generateStaticParams() {
-  return kidsCategories.map((category) => ({
-    category: category.id,
-  }))
 }

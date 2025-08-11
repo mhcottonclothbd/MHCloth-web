@@ -51,6 +51,19 @@ CLERK_SECRET_KEY=your-clerk-secret-key-here
 
 # Next.js
 NEXT_TELEMETRY_DISABLED=1
+
+# Supabase (required for admin dashboard & products)
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+SUPABASE_PROJECT_REF=your-project-ref
+SUPABASE_ACCESS_TOKEN=your-personal-access-token
+
+# App base URL (used for SEO canonical/robots/sitemap)
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Facebook Pixel (optional, for ads tracking)
+NEXT_PUBLIC_FB_PIXEL_ID=
 ```
 
 4. Run the development server:
@@ -64,6 +77,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## 🗄️ Database Setup
 
 1. **Set up your backend** (optional):
+
    - Configure your preferred database solution
    - Set up authentication provider
    - Configure file storage if needed
@@ -99,11 +113,13 @@ This application is optimized for Vercel deployment:
 
    - Add your environment variables as needed
 
-   **Optional for Performance:**
+   **Optional/Additional:**
 
    - `NEXT_TELEMETRY_DISABLED` = `1`
+   - `NEXT_PUBLIC_FB_PIXEL_ID` = `123456789012345` (if using Meta ads)
+   - `NEXT_PUBLIC_BASE_URL` = `https://your-domain.com`
 
-   ⚠️ **Note**: The application currently uses mock data. Configure a real backend for production use.
+   ⚠️ **Note**: The application supports Supabase-backed products. Ensure `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are set. For correct SEO links set `NEXT_PUBLIC_BASE_URL`. For Meta ads, set `NEXT_PUBLIC_FB_PIXEL_ID`.
 
 3. **Deploy**:
    - Click "Deploy"
@@ -223,6 +239,21 @@ This project is licensed under the MIT License.
 **Ready for Vercel Deployment!** 🚀
 
 This application is fully configured and optimized for deployment on Vercel. Simply connect your GitHub repository to Vercel, add your environment variables, and deploy!
+
+## Admin Access (Local)
+
+To access admin product pages locally, create a temporary admin session cookie:
+
+```bash
+curl -X POST http://localhost:3000/api/admin/sessions \
+  -H 'Content-Type: application/json' \
+  -d '{"token":"dev"}'
+```
+
+For production, set `ADMIN_SHARED_SECRET` and pass the same token when calling the endpoint.
+
 # MHCloth
+
 # MHCloth
+
 # MHCloth

@@ -380,7 +380,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
   const productReviews = (product as any).reviews || 0
 
   return (
-    <Link href={`/shop/${product.id}`}>
+    <Link href={`/products/${(product as any).slug || product.id}`}>
       <motion.div
         whileHover={{ y: -4, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

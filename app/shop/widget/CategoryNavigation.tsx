@@ -3,11 +3,16 @@
 import { motion } from 'framer-motion'
 import { Package } from 'lucide-react'
 
+interface CategoryNavigationProps {
+  selectedCategory?: string
+  onCategoryChange?: (category: string) => void
+}
+
 /**
  * Category navigation component - Currently showing empty state
  * All product categories have been removed from the website
  */
-export default function CategoryNavigation() {
+export default function CategoryNavigation({ selectedCategory, onCategoryChange }: CategoryNavigationProps) {
   return (
     <section className="py-12 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

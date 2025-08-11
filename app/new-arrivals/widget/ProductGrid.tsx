@@ -178,7 +178,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                 
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                  <Link href={`/shop/${product.id}`}>
+                  <Link href={`/products/${(product as any).slug || product.id}`}>
                     <Button
                       variant="secondary"
                       size="sm"

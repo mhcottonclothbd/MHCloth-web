@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark'
 
@@ -18,9 +18,22 @@ export function useTheme() {
     setMounted(true);
   }, []);
 
+  // Basic admin access gate: if no admin cookie, redirect away (production only)
   useEffect(() => {
     if (!mounted) return;
-    
+    try {
+      const hasAdminCookie = document.cookie.split('; ').some((c) => c.startsWith('admin_session='));
+      if (!hasAdminCookie) {
+        if (process.env.NODE_ENV === 'production') {
+          window.location.href = '/';
+        }
+      }
+    } catch { }
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     try {
       const savedTheme = localStorage.getItem('theme') as Theme;
       const systemTheme =
@@ -34,7 +47,7 @@ export function useTheme() {
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     try {
       if (theme === 'dark') {
         document.documentElement.classList.add('dark');

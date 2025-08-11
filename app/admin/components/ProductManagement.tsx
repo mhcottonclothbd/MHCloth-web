@@ -1,5 +1,7 @@
 "use client";
 
+import ColorPicker from "@/components/ColorPicker";
+import { EnhancedImageUpload } from "@/components/EnhancedImageUpload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,22 +38,10 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+// Removed hardcoded categories imports; will load from API
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import type { Product, Subcategory } from "@/types";
-import { 
-  getSubcategoriesForCategory, 
-  getSubcategoryById,
-  getSubcategoriesByMainCategory 
-} from "@/data/subcategories";
-import { 
-  mensCategories, 
-  womensCategories, 
-  kidsCategories 
-} from "@/data/categories";
-import BulkOperations from "@/components/BulkOperations";
-import ColorPicker from "@/components/ColorPicker";
-import EnhancedImageUpload from "@/components/EnhancedImageUpload";
-import FormTabs, { TabSection } from "@/components/FormTabs";
+import type { Product } from "@/types";
 import {
   AlertTriangle,
   Check,
@@ -89,10 +79,12 @@ interface ProductFormProps {
 
 interface FormErrors {
   name?: string;
+  description?: string;
   sku?: string;
   price?: string;
   images?: string;
   stock_quantity?: string;
+  subcategory_id?: string;
 }
 
 interface UploadState {
@@ -441,29 +433,131 @@ function ProductForm({
   const [activeTab, setActiveTab] = useState("details");
 
   // Available categories and subcategories based on main category
-  const availableCategories = useMemo(() => {
-    switch (formData.category) {
-      case "mens":
-        return mensCategories;
-      case "womens":
-        return womensCategories;
-      case "kids":
-        return kidsCategories;
-      default:
-        return mensCategories;
-    }
+  const [availableCategories, setAvailableCategories] = useState<
+    { id: string; name: string }[]
+  >([]);
+
+  useEffect(() => {
+    const loadCats = async () => {
+      if (!formData.category) {
+        setAvailableCategories([]);
+        return;
+      }
+      try {
+        // Fetch categories for the selected gender; still filter client-side for robustness
+        const res = await fetch(`/api/categories?gender=${formData.category}`);
+        if (!res.ok)
+          throw new Error(`Failed to load categories: ${res.status}`);
+        const result = await res.json();
+        const rows: any[] = Array.isArray(result?.data) ? result.data : [];
+
+        // Strictly show entries relevant to the selected gender based on slug semantics
+        const slugify = (input: string) =>
+          input
+            .toLowerCase()
+            .trim()
+            .replace(/&/g, "and")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+        const allowedByGender: Record<
+          "mens" | "womens" | "kids",
+          Set<string>
+        > = {
+          mens: new Set([
+            "t-shirts",
+            "polo",
+            "polo-shirts",
+            "shirts",
+            "shirts-formal-casual",
+            "hoodies-sweatshirts",
+            "hoodies-and-sweatshirts",
+            "jackets",
+            "coats",
+            "jackets-coats",
+            "jeans",
+            "trousers",
+            "cargo-pants",
+            "joggers",
+            "shorts",
+            "sweaters-cardigans",
+            "sweaters-and-cardigans",
+            "blazers-suits",
+            "blazers-and-suits",
+            "undergarments",
+          ]),
+          womens: new Set([
+            "tops",
+            "hoodies-sweatshirts",
+            "hoodies-and-sweatshirts",
+            "sweaters-cardigans",
+            "sweaters-and-cardigans",
+            "tunics-kurtis",
+            "tunics-and-kurtis",
+            "shorts",
+            "bras",
+            "panties",
+            // Newly added women categories
+            "t-shirts",
+            "shirts",
+            "jeans",
+          ]),
+          kids: new Set([
+            "t-shirts",
+            "polo",
+            "polo-shirts",
+            "shirts",
+            "shirts-formal-casual",
+            "hoodies-sweatshirts",
+            "hoodies-and-sweatshirts",
+            "jackets",
+            "coats",
+            "jackets-coats",
+            "jeans",
+            "trousers",
+            "cargo-pants",
+            "joggers",
+            "shorts",
+            "sweaters-cardigans",
+            "sweaters-and-cardigans",
+            "blazers-suits",
+            "blazers-and-suits",
+            "undergarments",
+          ]),
+        };
+
+        const allowed =
+          allowedByGender[formData.category as "mens" | "womens" | "kids"];
+
+        // First restrict to matching gender if present on category rows
+        const rowsByGender = rows.filter(
+          (c: any) => !c.gender || c.gender === formData.category
+        );
+
+        const filtered = rowsByGender.filter((c: any) => {
+          const raw = (c.slug || c.id || c.name || "").toString();
+          const slug = slugify(raw);
+          return allowed.has(slug);
+        });
+
+        const items = filtered.map((c: any) => ({ id: c.id, name: c.name }));
+        setAvailableCategories(items);
+      } catch (e) {
+        console.warn("Failed to load categories for", formData.category, e);
+        setAvailableCategories([]);
+      }
+    };
+    loadCats();
   }, [formData.category]);
 
-  const availableSubcategories = useMemo(() => {
-    if (!formData.category) return [];
-    return getSubcategoriesByMainCategory(formData.category as 'mens' | 'womens' | 'kids');
-  }, [formData.category]);
+  const [availableSubcategories] = useState<{ id: string; name: string }[]>([]);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset form when product changes
   useEffect(() => {
+    console.log("Product changed, resetting form", product);
     setFormData({
       name: product?.name || "",
       description: product?.description || "",
@@ -484,6 +578,7 @@ function ProductForm({
       images: product?.image_urls || [],
     });
     setErrors({});
+    console.log("Form reset complete");
   }, [product]);
 
   /**
@@ -496,20 +591,32 @@ function ProductForm({
       newErrors.name = "Product name is required";
     }
 
-    if (!formData.sku?.trim()) {
-      newErrors.sku = "SKU is required";
+    if (!formData.description?.trim()) {
+      newErrors.description = "Description is required";
+    }
+
+    // SKU validation - allow empty for auto-generation, but validate format if provided
+    if (formData.sku?.trim()) {
+      const skuRegex = /^[A-Z0-9\-_]+$/;
+      if (!skuRegex.test(formData.sku)) {
+        newErrors.sku =
+          "SKU should contain only uppercase letters, numbers, hyphens, and underscores";
+      }
     }
 
     if (!formData.price || formData.price <= 0) {
       newErrors.price = "Price must be greater than 0";
     }
 
-    if (!formData.images || formData.images.length === 0) {
-      newErrors.images = "At least one product image is required";
+    // Images are recommended but not required for creation
+
+    if (formData.stock_quantity === undefined || formData.stock_quantity < 0) {
+      newErrors.stock_quantity = "Stock quantity must be 0 or greater";
     }
 
-    if (!formData.stock_quantity || formData.stock_quantity < 0) {
-      newErrors.stock_quantity = "Stock quantity must be 0 or greater";
+    // Require subcategory/category selection to satisfy API's category_id requirement
+    if (!formData.subcategory_id || !String(formData.subcategory_id).trim()) {
+      newErrors.subcategory_id = "Please select a subcategory";
     }
 
     setErrors(newErrors);
@@ -521,11 +628,14 @@ function ProductForm({
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted", formData);
 
     if (!validateForm()) {
+      console.log("Form validation failed", errors);
       return;
     }
 
+    console.log("Form validation passed, submitting...");
     setIsSubmitting(true);
 
     try {
@@ -556,6 +666,47 @@ function ProductForm({
       }
     } catch (error) {
       console.error("Error saving product:", error);
+
+      // Handle specific error types
+      if (error instanceof Error) {
+        if (error.message.startsWith("VALIDATION_ERRORS:")) {
+          try {
+            const issues = JSON.parse(
+              error.message.replace("VALIDATION_ERRORS:", "")
+            );
+            const mapped: FormErrors = {};
+            for (const issue of issues) {
+              const path = Array.isArray(issue.path)
+                ? issue.path[0]
+                : issue.path;
+              const msg: string = issue.message || "Invalid value";
+              if (path === "category_id") {
+                mapped.subcategory_id = "Please select a subcategory";
+              } else if (
+                path in
+                { name: 1, description: 1, price: 1, sku: 1, stock_quantity: 1 }
+              ) {
+                (mapped as any)[path] = msg;
+              }
+            }
+            setErrors((prev) => ({ ...prev, ...mapped }));
+            return;
+          } catch {}
+        }
+        if (
+          error.message.includes(
+            'duplicate key value violates unique constraint "products_sku_key"'
+          )
+        ) {
+          setErrors((prev) => ({
+            ...prev,
+            sku: "This SKU already exists. Please choose a different SKU or leave it empty to auto-generate.",
+          }));
+        } else {
+          // Show generic error
+          alert(`Error saving product: ${error.message}`);
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -607,7 +758,12 @@ function ProductForm({
   }, [formData.original_price, formData.price]);
 
   // Check if current tab should hide details
-  const shouldHideDetails = ["images", "pricing", "inventory", "variants"].includes(activeTab);
+  const shouldHideDetails = [
+    "images",
+    "pricing",
+    "inventory",
+    "variants",
+  ].includes(activeTab);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -644,28 +800,52 @@ function ProductForm({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sku">SKU *</Label>
-                  <Input
-                    id="sku"
-                    value={formData.sku || ""}
-                    onChange={(e) =>
-                      setFormData((prev: Partial<Product>) => ({
-                        ...prev,
-                        sku: e.target.value,
-                      }))
-                    }
-                    placeholder="Product SKU"
-                    className={errors.sku ? "border-red-500" : ""}
-                  />
+                  <Label htmlFor="sku">SKU</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="sku"
+                      value={formData.sku || ""}
+                      onChange={(e) =>
+                        setFormData((prev: Partial<Product>) => ({
+                          ...prev,
+                          sku: e.target.value,
+                        }))
+                      }
+                      placeholder="Product SKU (leave empty to auto-generate)"
+                      className={errors.sku ? "border-red-500" : ""}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const categoryPrefix =
+                          formData.category?.toUpperCase().substring(0, 3) ||
+                          "PROD";
+                        const timestamp = Date.now();
+                        const random = Math.random()
+                          .toString(36)
+                          .substring(2, 8);
+                        const autoSku = `${categoryPrefix}-${timestamp}-${random}`;
+                        setFormData((prev) => ({ ...prev, sku: autoSku }));
+                      }}
+                      className="whitespace-nowrap"
+                    >
+                      Auto-Generate
+                    </Button>
+                  </div>
                   {errors.sku && (
                     <p className="text-sm text-red-600">{errors.sku}</p>
                   )}
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to auto-generate a unique SKU
+                  </p>
                 </div>
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
                   value={formData.description || ""}
@@ -678,6 +858,9 @@ function ProductForm({
                   placeholder="Product description"
                   rows={3}
                 />
+                {errors.description && (
+                  <p className="text-sm text-red-600">{errors.description}</p>
+                )}
               </div>
 
               {/* Category and Brand Section */}
@@ -687,7 +870,11 @@ function ProductForm({
                   <Select
                     value={formData.category}
                     onValueChange={(value) => {
-                      setFormData((prev) => ({ ...prev, category: value, subcategory_id: "" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        category: value,
+                        subcategory_id: "",
+                      }));
                     }}
                   >
                     <SelectTrigger>
@@ -705,7 +892,10 @@ function ProductForm({
                   <Select
                     value={formData.subcategory_id || ""}
                     onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, subcategory_id: value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        subcategory_id: value,
+                      }))
                     }
                     disabled={!formData.category}
                   >
@@ -713,13 +903,18 @@ function ProductForm({
                       <SelectValue placeholder="Select subcategory" />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableSubcategories.map((subcategory) => (
-                        <SelectItem key={subcategory.id} value={subcategory.id}>
-                          {subcategory.name}
+                      {availableCategories.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.subcategory_id && (
+                    <p className="text-sm text-red-600">
+                      {errors.subcategory_id}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brand">Brand</Label>
@@ -820,11 +1015,21 @@ function ProductForm({
           {/* Tabs Section */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
             <TabsList className="grid grid-cols-2 sm:grid-cols-5 mb-4 h-auto">
-              <TabsTrigger value="details" className="text-xs sm:text-sm">Details</TabsTrigger>
-              <TabsTrigger value="images" className="text-xs sm:text-sm">Images</TabsTrigger>
-              <TabsTrigger value="pricing" className="text-xs sm:text-sm">Pricing</TabsTrigger>
-              <TabsTrigger value="inventory" className="text-xs sm:text-sm">Inventory</TabsTrigger>
-              <TabsTrigger value="variants" className="text-xs sm:text-sm">Variants</TabsTrigger>
+              <TabsTrigger value="details" className="text-xs sm:text-sm">
+                Details
+              </TabsTrigger>
+              <TabsTrigger value="images" className="text-xs sm:text-sm">
+                Images
+              </TabsTrigger>
+              <TabsTrigger value="pricing" className="text-xs sm:text-sm">
+                Pricing
+              </TabsTrigger>
+              <TabsTrigger value="inventory" className="text-xs sm:text-sm">
+                Inventory
+              </TabsTrigger>
+              <TabsTrigger value="variants" className="text-xs sm:text-sm">
+                Variants
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="space-y-4">
@@ -835,7 +1040,7 @@ function ProductForm({
               <div className="space-y-2">
                 <Label className="text-base font-medium flex items-center gap-2">
                   <ImageIcon className="h-4 w-4" />
-                  Product Images *
+                  Product Images
                 </Label>
                 <p className="text-sm text-muted-foreground">
                   Upload high-quality images of your product. The first image
@@ -843,12 +1048,12 @@ function ProductForm({
                 </p>
               </div>
 
-              <ProductImageUpload
+              <EnhancedImageUpload
                 images={formData.images || []}
                 onImagesChange={(images) =>
                   setFormData((prev) => ({ ...prev, images }))
                 }
-                maxImages={5}
+                maxImages={10}
                 disabled={isSubmitting}
               />
 
@@ -1021,6 +1226,24 @@ function ProductForm({
             </TabsContent>
           </Tabs>
 
+          {/* Error summary (always visible near submit) */}
+          {Object.keys(errors).length > 0 && (
+            <div className="p-3 border border-red-200 bg-red-50 rounded-md text-sm text-red-700">
+              Please fix the following before submitting:
+              <ul className="mt-2 list-disc list-inside">
+                {errors.name && <li>Product name is required</li>}
+                {errors.description && <li>Description is required</li>}
+                {errors.price && <li>Price must be greater than 0</li>}
+                {errors.stock_quantity && (
+                  <li>Stock quantity must be 0 or greater</li>
+                )}
+                {errors.sku && <li>{errors.sku}</li>}
+                {errors.images && <li>{errors.images}</li>}
+                {errors.subcategory_id && <li>Subcategory is required</li>}
+              </ul>
+            </div>
+          )}
+
           <div className="flex justify-end space-x-2 pt-4 border-t">
             <Button
               type="button"
@@ -1030,9 +1253,18 @@ function ProductForm({
               <X className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button type="submit">
-              <Save className="h-4 w-4 mr-2" />
-              {product ? "Update Product" : "Create Product"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  {product ? "Update Product" : "Create Product"}
+                </>
+              )}
             </Button>
           </div>
         </form>
@@ -1078,16 +1310,19 @@ export function ProductManagement() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        // Load categories from mock data
-        const { mensCategories, womensCategories, kidsCategories } = await import('@/data/categories');
-        const allCategories = [
-          ...mensCategories.map(cat => ({ id: cat.id, name: cat.name })),
-          ...womensCategories.map(cat => ({ id: cat.id, name: cat.name })),
-          ...kidsCategories.map(cat => ({ id: cat.id, name: cat.name }))
-        ];
-        setCategories(allCategories);
+        // Load categories from Supabase API
+        const response = await fetch("/api/categories");
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            setCategories(
+              result.data.map((cat: any) => ({ id: cat.id, name: cat.name }))
+            );
+          }
+        }
       } catch (error) {
-        console.error('Error loading categories:', error);
+        console.error("Error loading categories:", error);
+        setCategories([]);
       }
     };
 
@@ -1096,18 +1331,26 @@ export function ProductManagement() {
 
   // Reset form when product changes
   /**
-   * Load products from mock data
+   * Load products from Supabase API
    */
   const loadProducts = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      const { mockProducts } = await import('@/lib/mock-data/products');
-      setProducts(mockProducts);
+      const response = await fetch("/api/products?status=all", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setProducts(result.data);
+        } else {
+          throw new Error(result.error || "Failed to load products");
+        }
+      } else {
+        throw new Error("Failed to fetch products");
+      }
     } catch (err) {
       console.error("Error loading products:", err);
       setError("Failed to load products");
@@ -1117,19 +1360,22 @@ export function ProductManagement() {
   };
 
   /**
-   * Load categories from mock data
+   * Load categories from Supabase API
    */
   const loadCategoriesData = async () => {
     try {
-      const { mensCategories, womensCategories, kidsCategories } = await import('@/data/categories');
-      const allCategories = [
-        ...mensCategories.map(cat => ({ id: cat.id, name: cat.name })),
-        ...womensCategories.map(cat => ({ id: cat.id, name: cat.name })),
-        ...kidsCategories.map(cat => ({ id: cat.id, name: cat.name }))
-      ];
-      setCategories(allCategories);
+      const response = await fetch("/api/categories");
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setCategories(
+            result.data.map((cat: any) => ({ id: cat.id, name: cat.name }))
+          );
+        }
+      }
     } catch (err) {
       console.error("Error loading categories:", err);
+      setCategories([]);
     }
   };
 
@@ -1138,6 +1384,33 @@ export function ProductManagement() {
     loadProducts();
     loadCategoriesData();
   }, []);
+
+  // Ensure admin session cookie exists so API routes allow writes
+  const establishAdminSession = useCallback(async () => {
+    try {
+      const hasAdminCookie = document.cookie
+        .split("; ")
+        .some((c) => c.startsWith("admin_session="));
+      if (!hasAdminCookie) {
+        const token = process.env.NEXT_PUBLIC_ADMIN_SHARED_SECRET || "dev";
+        const res = await fetch("/api/admin/sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+          credentials: "include",
+        });
+        if (!res.ok) {
+          console.warn("Admin session request failed with status:", res.status);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to initialize admin session:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    establishAdminSession();
+  }, [establishAdminSession]);
 
   /**
    * Filtered products based on search and filter criteria
@@ -1150,13 +1423,14 @@ export function ProductManagement() {
         product.brand?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesCategory =
-        categoryFilter === "all" || product.category === categoryFilter;
+        categoryFilter === "all" ||
+        (product.gender || product.category) === categoryFilter;
       const matchesStatus =
         statusFilter === "all" || product.status === statusFilter;
 
       return matchesSearch && matchesCategory && matchesStatus;
     });
-  }, [searchTerm, categoryFilter, statusFilter]);
+  }, [products, searchTerm, categoryFilter, statusFilter]);
 
   /**
    * Handles product selection for bulk operations
@@ -1196,8 +1470,10 @@ export function ProductManagement() {
    * Opens product form for adding new product
    */
   const handleAddProduct = () => {
+    console.log("Add Product button clicked");
     setEditingProduct(undefined);
     setShowProductForm(true);
+    console.log("showProductForm set to true");
   };
 
   /**
@@ -1207,6 +1483,9 @@ export function ProductManagement() {
     productData: Partial<Product>
   ): Promise<void> => {
     try {
+      // Ensure admin session exists before attempting write
+      await establishAdminSession();
+
       const formData = new FormData();
 
       // Add product data to FormData
@@ -1217,8 +1496,31 @@ export function ProductManagement() {
         "original_price",
         String(productData.original_price || 0)
       );
-      formData.append("category_id", productData.category || "mens");
-      formData.append("sku", productData.sku || "");
+      // API (create) expects explicit gender and category_id
+      formData.append("gender", (productData.category as any) || "mens");
+      if (productData.subcategory_id) {
+        formData.append("category_id", productData.subcategory_id);
+      }
+      // API (update) expects legacy field names: category and subcategory_id
+      if (editingProduct) {
+        if (productData.category) {
+          formData.append("category", productData.category);
+        }
+        if (productData.subcategory_id) {
+          formData.append("subcategory_id", productData.subcategory_id);
+        }
+      }
+      // Auto-generate SKU if not provided
+      const sku =
+        productData.sku?.trim() ||
+        (() => {
+          const categoryPrefix =
+            productData.category?.toUpperCase().substring(0, 3) || "PROD";
+          const timestamp = Date.now();
+          const random = Math.random().toString(36).substring(2, 8);
+          return `${categoryPrefix}-${timestamp}-${random}`;
+        })();
+      formData.append("sku", sku);
       formData.append(
         "stock_quantity",
         String(productData.stock_quantity || 0)
@@ -1228,50 +1530,79 @@ export function ProductManagement() {
         String(productData.low_stock_threshold || 5)
       );
       formData.append("brand", productData.brand || "MHCloth");
-      formData.append("is_active", String(productData.status === "active"));
+      formData.append("status", productData.status || "active");
       formData.append("is_featured", String(productData.is_featured || false));
       formData.append("is_on_sale", String(productData.is_on_sale || false));
+      formData.append("sizes", JSON.stringify(productData.sizes || []));
+      formData.append("colors", JSON.stringify(productData.colors || []));
+      formData.append("tags", JSON.stringify(productData.tags || []));
 
-      // Add images if any
+      // Handle images
       if (productData.images && productData.images.length > 0) {
-        productData.images.forEach((image, index) => {
-          // Check if image is a File object by testing for File properties
-          if (
-            typeof image !== "string" &&
-            "name" in image &&
-            "type" in image &&
-            "size" in image
-          ) {
-            formData.append("images", image as unknown as File);
-          } else if (
-            typeof image === "string" &&
-            !image.startsWith("data:") &&
-            !image.startsWith("http")
-          ) {
-            // For local blob URLs or file paths that need to be converted to files
-            // In a real implementation, you would need to fetch the blob and convert it
-            console.log("Local image URL detected:", image);
-          } else if (typeof image === "string") {
-            // For remote URLs or data URLs, you might want to store them directly
-            formData.append("image_urls", image);
+        const imageFiles: File[] = [];
+        const imageUrls: string[] = [];
+
+        productData.images.forEach((image) => {
+          if (typeof image === "string") {
+            // Only include http(s) URLs; ignore data URLs to avoid server size/type issues
+            if (/^https?:\/\//i.test(image)) {
+              imageUrls.push(image);
+            }
+          } else if (image instanceof File) {
+            imageFiles.push(image);
           }
         });
+
+        // Add new image files
+        imageFiles.forEach((file) => {
+          formData.append("images", file);
+        });
+
+        // Add existing image URLs
+        if (imageUrls.length > 0) {
+          formData.append("image_urls", JSON.stringify(imageUrls));
+        }
       }
 
       const url = editingProduct
-        ? `/api/admin/products/${editingProduct.id}`
-        : "/api/admin/products";
+        ? `/api/products/${editingProduct.id}`
+        : "/api/products";
 
       const method = editingProduct ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      let response = await fetch(url, {
         method,
         body: formData,
+        credentials: "include",
       });
 
+      // If forbidden, try to re-establish admin session and retry once
+      if (response.status === 403) {
+        await establishAdminSession();
+        response = await fetch(url, {
+          method,
+          body: formData,
+          credentials: "include",
+        });
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to save product");
+        let errorMessage = "Failed to save product";
+        try {
+          const errorData = await response.json();
+          if (
+            response.status === 400 &&
+            errorData?.error === "Validation error" &&
+            Array.isArray(errorData?.details)
+          ) {
+            // Surface Zod issues back to the form layer
+            throw new Error(
+              `VALIDATION_ERRORS:${JSON.stringify(errorData.details)}`
+            );
+          }
+          errorMessage = errorData?.error || errorMessage;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -1282,6 +1613,65 @@ export function ProductManagement() {
     } catch (error) {
       console.error("Error saving product:", error);
       throw error;
+    }
+  };
+
+  /**
+   * Handle deleting a product
+   */
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete product");
+      }
+
+      // Refresh products list
+      await loadProducts();
+
+      console.log("Product deleted successfully");
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      // You might want to show a toast notification here
+    }
+  };
+
+  /**
+   * Handle bulk delete of selected products
+   */
+  const handleBulkDelete = async () => {
+    if (selectedProducts.length === 0) return;
+
+    try {
+      const response = await fetch("/api/products/bulk", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productIds: selectedProducts }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete products");
+      }
+
+      // Refresh products list
+      await loadProducts();
+
+      // Clear selection
+      setSelectedProducts([]);
+
+      console.log("Products deleted successfully");
+    } catch (err) {
+      console.error("Error deleting products:", err);
+      // You might want to show a toast notification here
     }
   };
 
@@ -1418,7 +1808,11 @@ export function ProductManagement() {
                   <Download className="h-4 w-4 mr-2" />
                   Export Selected
                 </Button>
-                <Button variant="destructive" size="sm">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
@@ -1437,7 +1831,20 @@ export function ProductManagement() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {viewMode === "list" ? (
+          {loading ? (
+            <div className="space-y-3">
+              {[...Array(6)].map((_, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <Skeleton className="h-12 w-12 rounded-lg" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-3 w-1/5" />
+                  </div>
+                  <Skeleton className="h-8 w-24" />
+                </div>
+              ))}
+            </div>
+          ) : viewMode === "list" ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -1475,8 +1882,18 @@ export function ProductManagement() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                          <div className="w-12 h-12 relative bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+                            {product.image_urls &&
+                            product.image_urls.length > 0 ? (
+                              <Image
+                                src={product.image_urls[0]}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                              />
+                            ) : (
+                              <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                            )}
                           </div>
                           <div>
                             <p className="font-medium">{product.name}</p>
@@ -1502,9 +1919,9 @@ export function ProductManagement() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {product.category === "mens"
+                          {(product.gender || product.category) === "mens"
                             ? "Men's"
-                            : product.category === "womens"
+                            : (product.gender || product.category) === "womens"
                             ? "Women's"
                             : "Kids"}
                         </Badge>
@@ -1552,6 +1969,13 @@ export function ProductManagement() {
                           <Button variant="ghost" size="icon">
                             <Eye className="h-4 w-4" />
                           </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteProduct(product.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -1565,8 +1989,19 @@ export function ProductManagement() {
                 const stockStatus = getStockStatus(product);
                 return (
                   <Card key={product.id} className="overflow-hidden">
-                    <div className="aspect-square bg-muted flex items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                    <div className="aspect-square relative bg-muted">
+                      {product.image_urls && product.image_urls.length > 0 ? (
+                        <Image
+                          src={product.image_urls[0]}
+                          alt={product.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                      )}
                     </div>
                     <CardContent className="p-4">
                       <div className="space-y-2">
@@ -1628,6 +2063,14 @@ export function ProductManagement() {
                             >
                               <Eye className="h-3 w-3" />
                             </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleDeleteProduct(product.id)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
                           </div>
                         </div>
 
@@ -1651,6 +2094,14 @@ export function ProductManagement() {
                 );
               })}
             </div>
+          )}
+          {!loading && filteredProducts.length === 0 && !error && (
+            <div className="text-center text-muted-foreground py-10">
+              No products found.
+            </div>
+          )}
+          {!loading && error && (
+            <div className="text-center text-red-600 py-4">{error}</div>
           )}
         </CardContent>
       </Card>

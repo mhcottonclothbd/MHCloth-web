@@ -9,7 +9,10 @@ export interface Product {
   image_url?: string // Legacy compatibility
   image_urls?: string[]
   images?: (string | File)[] // Can be URLs or File objects for uploads
-  category: string
+  category: string // Legacy: gender or simple category name
+  gender?: 'mens' | 'womens' | 'kids'
+  category_id?: string
+  slug?: string
   subcategory_id?: string
   sku?: string
   stock?: number // Legacy compatibility  
@@ -97,6 +100,9 @@ export interface OrderItem {
   product_id: string
   quantity: number
   price: number
+  total?: number
+  size?: string
+  color?: string
   created_at: string
   product?: Product
 }

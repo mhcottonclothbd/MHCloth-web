@@ -1,95 +1,102 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ShoppingCart, Eye, Tag, Percent } from 'lucide-react'
-import { Card, CardContent } from '@/components/Card'
-import Button from '@/components/Button'
-import { formatPrice } from '@/lib/utils'
-import { Product } from '@/types'
-import { useCart } from '@/lib/cart-context'
-import { handleApiError, isApiError, productApi } from '@/lib/services/api'
+import Button from "@/components/Button";
+import { Card, CardContent } from "@/components/Card";
+import { useCart } from "@/lib/cart-context";
+import { isApiError, productApi } from "@/lib/services/api";
+import { formatPrice } from "@/lib/utils";
+import { Product } from "@/types";
+import { motion } from "framer-motion";
+import { Eye, Percent, ShoppingCart, Tag } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface SaleProduct extends Product {
-  original_price: number
-  discount_percentage: number
+  original_price: number;
+  discount_percentage: number;
 }
 
 interface ProductGridProps {
   searchParams: {
-    search?: string
-    sort?: string
-    filter?: string
-  }
-  category: string
-  title: string
+    search?: string;
+    sort?: string;
+    filter?: string;
+  };
+  category: string;
+  title: string;
 }
-
-
 
 /**
  * Product grid component specifically for sale products
  * Shows discounted prices with original price strikethrough
  */
-export default function ProductGrid({ searchParams, category, title }: ProductGridProps) {
-  const [products, setProducts] = useState<SaleProduct[]>([])
-  const [loading, setLoading] = useState(true)
-  const { addItem } = useCart()
+export default function ProductGrid({
+  searchParams,
+  category,
+  title,
+}: ProductGridProps) {
+  const [products, setProducts] = useState<SaleProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true)
-      
+      setLoading(true);
+
       try {
         // Fetch all products from API
-        const response = await productApi.getProducts({ onSale: true })
-        
+        const response = await productApi.getProducts({ is_on_sale: true });
+
         if (isApiError(response)) {
-          throw new Error(response.error)
+          throw new Error(response.error);
         }
-        
+
         // Convert regular products to sale products with discount information
-        let saleProducts: SaleProduct[] = response.data.map(product => ({
+        let saleProducts: SaleProduct[] = response.data.map((product) => ({
           ...product,
           original_price: product.price * 1.6, // Calculate original price (assuming ~37% discount)
-          discount_percentage: Math.round(((product.price * 1.6 - product.price) / (product.price * 1.6)) * 100)
-        }))
-        
+          discount_percentage: Math.round(
+            ((product.price * 1.6 - product.price) / (product.price * 1.6)) *
+              100
+          ),
+        }));
+
         // Search filter
         if (searchParams.search) {
-          const searchTerm = searchParams.search.toLowerCase()
+          const searchTerm = searchParams.search.toLowerCase();
           saleProducts = saleProducts.filter(
-            product => 
+            (product) =>
               product.name.toLowerCase().includes(searchTerm) ||
               product.description.toLowerCase().includes(searchTerm)
-          )
+          );
         }
-        
+
         // Stock filter
-        if (searchParams.filter === 'in-stock') {
-          saleProducts = saleProducts.filter(product => product.stock && product.stock > 0)
-        } else if (searchParams.filter === 'featured') {
-          saleProducts = saleProducts.filter(product => product.featured)
+        if (searchParams.filter === "in-stock") {
+          saleProducts = saleProducts.filter(
+            (product) => product.stock && product.stock > 0
+          );
+        } else if (searchParams.filter === "featured") {
+          saleProducts = saleProducts.filter((product) => product.featured);
         }
-        
+
         // Sort products by discount percentage (highest first)
         saleProducts.sort((a, b) => {
-          return b.discount_percentage - a.discount_percentage
-        })
-        
-        setProducts(saleProducts)
-      } catch (error) {
-        console.error('Error fetching sale products:', error)
-        setProducts([])
-      } finally {
-        setLoading(false)
-      }
-    }
+          return b.discount_percentage - a.discount_percentage;
+        });
 
-    fetchProducts()
-  }, [searchParams])
+        setProducts(saleProducts);
+      } catch (error) {
+        console.error("Error fetching sale products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchParams]);
 
   const handleAddToCart = (product: SaleProduct) => {
     // Convert SaleProduct to Product for cart
@@ -103,15 +110,15 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
       stock: product.stock,
       featured: product.featured,
       created_at: product.created_at,
-      updated_at: product.updated_at
-    }
+      updated_at: product.updated_at,
+    };
     addItem({
       product: cartProduct,
       quantity: 1,
       selectedSize: undefined,
-      selectedColor: undefined
-    })
-  }
+      selectedColor: undefined,
+    });
+  };
 
   if (loading) {
     return (
@@ -130,17 +137,19 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
         <Tag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No sale items found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No sale items found
+        </h3>
         <p className="text-gray-600">Check back soon for amazing deals!</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -152,7 +161,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
           {title}
         </h2>
         <p className="text-gray-600">
-          Showing {products.length} sale item{products.length !== 1 ? 's' : ''}
+          Showing {products.length} sale item{products.length !== 1 ? "s" : ""}
         </p>
       </div>
 
@@ -168,25 +177,25 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
             <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-red-100">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image_url || '/placeholder-image.jpg'}
+                  src={product.image_url || "/placeholder-image.jpg"}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                
+
                 {/* Discount Badge */}
                 <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
                   <Percent className="w-3 h-3" />
                   {product.discount_percentage}% OFF
                 </div>
-                
+
                 {/* Stock Badge */}
                 {product.stock === 0 && (
                   <div className="absolute top-3 right-3 bg-gray-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                     Out of Stock
                   </div>
                 )}
-                
+
                 {/* Sale Flash */}
                 <motion.div
                   className="absolute top-3 right-3 text-yellow-400 text-2xl"
@@ -195,10 +204,10 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                 >
                   ⚡
                 </motion.div>
-                
+
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                  <Link href={`/shop/${product.id}`}>
+                  <Link href={`/products/${(product as any).slug || product.id}`}>
                     <Button
                       variant="secondary"
                       size="sm"
@@ -220,7 +229,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                   </Button>
                 </div>
               </div>
-              
+
               <CardContent className="p-4">
                 <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-red-600 transition-colors">
                   {product.name}
@@ -228,7 +237,7 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                   {product.description}
                 </p>
-                
+
                 {/* Price Section */}
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -243,10 +252,12 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
                     Save {formatPrice(product.original_price - product.price)}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>
-                    {product.stock && product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                    {product.stock && product.stock > 0
+                      ? `${product.stock} in stock`
+                      : "Out of stock"}
                   </span>
                   <span className="text-red-500 font-medium">
                     Limited time!
@@ -258,5 +269,5 @@ export default function ProductGrid({ searchParams, category, title }: ProductGr
         ))}
       </div>
     </div>
-  )
+  );
 }

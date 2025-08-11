@@ -1,57 +1,57 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, X } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/Card'
-import { cn } from '@/lib/utils'
+import { Card, CardContent } from "@/components/Card";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Search, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 interface ProductSearchProps {
-  initialSearch?: string
+  initialSearch?: string;
 }
 
 /**
  * Product search component with real-time filtering
  * Debounces input to avoid excessive API calls
  */
-export default function ProductSearch({ initialSearch = '' }: ProductSearchProps) {
-  const [searchTerm, setSearchTerm] = useState(initialSearch)
-  const [isFocused, setIsFocused] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
+function ProductSearchInner({ initialSearch = "" }: ProductSearchProps) {
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [isFocused, setIsFocused] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   /**
    * Debounced search effect to update URL after user stops typing
    */
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString())
-      
-      if (searchTerm.trim()) {
-        params.set('search', searchTerm.trim())
-      } else {
-        params.delete('search')
-      }
-      
-      // Reset to first page when searching
-      params.delete('page')
-      
-      router.push(`/shop?${params.toString()}`)
-    }, 300) // 300ms debounce
+      const params = new URLSearchParams(searchParams.toString());
 
-    return () => clearTimeout(timeoutId)
-  }, [searchTerm, router, searchParams])
+      if (searchTerm.trim()) {
+        params.set("search", searchTerm.trim());
+      } else {
+        params.delete("search");
+      }
+
+      // Reset to first page when searching
+      params.delete("page");
+
+      router.push(`/shop?${params.toString()}`);
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, router, searchParams]);
 
   /**
    * Clears the search input and updates URL
    */
   const clearSearch = () => {
-    setSearchTerm('')
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete('search')
-    router.push(`/shop?${params.toString()}`)
-  }
+    setSearchTerm("");
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("search");
+    router.push(`/shop?${params.toString()}`);
+  };
 
   return (
     <Card className="mb-6">
@@ -59,14 +59,14 @@ export default function ProductSearch({ initialSearch = '' }: ProductSearchProps
         <div className="relative">
           <motion.div
             className={cn(
-              'relative flex items-center transition-all duration-200',
-              isFocused ? 'scale-[1.02]' : 'scale-100'
+              "relative flex items-center transition-all duration-200",
+              isFocused ? "scale-[1.02]" : "scale-100"
             )}
             whileFocus={{ scale: 1.02 }}
           >
             {/* Search Icon */}
             <Search className="absolute left-3 w-4 h-4 text-gray-400 pointer-events-none" />
-            
+
             {/* Search Input */}
             <input
               type="text"
@@ -76,13 +76,13 @@ export default function ProductSearch({ initialSearch = '' }: ProductSearchProps
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               className={cn(
-                'w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg',
-                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
-                'placeholder-gray-400 text-gray-900 transition-all duration-200',
-                isFocused ? 'shadow-md' : 'shadow-sm'
+                "w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg",
+                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                "placeholder-gray-400 text-gray-900 transition-all duration-200",
+                isFocused ? "shadow-md" : "shadow-sm"
               )}
             />
-            
+
             {/* Clear Button */}
             {searchTerm && (
               <motion.button
@@ -97,7 +97,7 @@ export default function ProductSearch({ initialSearch = '' }: ProductSearchProps
               </motion.button>
             )}
           </motion.div>
-          
+
           {/* Search Suggestions/Results Count */}
           {searchTerm && (
             <motion.div
@@ -109,11 +109,13 @@ export default function ProductSearch({ initialSearch = '' }: ProductSearchProps
             </motion.div>
           )}
         </div>
-        
+
         {/* Search Tips */}
         {!searchTerm && (
           <div className="mt-3 text-xs text-gray-500">
-            <p className="mb-1">💡 <strong>Search tips:</strong></p>
+            <p className="mb-1">
+              💡 <strong>Search tips:</strong>
+            </p>
             <ul className="space-y-1 ml-4">
               <li>• Try "leather jacket" or "minimalist watch"</li>
               <li>• Search by category like "home" or "accessories"</li>
@@ -123,5 +125,13 @@ export default function ProductSearch({ initialSearch = '' }: ProductSearchProps
         )}
       </CardContent>
     </Card>
-  )
+  );
+}
+
+export default function ProductSearch(props: ProductSearchProps) {
+  return (
+    <Suspense fallback={null}>
+      <ProductSearchInner {...props} />
+    </Suspense>
+  );
 }

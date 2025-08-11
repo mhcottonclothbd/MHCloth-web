@@ -1,10 +1,10 @@
-import { Navbar } from "@/app/navbar/widget";
-import Footer from "@/components/Footer";
+import ConditionalChrome from "@/components/ConditionalChrome";
 import { CartProvider } from "@/lib/cart-context";
 import type { Metadata } from "next";
 import { Crimson_Pro, Geist, Geist_Mono, Michroma } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import MetaPixel from "@/components/MetaPixel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,12 +44,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${crimsonPro.variable} ${michroma.variable} antialiased min-h-screen flex flex-col`}
       >
         <CartProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <MetaPixel />
+          <ConditionalChrome>{children}</ConditionalChrome>
           <Toaster position="top-right" richColors />
         </CartProvider>
       </body>
-     </html>
-   );
+    </html>
+  );
 }

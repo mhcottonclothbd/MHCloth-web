@@ -41,65 +41,19 @@ export default function ProductGrid({
       setLoading(true);
 
       try {
-        // Fetch products from API
         const params = new URLSearchParams({
-          category: "womens",
+          gender: "womens",
           ...(searchParams.search && { search: searchParams.search }),
-          ...(searchParams.filter === "featured" && { featured: "true" }),
-          ...(searchParams.filter === "in-stock" && { inStock: "true" }),
+          ...(searchParams.category && { category_slug: searchParams.category }),
+          ...(searchParams.filter === "featured" && { is_featured: "true" }),
         });
 
         const response = await fetch(`/api/products?${params}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const api = await response.json();
+        let filteredProducts = api?.data || [];
 
-        let filteredProducts = await response.json();
-
-        // Category filter - handle subcategory filtering
-        if (searchParams.category) {
-          const category = searchParams.category.toLowerCase();
-          filteredProducts = filteredProducts.filter((product: Product) => {
-            const productName = product.name.toLowerCase();
-            const productDesc = product.description.toLowerCase();
-
-            switch (category) {
-              case "jackets":
-                return (
-                  productName.includes("jacket") ||
-                  productName.includes("coat") ||
-                  productDesc.includes("jacket") ||
-                  productDesc.includes("outerwear")
-                );
-              case "shirts":
-                return (
-                  productName.includes("shirt") ||
-                  productName.includes("blouse") ||
-                  productName.includes("top")
-                );
-              case "pants":
-                return (
-                  productName.includes("pants") ||
-                  productName.includes("trouser") ||
-                  productName.includes("chino")
-                );
-              case "denim":
-                return (
-                  productName.includes("denim") || productName.includes("jean")
-                );
-              case "t-shirts":
-                return (
-                  productName.includes("t-shirt") ||
-                  productName.includes("tee") ||
-                  productName.includes("top")
-                );
-              case "accessories":
-                return product.category === "accessories";
-              default:
-                return product.category === searchParams.category;
-            }
-          });
-        }
+        // Category filtering handled by API when category_slug present
 
         // Search filter
         if (searchParams.search) {
@@ -112,12 +66,7 @@ export default function ProductGrid({
         }
 
         // Stock filter
-        if (searchParams.filter === "in-stock") {
-          filteredProducts = filteredProducts.filter(
-            (product: Product) =>
-              product.stock_quantity && product.stock_quantity > 0
-          );
-        } else if (searchParams.filter === "featured") {
+        if (searchParams.filter === "featured") {
           filteredProducts = filteredProducts.filter(
             (product: Product) => product.is_featured || product.featured
           );
@@ -240,7 +189,7 @@ export default function ProductGrid({
             <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-pink-100 hover:border-pink-200">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image_url || "/placeholder-image.jpg"}
+                  src={(product.image_urls && product.image_urls[0]) || product.image_url || "/placeholder-image.svg"}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -275,7 +224,7 @@ export default function ProductGrid({
 
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pink-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                  <Link href={`/shop/${product.id}`}>
+                  <Link href={`/products/${(product as any).slug || product.id}`}>
                     <Button
                       variant="secondary"
                       size="sm"

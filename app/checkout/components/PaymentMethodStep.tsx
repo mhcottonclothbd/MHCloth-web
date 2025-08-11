@@ -30,11 +30,11 @@ export default function PaymentMethodStep({
   submitError,
 }: PaymentMethodStepProps) {
   const [selectedMethod, setSelectedMethod] = useState<
-    "cash_on_delivery" | "sslcommerz"
+    "cash_on_delivery" | "ssl_commerce"
   >(formData.payment_method || "cash_on_delivery");
 
   const handlePaymentMethodChange = (
-    method: "cash_on_delivery" | "sslcommerz"
+    method: "cash_on_delivery" | "ssl_commerce"
   ) => {
     setSelectedMethod(method);
     updateFormData({ payment_method: method });

@@ -38,15 +38,72 @@ export default function ProductGridWithDropdown({
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
 
+  // Only include the requested Women's categories and skip missing icons
+  const allowedWomensSlugs = useMemo(
+    () =>
+      new Set([
+        "tops",
+        "hoodies-sweatshirts",
+        "hoodies-and-sweatshirts",
+        "sweaters-cardigans",
+        "sweaters-and-cardigans",
+        "tunics-kurtis",
+        "tunics-and-kurtis",
+        "t-shirts",
+        "dresses",
+        "jeans",
+        "shorts",
+        "bras",
+        "panties",
+        "jackets-coats",
+        "jackets",
+        "coats",
+        "leggings",
+      ]),
+    []
+  );
+
+  const displayCategories = useMemo(() => {
+    return (categories || []).filter((cat) => {
+      const slug = ((cat as any).slug || cat.id || "").toString().toLowerCase();
+      const hasIcon = !!cat.icon && !cat.icon.includes("placeholder-image");
+      return allowedWomensSlugs.has(slug) && hasIcon;
+    });
+  }, [categories, allowedWomensSlugs]);
+
+  const categoryMatchesProduct = (
+    product: Product,
+    cat: CategoryItem
+  ): boolean => {
+    const productCategoryId =
+      (product as any).category_id || product.category_id;
+    const productCategory = (product as any).category || product.category;
+    const catId = cat.id;
+    const catSlug = (cat as any).slug || cat.id;
+    const catName = cat.name?.toLowerCase();
+    const productCategoryName =
+      typeof productCategory === "string" ? productCategory.toLowerCase() : "";
+    return (
+      productCategoryId === catId ||
+      productCategoryId === catSlug ||
+      productCategoryName === catId ||
+      productCategoryName === catSlug ||
+      productCategoryName === (catSlug as string) ||
+      productCategoryName === (catName || "")
+    );
+  };
+
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const params = new URLSearchParams({
-          category: "womens",
+          gender: "womens",
           ...(searchParams.search && { search: searchParams.search }),
-          ...(searchParams.filter === "featured" && { featured: "true" }),
-          ...(searchParams.filter === "in-stock" && { inStock: "true" }),
+          ...(selectedCategory !== "all" && {
+            category_slug: selectedCategory,
+          }),
+          ...(searchParams.filter === "featured" && { is_featured: "true" }),
         });
 
         const response = await fetch(`/api/products?${params}`);
@@ -55,36 +112,41 @@ export default function ProductGridWithDropdown({
         }
 
         const data = await response.json();
-        // Ensure data is an array before setting products
-        setProducts(Array.isArray(data) ? data : []);
+        const items = Array.isArray(data?.data)
+          ? data.data
+          : Array.isArray(data)
+          ? data
+          : [];
+        // Normalize image_url for display: prefer first image_urls entry
+        const normalized = items.map((p: any) => ({
+          ...p,
+          image_url:
+            p?.image_url ||
+            (Array.isArray(p?.image_urls) ? p.image_urls[0] : undefined),
+        }));
+        setProducts(normalized);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
     fetchProducts();
-  }, [searchParams.search, searchParams.filter]);
+  }, [searchParams.search, searchParams.filter, selectedCategory]);
 
   // Filter products by category
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === "all") {
-      return products;
-    }
-    return products.filter(
-      (product: Product) => product.category === selectedCategory
-    );
+    if (selectedCategory === "all") return products;
+    return products; // already filtered by API when category_slug provided
   }, [selectedCategory, products]);
 
   // Group products by category for section display
   const productsByCategory = useMemo(() => {
     const grouped: { [key: string]: Product[] } = {};
-
     categories.forEach((cat) => {
-      grouped[cat.id] = products.filter(
-        (product: Product) => product.category === cat.id
+      grouped[cat.id] = products.filter((product) =>
+        categoryMatchesProduct(product, cat)
       );
     });
-
     return grouped;
   }, [categories, products]);
 
@@ -105,9 +167,13 @@ export default function ProductGridWithDropdown({
 
     // Find the product by ID
     const product = products.find((p: Product) => p.id === productId);
-    if (product && product.stock_quantity && product.stock_quantity > 0) {
+    if (product && (product.stock_quantity || 0) > 0) {
       addItem({
-        product: product,
+        product: {
+          ...product,
+          image_url:
+            (product.image_urls && product.image_urls[0]) || product.image_url,
+        } as any,
         quantity: 1,
         selectedSize: undefined,
         selectedColor: undefined,
@@ -117,155 +183,113 @@ export default function ProductGridWithDropdown({
 
   return (
     <div className="space-y-8">
-      {/* Enhanced Shop by Category Section */}
-      <div className="relative bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 rounded-3xl p-8 shadow-sm border border-white/20">
+      {/* Shop by Category - simple, single-line scroller */}
+      <div className="w-full">
         {/* Section Header */}
-        <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-rose-800 to-purple-900 bg-clip-text text-transparent mb-2 md:mb-3">
+        <div className="text-center mb-4 md:mb-6">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-1">
             Shop by Category
           </h2>
-          <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
+          <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">
             Discover our curated collection across different categories
           </p>
         </div>
 
-        {/* Category Grid */}
+        {/* Horizontal scroller */}
         <div className="relative">
-          {/* Simplified Gradient Overlays for mobile */}
-          <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-rose-50 to-transparent z-10 pointer-events-none" />
-          <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-purple-50 to-transparent z-10 pointer-events-none" />
-
-          <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 lg:gap-6 pb-4 md:pb-6 px-3 sm:px-4">
-            {/* All Categories Option */}
+          <div
+            className="flex items-stretch gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth -mx-1 px-1 pb-2"
+            role="tablist"
+            aria-label="Womens categories"
+          >
+            {/* All */}
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => handleCategoryChange("all")}
+              role="tab"
+              aria-selected={selectedCategory === "all"}
               className={cn(
-                "group relative overflow-hidden touch-manipulation",
-                "p-4 md:p-6 rounded-xl md:rounded-2xl transition-all duration-300",
-                "backdrop-blur-sm border border-white/30",
+                "group relative flex-none w-[150px] sm:w-[170px] md:w-[190px] rounded-xl border bg-white text-left",
+                "px-4 py-3 transition-all duration-200 hover:bg-gray-50 hover:shadow-md",
                 selectedCategory === "all"
-                  ? "bg-gradient-to-br from-pink-400 via-rose-500 to-purple-600 text-white shadow-lg shadow-pink-500/20"
-                  : "bg-white/80 text-gray-700 hover:bg-white/95 hover:shadow-md hover:shadow-gray-200/40"
+                  ? "border-gray-700 ring-2 ring-gray-700/40 shadow"
+                  : "border-gray-200"
               )}
             >
-              {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-2 right-2 w-16 h-16 rounded-full bg-current" />
-                <div className="absolute bottom-2 left-2 w-8 h-8 rounded-full bg-current" />
-              </div>
-
-              <div className="relative z-10 flex flex-col items-center space-y-3 md:space-y-4">
+              <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    "w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-200",
-                    "border-2 backdrop-blur-sm",
-                    selectedCategory === "all"
-                      ? "border-white/30 bg-white/20 text-white shadow-md"
-                      : "border-gray-200/50 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700 group-hover:from-pink-50 group-hover:to-rose-100 group-hover:text-rose-600"
+                    "h-14 w-14 rounded-lg overflow-hidden flex items-center justify-center transition-transform bg-gray-50",
+                    "group-hover:-translate-y-0.5"
                   )}
                 >
-                  ALL
+                  <Image
+                    src="/assets/icon/womens.jpg"
+                    alt="All Products"
+                    width={56}
+                    height={56}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
-                <div className="text-center">
-                  <span className="text-xs md:text-sm font-semibold block mb-1 leading-tight">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">
                     All Products
-                  </span>
-                  <span
-                    className={cn(
-                      "text-xs px-2 md:px-3 py-1 rounded-full font-medium",
-                      selectedCategory === "all"
-                        ? "bg-white/20 text-white/90"
-                        : "bg-gray-100/80 text-gray-600 group-hover:bg-pink-100 group-hover:text-rose-700"
-                    )}
-                  >
-                    {products.length} items
-                  </span>
+                  </div>
                 </div>
               </div>
+              {selectedCategory === "all" && (
+                <span className="pointer-events-none absolute left-3 right-3 -bottom-[2px] h-0.5 bg-gray-800 rounded-full" />
+              )}
             </motion.button>
 
             {/* Category Items */}
-            {categories.map((cat) => (
+            {displayCategories.map((cat) => (
               <motion.button
                 key={cat.id}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={() => handleCategoryChange(cat.id)}
+                role="tab"
+                aria-selected={selectedCategory === cat.id}
                 className={cn(
-                  "flex-shrink-0 group relative overflow-hidden touch-manipulation",
-                  "min-w-[calc(33.333%-0.5rem)] sm:min-w-[140px] md:min-w-[160px] p-4 md:p-6 rounded-xl md:rounded-2xl transition-all duration-300",
-                  "backdrop-blur-sm border border-white/30",
+                  "group relative flex-none w-[150px] sm:w-[170px] md:w-[190px] rounded-xl border bg-white text-left",
+                  "px-4 py-3 transition-all duration-200 hover:bg-gray-50 hover:shadow-md",
                   selectedCategory === cat.id
-                    ? "bg-gradient-to-br from-pink-400 via-rose-500 to-purple-600 text-white shadow-lg shadow-pink-500/20"
-                    : "bg-white/80 text-gray-700 hover:bg-white/95 hover:shadow-md hover:shadow-gray-200/40"
+                    ? "border-gray-700 ring-2 ring-gray-700/40 shadow"
+                    : "border-gray-200"
                 )}
               >
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-2 right-2 w-16 h-16 rounded-full bg-current" />
-                  <div className="absolute bottom-2 left-2 w-8 h-8 rounded-full bg-current" />
-                </div>
-
-                <div className="relative z-10 flex flex-col items-center space-y-3 md:space-y-4">
+                <div className="flex items-center gap-3">
                   <div
                     className={cn(
-                      "w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden transition-all duration-200",
-                      "border-2 backdrop-blur-sm shadow-md",
-                      selectedCategory === cat.id
-                        ? "border-white/30 shadow-white/20"
-                        : "border-gray-200/50 group-hover:border-pink-200 group-hover:shadow-pink-200/30"
+                      "h-14 w-14 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 transition-transform",
+                      "group-hover:-translate-y-0.5"
                     )}
                   >
                     <Image
                       src={cat.icon}
                       alt={cat.name}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-102"
+                      width={56}
+                      height={56}
+                      className="h-full w-full object-cover"
                       loading="lazy"
                     />
                   </div>
-                  <div className="text-center">
-                    <span className="text-xs md:text-sm font-semibold block mb-1 leading-tight px-1">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
                       {cat.name}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-xs px-2 md:px-3 py-1 rounded-full font-medium",
-                        selectedCategory === cat.id
-                          ? "bg-white/20 text-white/90"
-                          : "bg-gray-100/80 text-gray-600 group-hover:bg-pink-100 group-hover:text-rose-700"
-                      )}
-                    >
-                      {cat.count} items
-                    </span>
+                    </div>
                   </div>
                 </div>
+                {selectedCategory === cat.id && (
+                  <span className="pointer-events-none absolute left-3 right-3 -bottom-[2px] h-0.5 bg-gray-800 rounded-full" />
+                )}
               </motion.button>
             ))}
           </div>
         </div>
-
-        {/* Category Description */}
-        {selectedCategory !== "all" && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-6 text-center"
-          >
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
-              <p className="text-gray-600 text-sm">
-                {
-                  categories.find((cat) => cat.id === selectedCategory)
-                    ?.description
-                }
-              </p>
-            </div>
-          </motion.div>
-        )}
       </div>
 
       {/* Results Count */}
@@ -293,41 +317,18 @@ export default function ProductGridWithDropdown({
       {/* Category Sections or Filtered Products */}
       {!isLoading && (
         <AnimatePresence mode="wait">
-          {selectedCategory === "all" ? (
-            // Show all categories with their products
-            <motion.div
-              key="all-categories"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-12"
-            >
-              {categories.map((cat) => {
-                const categoryProducts = productsByCategory[cat.id] || [];
-                if (categoryProducts.length === 0) return null;
-
-                return (
-                  <CategorySection
-                    key={cat.id}
-                    category={cat}
-                    products={categoryProducts}
-                    onAddToCart={handleAddToCart}
-                  />
-                );
-              })}
-            </motion.div>
-          ) : (
-            // Show filtered products
-            <motion.div
-              key="filtered-products"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            >
-              {filteredProducts.map((product) => (
+          <motion.div
+            key={
+              selectedCategory === "all" ? "all-products" : "filtered-products"
+            }
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {(selectedCategory === "all" ? products : filteredProducts).map(
+              (product) => (
                 <ProductCard
                   key={product.id}
                   product={{
@@ -337,9 +338,9 @@ export default function ProductGridWithDropdown({
                   viewMode="grid"
                   onAddToCart={handleAddToCart}
                 />
-              ))}
-            </motion.div>
-          )}
+              )
+            )}
+          </motion.div>
         </AnimatePresence>
       )}
 
@@ -491,7 +492,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
 
   if (viewMode === "list") {
     return (
-      <Link href={`/shop/${product.id}`}>
+      <Link href={`/products/${(product as any).slug || product.id}`}>
         <motion.div
           whileHover={{ y: -2 }}
           className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100"
@@ -500,7 +501,11 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
             {/* Product Image */}
             <div className="relative w-32 h-32 flex-shrink-0">
               <Image
-                src={product.image_url || "/placeholder-image.svg"}
+                src={
+                  (product.image_urls && product.image_urls[0]) ||
+                  product.image_url ||
+                  "/placeholder-image.svg"
+                }
                 alt={product.name}
                 fill
                 className="object-cover rounded-xl"
@@ -585,7 +590,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
   }
 
   return (
-    <Link href={`/shop/${product.id}`}>
+    <Link href={`/products/${(product as any).slug || product.id}`}>
       <motion.div
         whileHover={{ y: -8 }}
         className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
@@ -593,7 +598,11 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
         {/* Product Image */}
         <div className="relative aspect-square overflow-hidden">
           <Image
-            src={product.image_url || "/placeholder-image.svg"}
+            src={
+              (product.image_urls && product.image_urls[0]) ||
+              product.image_url ||
+              "/placeholder-image.svg"
+            }
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

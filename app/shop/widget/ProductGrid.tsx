@@ -4,12 +4,14 @@ import { motion } from 'framer-motion'
 import { Package } from 'lucide-react'
 
 interface ProductGridProps {
-  searchParams: {
+  searchParams?: {
     category?: string
     search?: string
     sort?: string
     filter?: string
   }
+  filters?: any
+  showWishlist?: boolean
 }
 
 // No products available - all products have been removed
@@ -19,7 +21,7 @@ const shopProducts = []
  * Product grid component - Currently showing empty state
  * All products have been removed from the website
  */
-export default function ProductGrid({ searchParams }: ProductGridProps) {
+export default function ProductGrid({ searchParams, filters, showWishlist }: ProductGridProps) {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       {/* Empty State */}

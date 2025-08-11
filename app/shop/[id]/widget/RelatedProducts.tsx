@@ -96,7 +96,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
     >
-      <Link href={`/shop/${product.id}`}>
+      <Link href={`/products/${(product as any).slug || product.id}`}>
         <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer">
           {/* Product Image */}
           <div className="relative aspect-square overflow-hidden">

@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   TrendingUp,
 } from "lucide-react";
+import Link from "next/link";
 
 type DashboardSection = "overview" | "orders" | "products";
 
@@ -112,6 +113,14 @@ export function Sidebar({
               </Button>
             );
           })}
+          <div className="px-3 pt-2">
+            <Link
+              href="/admin/products"
+              className="text-sm text-primary hover:underline"
+            >
+              Go to Product Pages
+            </Link>
+          </div>
         </div>
       </nav>
 

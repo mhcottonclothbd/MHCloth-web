@@ -39,6 +39,63 @@ export default function ProductGridWithDropdown({
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Show only the requested Men's categories and skip ones without icons
+  const allowedMensSlugs = useMemo(
+    () =>
+      new Set([
+        "t-shirts",
+        "polo",
+        "polo-shirts",
+        "shirts-formal-casual",
+        "hoodies-sweatshirts",
+        "hoodies-and-sweatshirts",
+        "jackets-coats",
+        "jackets",
+        "coats",
+        "jeans",
+        "trousers",
+        "cargo-pants",
+        "joggers",
+        "shorts",
+        "sweaters-cardigans",
+        "sweaters-and-cardigans",
+        "blazers-suits",
+        "blazers-and-suits",
+        "undergarments",
+      ]),
+    []
+  );
+
+  const displayCategories = useMemo(() => {
+    return (categories || []).filter((cat) => {
+      const slug = ((cat as any).slug || cat.id || "").toString().toLowerCase();
+      const hasIcon = !!cat.icon && !cat.icon.includes("placeholder-image");
+      return allowedMensSlugs.has(slug) && hasIcon;
+    });
+  }, [categories, allowedMensSlugs]);
+
+  const categoryMatchesProduct = (
+    product: Product,
+    cat: CategoryItem
+  ): boolean => {
+    const productCategoryId =
+      (product as any).category_id || product.category_id;
+    const productCategory = (product as any).category || product.category;
+    const catId = cat.id;
+    const catSlug = (cat as any).slug || cat.id;
+    const catName = cat.name?.toLowerCase();
+    const productCategoryName =
+      typeof productCategory === "string" ? productCategory.toLowerCase() : "";
+    return (
+      productCategoryId === catId ||
+      productCategoryId === catSlug ||
+      productCategoryName === catId ||
+      productCategoryName === catSlug ||
+      productCategoryName === (catSlug as string) ||
+      productCategoryName === (catName || "")
+    );
+  };
+
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,9 +104,11 @@ export default function ProductGridWithDropdown({
 
       try {
         const response = await productApi.getProducts({
-          category: category,
+          gender: category as "mens" | "womens" | "kids",
           limit: 50,
           search: searchParams.search,
+          category_slug:
+            selectedCategory !== "all" ? selectedCategory : undefined,
         });
 
         if (isApiError(response)) {
@@ -67,31 +126,25 @@ export default function ProductGridWithDropdown({
     };
 
     fetchProducts();
-  }, [category, searchParams.search]);
+  }, [category, searchParams.search, selectedCategory]);
 
   // Filter products by category
   const filteredProducts = useMemo(() => {
     if (selectedCategory === "all") {
       return products;
     }
-    return products.filter(
-      (product) =>
-        product.category === selectedCategory ||
-        product.subcategory_id === selectedCategory
-    );
+    // Products API already filtered by category_slug if provided
+    return products;
   }, [selectedCategory, products]);
 
   // Group products by category for section display
   const productsByCategory = useMemo(() => {
     const grouped: { [key: string]: Product[] } = {};
-
     categories.forEach((cat) => {
-      grouped[cat.id] = products.filter(
-        (product) =>
-          product.category === cat.id || product.subcategory_id === cat.id
+      grouped[cat.id] = products.filter((product) =>
+        categoryMatchesProduct(product, cat)
       );
     });
-
     return grouped;
   }, [categories, products]);
 
@@ -115,20 +168,12 @@ export default function ProductGridWithDropdown({
     if (product && (product.stock_quantity || 0) > 0) {
       addItem({
         product: {
-          id: productId,
-          name: product.name,
-          description: product.description || product.name,
-          price: product.price,
+          ...product,
           image_url:
             product.image_url ||
             product.image_urls?.[0] ||
             "/placeholder-image.svg",
-          stock: product.stock_quantity || 0,
-          category: product.category,
-          featured: product.is_featured || false,
-          created_at: product.created_at,
-          updated_at: product.updated_at,
-        },
+        } as any,
         quantity: 1,
         selectedSize: undefined,
         selectedColor: undefined,
@@ -138,119 +183,113 @@ export default function ProductGridWithDropdown({
 
   return (
     <div className="space-y-4 md:space-y-6">
-      {/* Enhanced Shop by Category Section */}
+      {/* Shop by Category - simple, single-line scroller */}
       <div className="w-full">
         {/* Section Header */}
         <div className="text-center mb-4 md:mb-6">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-600 to-amber-700 bg-clip-text text-transparent mb-2">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-1">
             Shop by Category
           </h2>
           <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">
-            Discover our curated collection across different categories
+            Browse categories and quickly filter the products
           </p>
         </div>
 
-        {/* Category Grid */}
-        <div className="w-full">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 pb-4">
-            {/* All Categories Option */}
+        {/* Horizontal scroller */}
+        <div className="relative">
+          <div
+            className="flex items-stretch gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth -mx-1 px-1 pb-2"
+            role="tablist"
+            aria-label="Mens categories"
+          >
+            {/* All Categories */}
             <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               onClick={() => handleCategoryChange("all")}
+              role="tab"
+              aria-selected={selectedCategory === "all"}
               className={cn(
-                "group relative overflow-hidden touch-manipulation",
-                "p-3 sm:p-4 rounded-xl md:rounded-2xl transition-all duration-300",
-                "backdrop-blur-sm border shadow-lg",
+                "group relative flex-none w-[150px] sm:w-[170px] md:w-[190px] rounded-xl border bg-white text-left",
+                "px-4 py-3 transition-all duration-200 hover:bg-gray-50 hover:shadow-md",
                 selectedCategory === "all"
-                  ? "bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600 text-white shadow-orange-500/30 border-orange-300/50"
-                  : "bg-white/90 text-gray-700 hover:bg-white hover:shadow-xl hover:shadow-orange-200/40 border-gray-200/50 hover:border-orange-200"
+                  ? "border-gray-700 ring-2 ring-gray-700/40 shadow"
+                  : "border-gray-200"
               )}
             >
-              <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+              <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    "w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center text-sm sm:text-base md:text-lg font-bold transition-all duration-200",
-                    "border backdrop-blur-sm",
-                    selectedCategory === "all"
-                      ? "border-white/30 bg-white/20 text-white"
-                      : "border-gray-200/50 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700 group-hover:from-orange-50 group-hover:to-orange-100 group-hover:text-orange-600"
+                    "h-14 w-14 rounded-lg overflow-hidden flex items-center justify-center transition-transform will-change-transform bg-gray-50",
+                    "group-hover:-translate-y-0.5"
                   )}
                 >
-                  ALL
+                  <Image
+                    src="/assets/icon/mens.png"
+                    alt="All Products"
+                    width={56}
+                    height={56}
+                    className="h-full w-full object-contain"
+                    loading="lazy"
+                  />
                 </div>
-                <div className="text-center">
-                  <span className="text-xs sm:text-sm font-medium block leading-tight">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">
                     All Products
-                  </span>
+                  </div>
                 </div>
               </div>
+              {selectedCategory === "all" && (
+                <span className="pointer-events-none absolute left-3 right-3 -bottom-[2px] h-0.5 bg-gray-800 rounded-full" />
+              )}
             </motion.button>
 
             {/* Category Items */}
-            {categories.map((cat) => (
+            {displayCategories.map((cat) => (
               <motion.button
                 key={cat.id}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
                 onClick={() => handleCategoryChange(cat.id)}
+                role="tab"
+                aria-selected={selectedCategory === cat.id}
                 className={cn(
-                  "group relative overflow-hidden touch-manipulation",
-                  "p-3 sm:p-4 rounded-xl md:rounded-2xl transition-all duration-300",
-                  "backdrop-blur-sm border shadow-lg",
+                  "group relative flex-none w-[150px] sm:w-[170px] md:w-[190px] rounded-xl border bg-white text-left",
+                  "px-4 py-3 transition-all duration-200 hover:bg-gray-50 hover:shadow-md",
                   selectedCategory === cat.id
-                    ? "bg-gradient-to-br from-orange-400 via-orange-500 to-amber-600 text-white shadow-orange-500/30 border-orange-300/50"
-                    : "bg-white/90 text-gray-700 hover:bg-white hover:shadow-xl hover:shadow-orange-200/40 border-gray-200/50 hover:border-orange-200"
+                    ? "border-gray-700 ring-2 ring-gray-700/40 shadow"
+                    : "border-gray-200"
                 )}
               >
-                <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                <div className="flex items-center gap-3">
                   <div
                     className={cn(
-                      "w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl overflow-hidden transition-all duration-200",
-                      "border backdrop-blur-sm shadow-md",
-                      selectedCategory === cat.id
-                        ? "border-white/30 shadow-white/20"
-                        : "border-gray-200/50 group-hover:border-orange-200 group-hover:shadow-orange-200/30"
+                      "h-14 w-14 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 transition-transform will-change-transform",
+                      "group-hover:-translate-y-0.5"
                     )}
                   >
                     <Image
                       src={cat.icon}
                       alt={cat.name}
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      width={56}
+                      height={56}
+                      className="h-full w-full object-cover"
                       loading="lazy"
                     />
                   </div>
-                  <div className="text-center">
-                    <span className="text-xs sm:text-sm font-medium block leading-tight">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
                       {cat.name}
-                    </span>
+                    </div>
                   </div>
                 </div>
+                {selectedCategory === cat.id && (
+                  <span className="pointer-events-none absolute left-3 right-3 -bottom-[2px] h-0.5 bg-gray-800 rounded-full" />
+                )}
               </motion.button>
             ))}
           </div>
         </div>
-
-        {/* Category Description */}
-        {selectedCategory !== "all" && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-4 text-center"
-          >
-            <div className="bg-orange-50/80 backdrop-blur-sm rounded-xl p-3 border border-orange-200/50">
-              <p className="text-gray-700 text-sm">
-                {
-                  categories.find((cat) => cat.id === selectedCategory)
-                    ?.description
-                }
-              </p>
-            </div>
-          </motion.div>
-        )}
       </div>
 
       {/* Results Count */}
@@ -278,41 +317,18 @@ export default function ProductGridWithDropdown({
       {/* Category Sections or Filtered Products */}
       {!isLoading && (
         <AnimatePresence mode="wait">
-          {selectedCategory === "all" ? (
-            // Show all categories with their products
-            <motion.div
-              key="all-categories"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-12"
-            >
-              {categories.map((cat) => {
-                const categoryProducts = productsByCategory[cat.id] || [];
-                if (categoryProducts.length === 0) return null;
-
-                return (
-                  <CategorySection
-                    key={cat.id}
-                    category={cat}
-                    products={categoryProducts}
-                    onAddToCart={handleAddToCart}
-                  />
-                );
-              })}
-            </motion.div>
-          ) : (
-            // Show filtered products
-            <motion.div
-              key="filtered-products"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            >
-              {filteredProducts.map((product) => (
+          <motion.div
+            key={
+              selectedCategory === "all" ? "all-products" : "filtered-products"
+            }
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {(selectedCategory === "all" ? products : filteredProducts).map(
+              (product) => (
                 <ProductCard
                   key={product.id}
                   product={{
@@ -322,9 +338,9 @@ export default function ProductGridWithDropdown({
                   viewMode="grid"
                   onAddToCart={handleAddToCart}
                 />
-              ))}
-            </motion.div>
-          )}
+              )
+            )}
+          </motion.div>
         </AnimatePresence>
       )}
 
@@ -435,7 +451,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
 
   if (viewMode === "list") {
     return (
-      <Link href={`/shop/${product.id}`}>
+      <Link href={`/products/${(product as any).slug || product.id}`}>
         <motion.div
           whileHover={{ y: -2 }}
           className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100"
@@ -513,7 +529,7 @@ function ProductCard({ product, viewMode, onAddToCart }: ProductCardProps) {
   }
 
   return (
-    <Link href={`/shop/${product.id}`}>
+    <Link href={`/products/${(product as any).slug || product.id}`}>
       <motion.div
         whileHover={{ y: -8 }}
         className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"

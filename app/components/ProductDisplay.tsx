@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { mockCategories, mockProducts } from "@/lib/mock-data/products";
+import { productApi, categoryApi } from "@/lib/services/api";
 import type { Product } from "@/types";
 import {
   Filter,
@@ -73,17 +73,14 @@ export function ProductDisplay({
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Using mock data for development
-      const transformedProducts = mockProducts.map((product) => ({
+      const res = await productApi.getProducts({ limit: 48, sort: 'newest' });
+      const rows = Array.isArray((res as any)?.data) ? (res as any).data : [];
+      const transformed = rows.map((product: any) => ({
         ...product,
         images: product.image_urls || (product.image_url ? [product.image_url] : []),
-        status: "active" as const,
-      }));
-
-      setProducts(transformedProducts);
+        status: product.status || "active",
+      })) as Product[];
+      setProducts(transformed);
       setError(null);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -98,12 +95,18 @@ export function ProductDisplay({
    */
   const fetchCategories = useCallback(async () => {
     try {
-      // Use mock categories
+      const [mens, womens, kids] = await Promise.all([
+        categoryApi.getCategories({ gender: 'mens' }),
+        categoryApi.getCategories({ gender: 'womens' }),
+        categoryApi.getCategories({ gender: 'kids' }),
+      ]);
+      const toRow = (r: any) => (Array.isArray(r?.data) ? r.data : []) as any[];
+      const all = [...toRow(mens), ...toRow(womens), ...toRow(kids)];
       setCategories(
-        mockCategories.map((cat) => ({
+        all.map((cat: any) => ({
           id: cat.id,
           name: cat.name,
-          slug: cat.name.toLowerCase(),
+          slug: cat.slug || cat.name.toLowerCase(),
         }))
       );
     } catch (err) {

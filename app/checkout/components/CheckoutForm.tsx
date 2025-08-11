@@ -37,7 +37,7 @@ export const shippingAddressSchema = z.object({
 });
 
 export const paymentMethodSchema = z.object({
-  payment_method: z.enum(["cash_on_delivery", "sslcommerz"]),
+  payment_method: z.enum(["cash_on_delivery", "ssl_commerce"]),
 });
 
 export interface CheckoutFormData {
@@ -58,7 +58,7 @@ export interface CheckoutFormData {
     zipCode?: string;
     country: "Bangladesh";
   };
-  payment_method: "cash_on_delivery" | "sslcommerz";
+  payment_method: "cash_on_delivery" | "ssl_commerce";
 }
 
 const steps = [
@@ -130,7 +130,17 @@ export default function CheckoutForm() {
 
   const nextStep = () => {
     if (currentStep < 5) {
-      setCurrentStep((prev) => prev + 1);
+      const next = currentStep + 1;
+      // Meta Pixel: InitiateCheckout when moving into review step
+      if (next === 3) {
+        try {
+          (window as any)?.fbq?.("track", "InitiateCheckout", {
+            value: getTotalPrice(),
+            currency: "BDT",
+          });
+        } catch {}
+      }
+      setCurrentStep(next);
     }
   };
 
@@ -145,18 +155,31 @@ export default function CheckoutForm() {
       setIsSubmitting(true);
       setSubmitError(null);
 
-      // Prepare order data
+      // Prepare order data to match API schema (customer_address string, items with size/color)
+      const address = formData.shipping_address;
+      const customer_address = address
+        ? [
+            address.address,
+            [address.city, address.state].filter(Boolean).join(", "),
+            address.zipCode,
+            address.country,
+          ]
+            .filter(Boolean)
+            .join(" | ")
+        : "";
+
       const orderData = {
         customer_name: formData.customer_name!,
         customer_phone: formData.customer_phone!,
         customer_email: formData.customer_email || "",
-        shipping_address: formData.shipping_address!,
-        billing_address: formData.billing_address || formData.shipping_address!,
+        customer_address,
         payment_method: formData.payment_method!,
         items: items.map((item) => ({
           product_id: item.product.id,
           quantity: item.quantity,
           price: item.product.price,
+          size: item.selectedSize,
+          color: item.selectedColor,
         })),
         total_amount: getTotalPrice(),
       };
@@ -174,11 +197,24 @@ export default function CheckoutForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to create order");
+        const details = Array.isArray(result?.details)
+          ? `: ${result.details.map((d: any) => d.message).join(", ")}`
+          : "";
+        throw new Error((result.error || "Failed to create order") + details);
       }
 
       // Order created successfully
-      setOrderNumber(result.order_number || result.orderNumber || result.id);
+      const order = result?.data || result;
+      setOrderNumber(
+        order.order_number || order.orderNumber || order.id || null
+      );
+      // Meta Pixel Purchase event
+      try {
+        (window as any)?.fbq?.("track", "Purchase", {
+          value: order.total_amount,
+          currency: "BDT",
+        });
+      } catch {}
       clearCart();
       sessionStorage.removeItem("checkout-form-data");
       setCurrentStep(5);

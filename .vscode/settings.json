@@ -1,9 +1,9 @@
 {
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "denoland.vscode-deno"
   },
-  "cSpell.words": ["ecomui", "VARCHAR"],
-
+  "cSpell.words": ["ecomui", "supabase", "VARCHAR"],
+  "deno.enablePaths": ["supabase/functions"],
   "deno.lint": true,
   "deno.unstable": [
     "bare-node-builtins",

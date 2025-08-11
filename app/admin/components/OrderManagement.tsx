@@ -34,6 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { subscribeToOrders } from "@/lib/services/supabase-api";
 import type { Order } from "@/types";
 import {
   AlertCircle,
@@ -53,7 +54,7 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Types for order details display
 interface OrderItemDisplay {
@@ -71,7 +72,7 @@ interface OrderItemDisplay {
 }
 
 // Extended order interface for display purposes
-interface OrderDetails extends Omit<Order, 'items'> {
+interface OrderDetails extends Omit<Order, "items"> {
   items: OrderItemDisplay[];
 }
 
@@ -255,17 +256,23 @@ function OrderDetailsModal({
                       >
                         <div>
                           <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {item.size && `Size: ${item.size}`}
-                            {item.color && `, Color: ${item.color}`}
-                          </p>
+                          {(item.size || item.color) && (
+                            <p className="text-sm text-muted-foreground">
+                              {item.size ? `Size: ${item.size}` : ""}
+                              {item.size && item.color ? ", " : ""}
+                              {item.color ? `Color: ${item.color}` : ""}
+                            </p>
+                          )}
                         </div>
                         <div className="text-right">
                           <p className="font-medium">
                             ৳{item.price} × {item.quantity}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            ৳{item.total.toLocaleString()}
+                            ৳
+                            {(
+                              item.total ?? item.price * item.quantity
+                            ).toLocaleString()}
                           </p>
                         </div>
                       </div>
@@ -371,6 +378,7 @@ export function OrderManagement() {
   const [error, setError] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [orderDetailsLoading, setOrderDetailsLoading] = useState(false);
+  const selectedOrderIdRef = useRef<string | null>(null);
 
   /**
    * Fetch orders from API
@@ -380,14 +388,18 @@ export function OrderManagement() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/admin/orders');
-      
+      const response = await fetch("/api/orders");
+
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        throw new Error("Failed to fetch orders");
       }
-      
+
       const data = await response.json();
-      setOrders(data.data || []);
+      if (data.success) {
+        setOrders(data.data || []);
+      } else {
+        throw new Error(data.error || "Failed to load orders");
+      }
     } catch (err) {
       setError("Failed to load orders");
       console.error("Orders fetch error:", err);
@@ -403,14 +415,34 @@ export function OrderManagement() {
     try {
       setOrderDetailsLoading(true);
 
-      const response = await fetch(`/api/admin/orders/${orderId}`);
-      
+      const response = await fetch(`/api/orders/${orderId}`);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch order details');
+        throw new Error("Failed to fetch order details");
       }
-      
+
       const data = await response.json();
-      setSelectedOrder(data.data as OrderDetails);
+      if (data.success) {
+        const apiOrder = data.data as any;
+        const displayItems: OrderItemDisplay[] = (apiOrder.items || []).map(
+          (item: any) => ({
+            id: item.id,
+            name: item.product?.name || "Product",
+            size: item.size,
+            color: item.color,
+            quantity: item.quantity,
+            price: item.price,
+            total: item.total ?? item.quantity * item.price,
+            order_id: item.order_id,
+            product_id: item.product_id,
+            created_at: item.created_at,
+          })
+        );
+        const details: OrderDetails = { ...apiOrder, items: displayItems };
+        setSelectedOrder(details);
+      } else {
+        throw new Error(data.error || "Failed to load order details");
+      }
     } catch (err) {
       console.error("Order details fetch error:", err);
       setSelectedOrder(null);
@@ -424,6 +456,45 @@ export function OrderManagement() {
    */
   useEffect(() => {
     fetchOrders();
+  }, []);
+
+  // Keep a ref to the currently viewed order ID to refresh its details on realtime updates
+  useEffect(() => {
+    selectedOrderIdRef.current = selectedOrder?.id ?? null;
+  }, [selectedOrder?.id]);
+
+  // Subscribe to real-time order changes so the admin page updates dynamically
+  useEffect(() => {
+    const channel = subscribeToOrders(async (payload: any) => {
+      try {
+        // Refresh list on any change
+        await fetchOrders();
+
+        // If a new order arrives, open its details
+        if (payload?.eventType === "INSERT" && payload.new?.id) {
+          setShowOrderDetails(true);
+          await fetchOrderDetails(payload.new.id as string);
+          return;
+        }
+
+        // If the currently viewed order was updated, refresh its details
+        if (
+          payload?.eventType === "UPDATE" &&
+          selectedOrderIdRef.current &&
+          payload.new?.id === selectedOrderIdRef.current
+        ) {
+          await fetchOrderDetails(selectedOrderIdRef.current);
+        }
+      } catch (err) {
+        console.error("Realtime orders handler error:", err);
+      }
+    });
+
+    return () => {
+      try {
+        (channel as any)?.unsubscribe?.();
+      } catch {}
+    };
   }, []);
 
   /**
@@ -473,6 +544,89 @@ export function OrderManagement() {
   const handleViewOrder = async (order: Order) => {
     setShowOrderDetails(true);
     await fetchOrderDetails(order.id);
+  };
+
+  /**
+   * Updates the status of a single order
+   * @param orderId - The ID of the order to update
+   * @param newStatus - The new status to set
+   */
+  const handleUpdateOrderStatus = async (
+    orderId: string,
+    newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled"
+  ) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update order status");
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        // Refresh the orders list
+        await fetchOrders();
+        // Update selected order if it's currently being viewed
+        if (selectedOrder && selectedOrder.id === orderId) {
+          setSelectedOrder({ ...selectedOrder, status: newStatus });
+        }
+      } else {
+        throw new Error(data.error || "Failed to update order status");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
+  };
+
+  /**
+   * Updates the status of multiple selected orders
+   * @param newStatus - The new status to set for all selected orders
+   */
+  const handleBulkUpdateStatus = async (
+    newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled"
+  ) => {
+    if (selectedOrders.length === 0) {
+      alert("Please select orders to update.");
+      return;
+    }
+
+    try {
+      // Update each order individually
+      const updatePromises = selectedOrders.map((orderId) =>
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        })
+      );
+
+      const responses = await Promise.all(updatePromises);
+      const failedUpdates = responses.filter((response) => !response.ok);
+
+      if (failedUpdates.length > 0) {
+        throw new Error(`Failed to update ${failedUpdates.length} orders`);
+      }
+
+      // Refresh the orders list
+      await fetchOrders();
+      // Clear selection
+      setSelectedOrders([]);
+      alert(
+        `Successfully updated ${selectedOrders.length} orders to ${newStatus}.`
+      );
+    } catch (error) {
+      console.error("Error bulk updating order status:", error);
+      alert("Failed to update some orders. Please try again.");
+    }
   };
 
   if (error) {
@@ -588,9 +742,29 @@ export function OrderManagement() {
                 {selectedOrders.length} order(s) selected
               </p>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  Update Status
-                </Button>
+                <Select
+                  onValueChange={(value) =>
+                    handleBulkUpdateStatus(
+                      value as
+                        | "pending"
+                        | "processing"
+                        | "shipped"
+                        | "delivered"
+                        | "cancelled"
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Update Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="processing">Processing</SelectItem>
+                    <SelectItem value="shipped">Shipped</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Button variant="outline" size="sm">
                   <Download className="h-4 w-4 mr-2" />
                   Export Selected
@@ -657,7 +831,7 @@ export function OrderManagement() {
                   <TableHead>Payment</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Date</TableHead>
-                  <TableHead className="w-12">Actions</TableHead>
+                  <TableHead className="w-48">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -718,13 +892,41 @@ export function OrderManagement() {
                       </p>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewOrder(order)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Select
+                          onValueChange={(value) =>
+                            handleUpdateOrderStatus(
+                              order.id,
+                              value as
+                                | "pending"
+                                | "processing"
+                                | "shipped"
+                                | "delivered"
+                                | "cancelled"
+                            )
+                          }
+                        >
+                          <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="processing">
+                              Processing
+                            </SelectItem>
+                            <SelectItem value="shipped">Shipped</SelectItem>
+                            <SelectItem value="delivered">Delivered</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewOrder(order)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

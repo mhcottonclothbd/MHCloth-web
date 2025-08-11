@@ -414,41 +414,14 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Desktop Actions - Only Search and Cart in Dropdown */}
+            {/* Desktop Actions - Search + Cart with live count */}
             <div className="hidden lg:flex items-center space-x-3">
               <SearchBar isLightBackground={false} />
-              
-              {/* Enhanced Cart Access with Indicator */}
-              <div className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsCartOpen(true)}
-                  className={cn(
-                    "flex items-center px-4 py-2 font-medium transition-all duration-300 rounded-xl backdrop-blur-sm relative overflow-hidden border",
-                    "text-white hover:shadow-lg"
-                  )}
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
-                    backdropFilter: 'blur(20px) saturate(150%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"
-                  />
-                  <ShoppingBag className="w-4 h-4 mr-2 relative z-10" />
-                  <span className="relative z-10 text-sm font-medium">Cart</span>
-                  {/* Subtle cart indicator */}
-                  <motion.div
-                    className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full opacity-60"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                </motion.button>
-              </div>
+              <CartIcon
+                showSidebar={true}
+                onOpenSidebar={() => setIsCartOpen(true)}
+                isLightBackground={false}
+              />
             </div>
 
             {/* Mobile Menu Button - Cart Icon Remains for Mobile */}

@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { dashboardApi, isApiError } from "@/lib/services/api";
 import { cn } from "@/lib/utils";
 import {
   AlertCircle,
@@ -191,74 +192,91 @@ export function DashboardOverview() {
   const [kpiData, setKpiData] = useState<KPIData[]>([]);
 
   /**
-   * Load dashboard data from mock data service
+   * Load dashboard data from Supabase via backend API
    */
   const loadDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API delay for realistic loading experience
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const response = await dashboardApi.getDashboardData(timeRange);
+      if (isApiError(response)) {
+        throw new Error(response.error);
+      }
 
-      // Import mock data dynamically to avoid SSR issues
-      const { getDashboardStats, getRevenueData, getCategoryData, getTopProducts, getRecentOrders } = await import('@/lib/mock-data/dashboard');
-      
-      const data = getDashboardStats(timeRange);
-      const revenueChartData = getRevenueData(timeRange);
-      const categoryChartData = getCategoryData();
-      const topProductsData = getTopProducts(5);
-      const recentOrdersData = getRecentOrders(5);
+      const payload = response?.data;
+      if (!payload) {
+        throw new Error("Invalid dashboard response");
+      }
 
-      // Transform data for charts
-      setRevenueData(revenueChartData);
-      setCategoryData(categoryChartData);
-      setTopProducts(topProductsData);
-      
-      // Transform Order[] to RecentOrder[]
-      const transformedOrders: RecentOrder[] = recentOrdersData.map(order => ({
-        id: order.orderNumber || order.id,
-        customer: order.customer_name || 'Unknown Customer',
-        amount: order.total_amount || order.total || 0,
-        status: order.status,
-        time: order.date || order.created_at
-      }));
-      setRecentOrders(transformedOrders);
+      const { kpis, revenueTimeseries, categoryDistribution, topProducts, recentOrders } = payload as any;
 
-      // Set KPI data
+      setRevenueData((revenueTimeseries || []).map((d: any) => ({
+        name: d.name,
+        revenue: Number(d.revenue || 0),
+        orders: Number(d.orders || 0),
+        customers: Number(d.customers || 0),
+      })));
+
+      setCategoryData((categoryDistribution || []).map((c: any) => ({
+        name: c.name,
+        value: Number(c.value || 0),
+        color: c.color || '#8884d8',
+      })));
+
+      setTopProducts((topProducts || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        sales: Number(p.sales || 0),
+        revenue: Number(p.revenue || 0),
+        trend: (p.trend || 'up') as 'up' | 'down',
+      })));
+
+      setRecentOrders((recentOrders || []).map((o: any) => ({
+        id: o.id,
+        customer: o.customer,
+        amount: Number(o.amount || 0),
+        status: o.status || 'pending',
+        time: o.time,
+      })));
+
+      const revenueChange = Number(kpis?.changes?.revenueChangePct || 0);
+      const ordersChange = Number(kpis?.changes?.ordersChangePct || 0);
+      const activeOrdersChange = Number(kpis?.changes?.activeOrdersChangePct || 0);
+
       setKpiData([
         {
-          title: "Total Revenue",
-          value: `৳${data.totalRevenue.toLocaleString()}`,
-          change: "12.5%",
-          trend: "up" as const,
+          title: 'Total Revenue',
+          value: `৳${Number(kpis?.totalRevenue || 0).toLocaleString()}`,
+          change: `${Math.abs(revenueChange).toFixed(1)}%`,
+          trend: (revenueChange >= 0 ? 'up' : 'down') as 'up' | 'down',
           icon: DollarSign,
-          description: "Total revenue from all orders",
+          description: 'Total revenue from all orders',
         },
         {
-          title: "Total Orders",
-          value: data.totalOrders.toString(),
-          change: "0%",
-          trend: "up" as const,
+          title: 'Total Orders',
+          value: String(kpis?.totalOrders || 0),
+          change: `${Math.abs(ordersChange).toFixed(1)}%`,
+          trend: (ordersChange >= 0 ? 'up' : 'down') as 'up' | 'down',
           icon: ShoppingCart,
-          description: "Total number of orders",
+          description: 'Total number of orders',
         },
         {
-          title: "Active Orders",
-          value: data.activeOrders.toString(),
-          change: "0%",
-          trend: "up" as const,
+          title: 'Active Orders',
+          value: String(kpis?.activeOrders || 0),
+          change: `${Math.abs(activeOrdersChange).toFixed(1)}%`,
+          trend: (activeOrdersChange >= 0 ? 'up' : 'down') as 'up' | 'down',
           icon: Package,
-          description: "Orders in progress",
+          description: 'Orders in progress',
         },
-      ]);
+      ])
     } catch (err) {
-      setError("Failed to load dashboard data");
-      console.error("Dashboard data load error:", err);
+      setError('Failed to load dashboard data')
+      console.error('Dashboard data load error:', err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   /**
    * Load data when component mounts or timeRange changes

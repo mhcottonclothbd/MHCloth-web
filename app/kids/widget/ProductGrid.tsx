@@ -22,113 +22,7 @@ interface ProductGridProps {
   title: string;
 }
 
-// Kids products - &Sons doesn't have kids line, keeping existing curated selection
-const mockKidsProducts: Product[] = [
-  {
-    id: "kids1",
-    name: "Educational Building Blocks",
-    description: "Colorful wooden blocks for creative learning and development",
-    price: 49.99,
-    image_url:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 25,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids2",
-    name: "Plush Teddy Bear",
-    description: "Soft and cuddly teddy bear made from organic cotton",
-    price: 29.99,
-    image_url:
-      "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 30,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids3",
-    name: "Art & Craft Set",
-    description: "Complete art set with crayons, markers, and drawing paper",
-    price: 39.99,
-    image_url:
-      "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 20,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids4",
-    name: "Interactive Learning Tablet",
-    description: "Kid-friendly tablet with educational games and apps",
-    price: 129.99,
-    image_url:
-      "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 15,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids5",
-    name: "Colorful Puzzle Set",
-    description: "Age-appropriate puzzles for cognitive development",
-    price: 24.99,
-    image_url:
-      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 35,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids6",
-    name: "Musical Instrument Set",
-    description: "Child-safe musical instruments for early music education",
-    price: 59.99,
-    image_url:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 18,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids7",
-    name: "Storybook Collection",
-    description: "Set of 10 illustrated storybooks for bedtime reading",
-    price: 34.99,
-    image_url:
-      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 22,
-    featured: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "kids8",
-    name: "Science Experiment Kit",
-    description: "Safe and fun science experiments for curious minds",
-    price: 79.99,
-    image_url:
-      "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=400&h=400&fit=crop",
-    category: "kids",
-    stock: 12,
-    featured: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
+// Removed hardcoded kids products. Fetch from API only.
 
 /**
  * Product grid component specifically for kids products
@@ -147,101 +41,52 @@ export default function ProductGrid({
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      try {
+        const params = new URLSearchParams({
+          gender: "kids",
+          ...(searchParams.search && { search: searchParams.search }),
+          ...(searchParams.category && {
+            category_slug: searchParams.category,
+          }),
+          ...(searchParams.filter === "featured" && { is_featured: "true" }),
+        });
 
-      let filteredProducts = [...mockKidsProducts];
+        const response = await fetch(`/api/products?${params}`);
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const api = await response.json();
+        let filteredProducts: Product[] = api?.data || [];
+        // Normalize image_url to prefer first image_urls entry
+        filteredProducts = filteredProducts.map((p: any) => ({
+          ...p,
+          image_url:
+            p?.image_url ||
+            (Array.isArray(p?.image_urls) ? p.image_urls[0] : undefined),
+        }));
 
-      // Category filter - handle subcategory filtering
-      if (searchParams.category) {
-        const category = searchParams.category.toLowerCase();
-        filteredProducts = filteredProducts.filter((product) => {
-          const productName = product.name.toLowerCase();
-          const productDesc = product.description.toLowerCase();
-
-          switch (category) {
-            case "clothing":
-              return (
-                productName.includes("shirt") ||
-                productName.includes("pants") ||
-                productName.includes("dress") ||
-                productName.includes("jacket") ||
-                productName.includes("sweater")
-              );
-            case "toys":
-              return (
-                productName.includes("toy") ||
-                productName.includes("game") ||
-                productDesc.includes("play")
-              );
-            case "books":
-              return (
-                productName.includes("book") || productDesc.includes("read")
-              );
-            case "accessories":
-              return (
-                productName.includes("hat") ||
-                productName.includes("bag") ||
-                productName.includes("belt") ||
-                product.category === "accessories"
-              );
-            case "outdoor":
-              return (
-                productName.includes("outdoor") ||
-                productName.includes("sport") ||
-                productDesc.includes("outdoor")
-              );
-            case "arts":
-              return (
-                productName.includes("art") ||
-                productName.includes("craft") ||
-                productDesc.includes("creative")
-              );
+        // Client-side sort
+        filteredProducts.sort((a: Product, b: Product) => {
+          switch (sortBy) {
+            case "price-low":
+              return a.price - b.price;
+            case "price-high":
+              return b.price - a.price;
+            case "name":
+              return a.name.localeCompare(b.name);
+            case "featured":
             default:
-              return product.category === searchParams.category;
+              return (
+                (b.is_featured || b.featured ? 1 : 0) -
+                (a.is_featured || a.featured ? 1 : 0)
+              );
           }
         });
+
+        setProducts(filteredProducts);
+      } catch (e) {
+        console.error("Error fetching products:", e);
+      } finally {
+        setLoading(false);
       }
-
-      // Search filter
-      if (searchParams.search) {
-        const searchTerm = searchParams.search.toLowerCase();
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm)
-        );
-      }
-
-      // Stock filter
-      if (searchParams.filter === "in-stock") {
-        filteredProducts = filteredProducts.filter(
-          (product) => (product.stock || 0) > 0
-        );
-      } else if (searchParams.filter === "featured") {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.featured
-        );
-      }
-
-      // Sort products
-      filteredProducts.sort((a, b) => {
-        switch (sortBy) {
-          case "price-low":
-            return a.price - b.price;
-          case "price-high":
-            return b.price - a.price;
-          case "name":
-            return a.name.localeCompare(b.name);
-          case "featured":
-          default:
-            return b.featured === a.featured ? 0 : b.featured ? 1 : -1;
-        }
-      });
-
-      // Simulate loading delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setProducts(filteredProducts);
-      setLoading(false);
     };
 
     fetchProducts();
@@ -337,7 +182,11 @@ export default function ProductGrid({
             <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border-purple-100 hover:border-purple-200 bg-gradient-to-br from-white to-purple-50/30">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image_url || "/placeholder-image.jpg"}
+                  src={
+                    (product.image_urls && product.image_urls[0]) ||
+                    product.image_url ||
+                    "/placeholder-image.jpg"
+                  }
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -372,7 +221,7 @@ export default function ProductGrid({
 
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                  <Link href={`/shop/${product.id}`}>
+                  <Link href={`/products/${(product as any).slug || product.id}`}>
                     <Button
                       variant="secondary"
                       size="sm"
@@ -386,7 +235,9 @@ export default function ProductGrid({
                     variant="primary"
                     size="sm"
                     onClick={() => handleAddToCart(product)}
-                    disabled={product.stock === 0}
+                    disabled={
+                      (product.stock_quantity || product.stock || 0) === 0
+                    }
                     className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white"
                   >
                     <ShoppingCart className="w-4 h-4 mr-1" />
@@ -415,8 +266,10 @@ export default function ProductGrid({
                     {formatPrice(product.price)}
                   </span>
                   <span className="text-sm text-gray-500">
-                    {(product.stock || 0) > 0
-                      ? `${product.stock || 0} in stock`
+                    {(product.stock_quantity || product.stock || 0) > 0
+                      ? `${
+                          product.stock_quantity || product.stock || 0
+                        } in stock`
                       : "Out of stock"}
                   </span>
                 </div>
