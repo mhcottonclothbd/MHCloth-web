@@ -19,7 +19,8 @@ export default async function AdminPage() {
   const adminGate = cookieStore.get("admin_session")?.value === "1";
   const accessToken = cookieStore.get("sb-access-token")?.value;
 
-  if (!adminGate || !accessToken) {
+  // Allow access if either admin_session or sb-access-token is present
+  if (!adminGate && !accessToken) {
     return <AdminLogin />;
   }
 
