@@ -15,7 +15,8 @@ export function middleware(request: NextRequest) {
   if (
     pathname === '/api/admin/login' ||
     pathname === '/api/admin/logout' ||
-    pathname === '/api/admin/sessions'
+    pathname === '/api/admin/sessions' ||
+    pathname === '/api/admin/login/verify-otp'
   ) {
     return NextResponse.next()
   }
