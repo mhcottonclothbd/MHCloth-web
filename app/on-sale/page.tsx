@@ -1,19 +1,21 @@
-import type { Metadata } from 'next'
-import { Suspense } from 'react'
-import OnSaleClient from './widget/OnSaleClient'
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import OnSaleClient from "./widget/OnSaleClient";
 
 export const metadata: Metadata = {
-  title: 'On Sale - MHCloth | Premium Products at Great Prices',
-  description: 'Discover amazing deals on our premium product collection. Shop high-quality items at discounted prices for a limited time.',
-  keywords: 'sale, discounts, deals, premium products, special offers, clearance',
-}
+  title: "On Sale - MHCloth | Premium Products at Great Prices",
+  description:
+    "Discover amazing deals on our premium product collection. Shop high-quality items at discounted prices for a limited time.",
+  keywords:
+    "sale, discounts, deals, premium products, special offers, clearance",
+};
 
 interface OnSalePageProps {
   searchParams: Promise<{
-    search?: string
-    sort?: string
-    filter?: string
-  }>
+    search?: string;
+    sort?: string;
+    filter?: string;
+  }>;
 }
 
 /**
@@ -25,5 +27,5 @@ export default async function OnSalePage() {
     <Suspense fallback={null}>
       <OnSaleClient />
     </Suspense>
-  )
+  );
 }

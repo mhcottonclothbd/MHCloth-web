@@ -37,7 +37,7 @@ export const shippingAddressSchema = z.object({
 });
 
 export const paymentMethodSchema = z.object({
-  payment_method: z.enum(["cash_on_delivery", "ssl_commerce"]),
+  payment_method: z.enum(["cash_on_delivery"]),
 });
 
 export interface CheckoutFormData {
@@ -58,7 +58,7 @@ export interface CheckoutFormData {
     zipCode?: string;
     country: "Bangladesh";
   };
-  payment_method: "cash_on_delivery" | "ssl_commerce";
+  payment_method: "cash_on_delivery";
 }
 
 const steps = [

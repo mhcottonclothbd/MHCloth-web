@@ -60,7 +60,7 @@ export interface CartItem {
   quantity: number
 }
 
-export type PaymentMethod = 'cash_on_delivery' | 'ssl_commerce'
+export type PaymentMethod = 'cash_on_delivery'
 
 export interface User {
   id: string

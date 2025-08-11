@@ -118,7 +118,7 @@ export interface Database {
           customer_address?: string
           total_amount: number
           status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
-          payment_method: 'cash_on_delivery' | 'ssl_commerce'
+          payment_method: 'cash_on_delivery'
           payment_status: 'pending' | 'paid' | 'failed' | 'refunded'
           created_at: string
           updated_at: string
@@ -132,7 +132,7 @@ export interface Database {
           customer_address?: string
           total_amount: number
           status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
-          payment_method: 'cash_on_delivery' | 'ssl_commerce'
+          payment_method: 'cash_on_delivery'
           payment_status?: 'pending' | 'paid' | 'failed' | 'refunded'
           created_at?: string
           updated_at?: string
@@ -146,7 +146,7 @@ export interface Database {
           customer_address?: string
           total_amount?: number
           status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
-          payment_method?: 'cash_on_delivery' | 'ssl_commerce'
+          payment_method?: 'cash_on_delivery'
           payment_status?: 'pending' | 'paid' | 'failed' | 'refunded'
           updated_at?: string
         }

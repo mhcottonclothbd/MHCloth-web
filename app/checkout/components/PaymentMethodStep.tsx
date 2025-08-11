@@ -1,14 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  AlertCircle,
-  ArrowLeft,
-  Banknote,
-  Clock,
-  CreditCard,
-  Shield,
-} from "lucide-react";
+import { AlertCircle, ArrowLeft, Banknote, Clock, Shield } from "lucide-react";
 import { useState } from "react";
 import { CheckoutFormData } from "./CheckoutForm";
 
@@ -29,13 +22,11 @@ export default function PaymentMethodStep({
   isSubmitting,
   submitError,
 }: PaymentMethodStepProps) {
-  const [selectedMethod, setSelectedMethod] = useState<
-    "cash_on_delivery" | "ssl_commerce"
-  >(formData.payment_method || "cash_on_delivery");
+  const [selectedMethod, setSelectedMethod] = useState<"cash_on_delivery">(
+    (formData.payment_method as "cash_on_delivery") || "cash_on_delivery"
+  );
 
-  const handlePaymentMethodChange = (
-    method: "cash_on_delivery" | "ssl_commerce"
-  ) => {
+  const handlePaymentMethodChange = (method: "cash_on_delivery") => {
     setSelectedMethod(method);
     updateFormData({ payment_method: method });
   };
@@ -131,56 +122,7 @@ export default function PaymentMethodStep({
             </div>
           </motion.div>
 
-          {/* Online Payment (Coming Soon) */}
-          <motion.div
-            className="relative border-2 border-gray-200 rounded-xl p-6 opacity-60 cursor-not-allowed"
-            whileHover={{ scale: selectedMethod !== "ssl_commerce" ? 1.01 : 1 }}
-          >
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                  {/* Empty circle for disabled option */}
-                </div>
-              </div>
-
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <CreditCard className="w-6 h-6 text-gray-400" />
-                  <h3 className="text-lg font-semibold text-gray-500">
-                    Online Payment
-                  </h3>
-                  <span className="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded-full">
-                    Coming Soon
-                  </span>
-                </div>
-
-                <p className="text-gray-500 mb-4">
-                  Pay online using your credit/debit card, mobile banking, or
-                  digital wallet.
-                </p>
-
-                <div className="space-y-2 text-sm text-gray-500">
-                  <div className="flex items-center space-x-2">
-                    <CreditCard className="w-4 h-4" />
-                    <span>Credit/Debit Cards</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="w-4 h-4 flex items-center justify-center text-xs">
-                      📱
-                    </span>
-                    <span>Mobile Banking (bKash, Nagad)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Coming Soon Overlay */}
-            <div className="absolute inset-0 bg-white bg-opacity-50 rounded-xl flex items-center justify-center">
-              <span className="bg-white px-4 py-2 rounded-lg shadow-md text-gray-600 font-medium">
-                Available Soon
-              </span>
-            </div>
-          </motion.div>
+          {/* Online payment removed */}
         </div>
 
         {/* Cash on Delivery Instructions */}

@@ -306,7 +306,7 @@ export async function createOrder(orderData: {
   customer_phone?: string
   customer_address?: string
   total_amount: number
-  payment_method: 'cash_on_delivery' | 'ssl_commerce'
+  payment_method: 'cash_on_delivery'
   items: {
     product_id: string
     quantity: number

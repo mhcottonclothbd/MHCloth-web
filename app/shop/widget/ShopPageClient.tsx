@@ -158,8 +158,12 @@ export default function ShopPageClient() {
                     <SelectContent>
                       <SelectItem value="default">Default</SelectItem>
                       <SelectItem value="newest">Newest</SelectItem>
-                      <SelectItem value="price_asc">Price: Low to High</SelectItem>
-                      <SelectItem value="price_desc">Price: High to Low</SelectItem>
+                      <SelectItem value="price_asc">
+                        Price: Low to High
+                      </SelectItem>
+                      <SelectItem value="price_desc">
+                        Price: High to Low
+                      </SelectItem>
                       <SelectItem value="name_asc">Name: A to Z</SelectItem>
                       <SelectItem value="name_desc">Name: Z to A</SelectItem>
                     </SelectContent>
@@ -171,7 +175,10 @@ export default function ShopPageClient() {
                         <Filter className="h-4 w-4 mr-2" /> Filters
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-[90vw] sm:w-[420px]">
+                    <SheetContent
+                      side="right"
+                      className="w-[90vw] sm:w-[420px]"
+                    >
                       <SheetHeader>
                         <SheetTitle>Filters</SheetTitle>
                       </SheetHeader>
@@ -222,5 +229,3 @@ export default function ShopPageClient() {
     </div>
   );
 }
-
-

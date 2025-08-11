@@ -16,7 +16,7 @@ const createOrderSchema = z.object({
   customer_phone: z.string().min(1, 'Customer phone is required'),
   customer_address: z.string().min(1, 'Customer address is required'),
   total_amount: z.number().positive('Total amount must be positive'),
-  payment_method: z.enum(['cash_on_delivery', 'ssl_commerce']),
+  payment_method: z.enum(['cash_on_delivery']),
   items: z
     .array(
       z.object({
