@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const res = NextResponse.json({ success: true })
     res.cookies.set('admin_session', '1', {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax', // allow subpath navigations and external referrals
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         maxAge: 60 * 60, // 1 hour

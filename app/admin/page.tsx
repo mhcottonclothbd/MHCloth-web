@@ -9,6 +9,10 @@ export const metadata: Metadata = {
     "Comprehensive admin dashboard for managing your ecommerce store",
 };
 
+// Ensure no caching so cookie checks always run on the server
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Main admin dashboard page component
  * Renders the complete admin interface with all management features
