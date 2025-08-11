@@ -11,8 +11,12 @@ export function middleware(request: NextRequest) {
   // Admin gate for /admin/* (subpaths) and /api/admin/*
   // Allow root /admin to render the login form without a session to avoid redirect loops
   const isApiAdmin = pathname.startsWith('/api/admin')
-  // Always allow auth endpoints themselves
-  if (pathname === '/api/admin/login' || pathname === '/api/admin/logout') {
+  // Always allow auth/session endpoints themselves
+  if (
+    pathname === '/api/admin/login' ||
+    pathname === '/api/admin/logout' ||
+    pathname === '/api/admin/sessions'
+  ) {
     return NextResponse.next()
   }
   const isAdminSubPath = pathname.startsWith('/admin/')
