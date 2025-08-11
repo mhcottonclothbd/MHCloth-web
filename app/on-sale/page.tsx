@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import OnSaleClient from './widget/OnSaleClient'
 
 export const metadata: Metadata = {
@@ -20,5 +21,9 @@ interface OnSalePageProps {
  * All sale products have been removed from the website
  */
 export default async function OnSalePage() {
-  return <OnSaleClient />
+  return (
+    <Suspense fallback={null}>
+      <OnSaleClient />
+    </Suspense>
+  )
 }

@@ -18,7 +18,13 @@ async function main() {
       '--project-ref', projectRef,
       '--access-token', pat,
     ],
-    env: process.env,
+    // Narrow to Record<string, string> to satisfy type expectations
+    env: Object.fromEntries(
+      Object.entries(process.env).filter(([, v]) => typeof v === 'string') as [
+        string,
+        string
+      ][]
+    ),
   })
 
   const client = new Client({ name: 'mhcloth-funcs', version: '1.0.0' })

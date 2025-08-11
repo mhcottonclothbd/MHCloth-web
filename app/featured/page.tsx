@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import FeaturedClient from './widget/FeaturedClient'
 
 export const metadata: Metadata = {
@@ -7,7 +8,11 @@ export const metadata: Metadata = {
 }
 
 export default function FeaturedPage() {
-  return <FeaturedClient />
+  return (
+    <Suspense fallback={null}>
+      <FeaturedClient />
+    </Suspense>
+  )
 }
 
 

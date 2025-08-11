@@ -134,7 +134,7 @@ export default function PaymentMethodStep({
           {/* Online Payment (Coming Soon) */}
           <motion.div
             className="relative border-2 border-gray-200 rounded-xl p-6 opacity-60 cursor-not-allowed"
-            whileHover={{ scale: selectedMethod !== "sslcommerz" ? 1.01 : 1 }}
+            whileHover={{ scale: selectedMethod !== "ssl_commerce" ? 1.01 : 1 }}
           >
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
