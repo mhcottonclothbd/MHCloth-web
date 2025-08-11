@@ -25,7 +25,7 @@ export default function ProfileIcon({
     return (
       <div className={cn("space-y-3", className)}>
         <div className="space-y-2">
-          <Link href="/cart" className="block">
+          <Link href="/checkout" className="block">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -67,7 +67,7 @@ export default function ProfileIcon({
   return (
     <div className={cn("flex items-center gap-3", className)}>
       {/* Cart Icon */}
-      <Link href="/cart">
+      <Link href="/checkout">
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}

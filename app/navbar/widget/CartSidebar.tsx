@@ -166,7 +166,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                         )
                                       }
                                       disabled={
-                                        item.product.stock ? item.quantity >= item.product.stock : false
+                                        item.product.stock
+                                          ? item.quantity >= item.product.stock
+                                          : false
                                       }
                                       className="p-1 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                       aria-label="Increase quantity"
@@ -204,7 +206,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                         {/* Action Buttons */}
                         <div className="space-y-3">
-                          <Link href="/cart">
+                          <Link href="/checkout">
                             <button
                               onClick={onClose}
                               className="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg font-medium transition-colors"

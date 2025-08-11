@@ -1,8 +1,8 @@
 "use client";
 
 import { useCart } from "@/lib/cart-context";
-import { cn } from "@/lib/utils";
 import { getIconColorClasses } from "@/lib/useBackgroundDetection";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
@@ -46,11 +46,11 @@ export default function CartIcon({
       )}
     >
       <Link
-        href="/cart"
+        href="/checkout"
         onClick={handleClick}
         aria-label={`Shopping cart with ${itemCount} items`}
       >
-      <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+        <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
 
         {/* Animated Item Count Badge */}
         {itemCount > 0 && (
